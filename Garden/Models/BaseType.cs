@@ -9,7 +9,7 @@ namespace Garden.Models
     public class BaseType
     {
         [Key]
-        public int BaseTypeId { get; set; }
+        public int Id { get; set; }
         
         [Display(Name="이름")]
         public string Name { get; set; }

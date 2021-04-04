@@ -7,16 +7,15 @@ using System.Threading.Tasks;
 
 namespace Garden.Models
 {
-    public class GardenRole
+    public class GardenTaskAttachMap
     {
         [Key]
         public int Id { get; set; }
         public int GardenId { get; set; }
-        public int SubTypeId { get; set; }
-
-        [ForeignKey("SubTypeId")]
-        public virtual BaseSubType BaseSubType { get; set; }
+        public int AttachmentId { get; set; }
         [ForeignKey("GardenId")]
-        public virtual GardenSpace Garden { get; set; }
+        public virtual GardenSpace GardenSpace { get; set; }
+        [ForeignKey("AttachmentId")]
+        public virtual Attachment Attachment { get; set; }
     }
 }

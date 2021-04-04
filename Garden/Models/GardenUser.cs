@@ -10,11 +10,19 @@ namespace Garden.Models
     public class GardenUser
     {
         [Key]
-        public int GardenUserId { get; set; }
-        public string UserId { get; set; }
-        
+        public int Id { get; set; }
+        public string UserId { get; set; } 
         public bool IsActivate { get; set; }
+        public int GardenSpaceId { get; set; }
+        [Display(Name ="등록날짜")]
+        [DataType(DataType.Date)]
+        public DateTime RegDate { get; set; }
+
+        [ForeignKey("GardenSpaceId")]
+        public virtual GardenSpace GardenSpace { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
+
+        public ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
     }
 }

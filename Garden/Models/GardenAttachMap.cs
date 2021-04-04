@@ -10,12 +10,12 @@ namespace Garden.Models
     public class GardenAttachMap
     {
         [Key]
-        public int GardenAtttachMapId { get; set; }
+        public int Id { get; set; }
         public int GardenId { get; set; }
         public int AttachmentId { get; set; }
 
         [ForeignKey("GardenId")]
-        public virtual Garden Garden { get; set; }
+        public virtual GardenSpace Garden { get; set; }
         [ForeignKey("AttachmentId")]
         public virtual Attachment Attachment { get; set; }
 
