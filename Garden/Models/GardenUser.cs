@@ -23,6 +23,6 @@ namespace Garden.Models
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
 
-        public ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
+        public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
     }
 }

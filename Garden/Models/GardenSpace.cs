@@ -23,8 +23,8 @@ namespace Garden.Models
         [ForeignKey("SubTypeId")]
         public virtual BaseSubType BaseSubType { get; set; }
         
-        public ICollection<GardenUser> GardenUsers { get; set; }
-        public ICollection<GardenTaskAttachMap> GardenTaskAttachMaps { get; set; }
-        public ICollection<GardenWorkTime> GardenWorkTimes { get; set; }
+        public virtual ICollection<GardenUser> GardenUsers { get; set; }
+        public virtual ICollection<GardenTaskAttachMap> GardenTaskAttachMaps { get; set; }
+        public virtual ICollection<GardenWorkTime> GardenWorkTimes { get; set; }
     }
 }

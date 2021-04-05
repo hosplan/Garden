@@ -21,11 +21,12 @@ namespace Garden.Models
         [Display(Name="생성 날짜")]
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }
-        public int GardenId { get; set; }
+        public int GardenSpaceId { get; set; }
         [ForeignKey("SubTypeId")]
         public virtual BaseSubType BaseSubType { get; set; }
+        [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
-        public ICollection<GardenWorkTime> GardenWorkTimes { get; set; }
-        public ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
+        public virtual ICollection<GardenWorkTime> GardenWorkTimes { get; set; }
+        public virtual  ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
     }
 }

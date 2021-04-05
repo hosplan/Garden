@@ -28,10 +28,13 @@ namespace Garden.Models
         [Display(Name = "일요일")]
         public bool IsSun { get; set; }
         public int SubTypeId { get; set; }
+
         [ForeignKey("SubTypeId")]
         public virtual BaseSubType BaseSubType { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }
+
         [ForeignKey("GardenTaskId")]
         public virtual GardenTask GardenTask { get; set; }
     }

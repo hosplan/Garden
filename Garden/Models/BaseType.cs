@@ -20,6 +20,6 @@ namespace Garden.Models
         [Display(Name="하위항목 수정가능 여부")]
         public bool IsSubTypeEditable { get; set; }
 
-        public ICollection<BaseSubType> baseSubTypes { get; set; }
+        public virtual ICollection<BaseSubType> baseSubTypes { get; set; }
     }
 }

@@ -22,6 +22,6 @@ namespace Garden.Models
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }
 
-        public ICollection<GardenTaskAttachMap> GardenTaskAttachMaps { get; set; }
+        public virtual ICollection<GardenTaskAttachMap> GardenTaskAttachMaps { get; set; }
     }
 }
