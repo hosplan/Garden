@@ -13,7 +13,7 @@ namespace Garden.Models
         public int Id { get; set; }
         public string UserId { get; set; } 
         public bool IsActivate { get; set; }
-        public int GardenSpaceId { get; set; }
+        public Nullable<int> GardenSpaceId { get; set; }
         [Display(Name ="등록날짜")]
         [DataType(DataType.Date)]
         public DateTime RegDate { get; set; }
@@ -22,7 +22,9 @@ namespace Garden.Models
         public virtual GardenSpace GardenSpace { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
-
+        [InverseProperty("GardenUserTask")]
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
+        [InverseProperty("GardenManagerTask")]
+        public virtual ICollection<GardenUserTaskMap> GardenManagerTaskMaps { get; set; }
     }
 }

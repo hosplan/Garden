@@ -22,7 +22,7 @@ namespace Garden.Controllers
         // GET: BaseTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BaseType.ToListAsync());
+            return View(await _context.BaseType.AsNoTracking().ToListAsync());
         }
 
         // GET: BaseTypes/Details/5

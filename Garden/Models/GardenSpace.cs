@@ -13,16 +13,14 @@ namespace Garden.Models
         public int Id { get; set; }
         [Display(Name ="제목")]
         public string Name { get; set; }
-        public int SubTypeId { get; set; }
+        public Nullable<int> SubTypeId { get; set; }
         [Display(Name="생성 날짜")]
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; }
         [Display(Name="활성화 여부")]
         public bool IsActivate { get; set; }
-
         [ForeignKey("SubTypeId")]
-        public virtual BaseSubType BaseSubType { get; set; }
-        
+        public virtual BaseSubType BaseSubType { get; set; }        
         public virtual ICollection<GardenUser> GardenUsers { get; set; }
         public virtual ICollection<GardenTaskAttachMap> GardenTaskAttachMaps { get; set; }
         public virtual ICollection<GardenWorkTime> GardenWorkTimes { get; set; }

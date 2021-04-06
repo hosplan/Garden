@@ -12,7 +12,7 @@ namespace Garden.Models
         [Key]
         public int Id { get; set; }
         public int WorkingTime { get; set; }
-        public int GardenTaskId { get; set; }
+        public Nullable<int> GardenTaskId { get; set; }
         [Display(Name ="월요일")]
         public bool IsMon { get; set; }
         [Display(Name = "화요일")]
@@ -27,7 +27,7 @@ namespace Garden.Models
         public bool IsSat { get; set; }
         [Display(Name = "일요일")]
         public bool IsSun { get; set; }
-        public int SubTypeId { get; set; }
+        public Nullable<int> SubTypeId { get; set; }
 
         [ForeignKey("SubTypeId")]
         public virtual BaseSubType BaseSubType { get; set; }

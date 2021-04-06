@@ -11,11 +11,18 @@ namespace Garden.Models
     {
         [Key]
         public int Id { get; set; }
-        public int GardenUserId { get; set; }
-        public int GardenTaskId { get; set; }
+        [Display(Name ="담당자")]
+        public Nullable<int> GardenManagerId { get; set; }
+        [Display(Name ="참여자")]
+        public Nullable<int> GardenUserId { get; set; }
+        [Display(Name ="업무")]
+        public Nullable<int> GardenTaskId { get; set; }
     
+        [ForeignKey("GardenManagerId")]
+        public virtual GardenUser GardenManagerTask { get; set; }
+
         [ForeignKey("GardenUserId")]
-        public virtual GardenUser GardenUser { get; set; }
+        public virtual GardenUser GardenUserTask { get; set; }
         [ForeignKey("GardenTaskId")]
         public virtual GardenTask GardenTask { get; set; }
     }

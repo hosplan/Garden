@@ -20,10 +20,14 @@ namespace Garden.Controllers
         }
 
         // GET: BaseSubTypes
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.BaseSubType.Include(b => b.BaseType);
-            return View(await applicationDbContext.ToListAsync());
+        public  IActionResult Index()
+        {            
+            List<BaseSubType> baseSubType_list = _context.BaseSubType
+                                                                                                        .Include(baseSubType => baseSubType.BaseType)
+                                                                                                        .AsNoTracking()
+                                                                                                        .ToList();
+
+            return View(baseSubType_list);
         }
 
         // GET: BaseSubTypes/Details/5

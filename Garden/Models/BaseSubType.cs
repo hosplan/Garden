@@ -12,7 +12,7 @@ namespace Garden.Models
         [Key]
         public int Id { get; set; }
 
-        public int BaseTypeId { get; set; }
+        public Nullable<int> BaseTypeId { get; set; }
 
         [ForeignKey("BaseTypeId")]
         public virtual BaseType BaseType { get; set; }
