@@ -1,0 +1,1 @@
+﻿ReactDOM.render(React.createElement(Sample, {}), document.getElementById('content'));

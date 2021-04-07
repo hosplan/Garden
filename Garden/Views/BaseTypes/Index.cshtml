@@ -17,9 +17,10 @@
                     {
                         <tr>
                             <td>
-                                <button class="btn btn-link text-primary">
+                                <button class="btn btn-link text-primary" onclick="GetBasySubTypeList(@item.Id)">
                                     <i class="far fa-fw fa-circle mr-2"></i>    
-                                    @item.Name</button>
+                                    @item.Name
+                                </button>
                             </td>
                         </tr>
                     }
@@ -41,3 +42,4 @@
         </div>
     </div>
 </div>
+<script src="~/js/baseType.js"></script>

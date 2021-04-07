@@ -25,6 +25,14 @@ namespace Garden.Controllers
             return View(await _context.BaseType.AsNoTracking().ToListAsync());
         }
 
+        public async Task<JsonResult> GetBaseSubTypeList(int id)
+        {
+            var tt = _context.BaseSubType
+                                            .AsNoTracking()
+                                            .Where(z => z.BaseTypeId == id);
+            return new JsonResult(id);
+        }
+
         // GET: BaseTypes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
