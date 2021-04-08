@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<Garden.Models.BaseType>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
 <div class="col-xl-3 p-3">
     <div class="card shadow">
         <div class="card-header">
@@ -18,7 +16,7 @@
                         <tr>
                             <td>
                                 <button class="btn btn-link text-primary" onclick="GetBasySubTypeList(@item.Id)">
-                                    <i class="far fa-fw fa-circle mr-2"></i>    
+                                    <i class="far fa-fw fa-circle mr-2"></i>
                                     @item.Name
                                 </button>
                             </td>
@@ -38,8 +36,20 @@
             </h6>
         </div>
         <div class="card-body">
-
+            <table class="table" id="baseSubType_dt">
+                <thead>
+                    <tr>
+                        <th>@Html.Raw("이름")</th>
+                        <th>@Html.Raw("설명")</th>
+                        <th class="text-right">@Html.Raw("관리")</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
+
+<script src="~/vendor/datatables/jquery.dataTables.js"></script>
+<script src="~/vendor/jquery-easing/jquery.easing.js"></script>
+<script src="~/vendor/datatables/dataTables.bootstrap4.js"></script>
 <script src="~/js/baseType.js"></script>

@@ -24,13 +24,36 @@ namespace Garden.Controllers
         {
             return View(await _context.BaseType.AsNoTracking().ToListAsync());
         }
-
-        public async Task<JsonResult> GetBaseSubTypeList(int id)
+        /// <summary>
+        /// 베이스 타입에 속한 베이스 서브타입 목록을 가져온다.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public JsonResult GetBaseSubTypeList(int id)
         {
-            var tt = _context.BaseSubType
-                                            .AsNoTracking()
-                                            .Where(z => z.BaseTypeId == id);
-            return new JsonResult(id);
+            if (id == 0)
+                id = _context.BaseType.First().Id;
+            
+            List<BaseSubType> baseSubType_list = _context.BaseSubType
+                                                         .AsNoTracking()
+                                                         .Where(z => z.BaseTypeId == id)
+                                                         .ToList();
+
+            List<object> returnValue_object_list = new List<object>();
+            
+            foreach(BaseSubType baseSubType in baseSubType_list)
+            {
+                returnValue_object_list.Add(new
+                {                   
+                    name = baseSubType.Name,
+                    description = baseSubType.Description,
+                    id = baseSubType.Id
+                });
+            }
+
+            var jsonResult = new { data = returnValue_object_list };
+            return Json(jsonResult);
         }
 
         // GET: BaseTypes/Details/5

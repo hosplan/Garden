@@ -15,13 +15,12 @@
 </head>
 
 <body id="page-top">
-    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-    <script src="~/Content/Components/App.jsx"></script>
     <!-- Page Wrapper -->
     <div id="wrapper">
-
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/vendor/fontawesome-free/js/all.js"></script>
+        <script src="~/js/sb-admin-2.js"></script>
         <!-- Sidebar -->
         @await Html.PartialAsync("_Sidebar")
         <!-- End of Sidebar -->
@@ -87,10 +86,7 @@
     </div>-->
 
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/vendor/fontawesome-free/js/all.js"></script>
-    <script src="~/js/sb-admin-2.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
