@@ -26,7 +26,7 @@ namespace Garden
                     // 기본 Seed 추가
                     SeedData.Initialize(services);
                 }
-                catch(Exception ex)
+                catch
                 {
 
                     //var logger = services.GetRequiredService<ILogger<Program>>();

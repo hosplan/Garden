@@ -1,6 +1,4 @@
 using Garden.Data;
-using JavaScriptEngineSwitcher.ChakraCore;
-using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,17 +28,9 @@ namespace Garden
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //리엑트관련
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            //services.AddReact();
-            services.AddJsEngineSwitcher(options => options.DefaultEngineName =
-            ChakraCoreJsEngine.EngineName).AddChakraCore();
-            //
-            services.AddMvc();
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            //오류 정보 파악
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
