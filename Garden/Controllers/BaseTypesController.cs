@@ -34,7 +34,9 @@ namespace Garden.Controllers
         {
             if (id == 0)
                 id = _context.BaseType.First().Id;
-            
+
+            ViewData["BaseTypeId"] = id;
+
             List<BaseSubType> baseSubType_list = _context.BaseSubType
                                                          .AsNoTracking()
                                                          .Where(z => z.BaseTypeId == id)
@@ -77,7 +79,7 @@ namespace Garden.Controllers
         // GET: BaseTypes/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView();
         }
 
         // POST: BaseTypes/Create
@@ -91,9 +93,8 @@ namespace Garden.Controllers
             {
                 _context.Add(baseType);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            return View(baseType);
+            return PartialView();
         }
 
         // GET: BaseTypes/Edit/5

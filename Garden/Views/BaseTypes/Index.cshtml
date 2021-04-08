@@ -3,18 +3,30 @@
 <link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
 <div class="col-xl-3 p-3">
     <div class="card shadow">
-        <div class="card-header">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">
                 @Html.Raw("기본 타입")
             </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('BaseTypes','Create')" value="">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("기본 타입 생성")
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="card-body">
-            <table class="table">
+            <table class="table table-borderless p-0">
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>
+                        <tr class="p-1">
+                            <td class="border-bottom">
                                 <button class="btn btn-link text-primary" onclick="GetBasySubTypeList(@item.Id)">
                                     <i class="far fa-fw fa-circle mr-2"></i>
                                     @item.Name
@@ -30,10 +42,22 @@
 
 <div class="col-xl-9 p-3">
     <div class="card shadow">
-        <div class="card-header">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">
                 @Html.Raw("관련 서브 타입")
             </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('BaseSubTypes','Create')" value="">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("관련 서브타입 생성")
+                    </button>           
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <table class="table" id="baseSubType_dt">

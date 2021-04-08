@@ -20,6 +20,18 @@
     baseSubType_dataTable.ajax.url(url).load();
 }
 
+function openModal(controllerName, actionName, id) {
+    let url = '';
+    if (id == 0) {
+        url = '/' + controllerName + '/' + actionName;
+    } else {
+        url = '/' + controllerName + '/' + actionName + '?id=' + id;
+    }
+
+    document.getElementById('common_modal_btn').setAttribute('data-url', url);
+    document.getElementById('common_modal_btn').click();
+}
+
 //baseSubType - datatable
 var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
     'ajax': {
@@ -43,8 +55,8 @@ var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, full, meta) {
-                return '<button type="button" class="btn btn-link text-success p-0 ml-2 float-right" value='+data+'><i class="fas fa-trash"></i></button>' +
-                    '<button type="button" class="btn btn-link text-danger p-0 float-right" value='+data+'><i class="fas fa-brush"></i></button>';
+                return '<button type="button" class="btn btn-link text-danger p-0 ml-2 float-right" value='+data+'><i class="fas fa-trash"></i></button>' +
+                    '<button type="button" class="btn btn-link text-success p-0 float-right" value='+data+'><i class="fas fa-brush"></i></button>';
             }
         }
     ],
@@ -53,7 +65,7 @@ var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
     'ordering': true,
     'info': true,
     'paging': true,
-    'pageLength': 20,
+    'pageLength': 10,
     'searching': true,
     'processing': true,
 });

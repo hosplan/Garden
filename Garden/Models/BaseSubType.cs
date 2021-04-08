@@ -16,6 +16,7 @@ namespace Garden.Models
 
         [ForeignKey("BaseTypeId")]
         public virtual BaseType BaseType { get; set; }
+        [Required]
         [Display(Name="이름")]
         public string Name { get; set; }
 

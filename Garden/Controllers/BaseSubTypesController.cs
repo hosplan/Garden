@@ -49,11 +49,16 @@ namespace Garden.Controllers
             return View(baseSubType);
         }
 
+        /// <summary>
+        /// 관련 서브타입 생성
+        /// </summary>
+        /// <param name="id">baseTypeId</param>
+        /// <returns></returns>
         // GET: BaseSubTypes/Create
         public IActionResult Create()
         {
-            ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id");
-            return View();
+            ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Name");
+            return PartialView();
         }
 
         // POST: BaseSubTypes/Create
@@ -63,14 +68,15 @@ namespace Garden.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,BaseTypeId,Name,Description")] BaseSubType baseSubType)
         {
+
             if (ModelState.IsValid)
             {
                 _context.Add(baseSubType);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync(); 
             }
-            ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id", baseSubType.BaseTypeId);
-            return View(baseSubType);
+
+            ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Name", baseSubType.BaseTypeId);
+            return PartialView();
         }
 
         // GET: BaseSubTypes/Edit/5

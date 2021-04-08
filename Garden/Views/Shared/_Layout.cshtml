@@ -4,14 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Garden</title>
+
     <link href="~/vendor/fontawesome-free/css/all.css" rel="stylesheet" />
     <link href="~/css/sb-admin-2.css" rel="stylesheet" />
-    
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <style>
-        body { font-family: "IBMPlexSansKR-Regular" }
+        body {
+            font-family: "IBMPlexSansKR-Regular"
+        }
     </style>
-   
+
 </head>
 
 <body id="page-top">
@@ -21,10 +24,14 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/vendor/fontawesome-free/js/all.js"></script>
         <script src="~/js/sb-admin-2.js"></script>
+        <script src="~/js/modalform-custom.js"></script>
         <!-- Sidebar -->
         @await Html.PartialAsync("_Sidebar")
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
+        <button type="button" style="display:none" data-background=false data-toggle="ajax-modal" data-target="#modal-contact" data-url="" id="common_modal_btn">
+        </button>
+
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
@@ -56,7 +63,8 @@
 
         </div>
         <!-- End of Content Wrapper -->
-
+        <!-- Modal placeholder -->
+        <div id="modal-placeholder"></div>
 
     </div>
     <!-- End of Page Wrapper -->

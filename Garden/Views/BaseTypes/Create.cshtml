@@ -1,42 +1,56 @@
 ﻿@model Garden.Models.BaseType
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "기본 타입 생성";
 }
-
-<h1>Create</h1>
-
-<h4>BaseType</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    @ViewData["Title"]
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div class="modal-body">
+                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1 text-danger">
+                            <i class="fas fa-genderless mr-2"></i>
+                            @Html.Raw("이름")
+                        </label>
+                        <div class="col-xl-8">
+                            <input type="text" asp-for="Name" class="form-control" placeholder="@Html.Raw("기본 타입 이름을 적어주세요")" />
+                        </div>
+                    </div>
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("설명")
+                        </label>
+                        <div class="col-xl-8">
+                            <input type="text" asp-for="Description" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-row p-2" style="display:none" id="warning_div">
+                        <span class="text-danger font-weight-bold" id="warning_span"></span>
+                    </div>
+                </form>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsSubTypeEditable" /> @Html.DisplayNameFor(model => model.IsSubTypeEditable)
-                </label>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary btn-md" data-save="modal">확인</button>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
