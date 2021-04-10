@@ -1,44 +1,61 @@
 ﻿@model Garden.Models.BaseSubType
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "관련 서브 타입 수정";
 }
-
-<h1>Edit</h1>
-
-<h4>BaseSubType</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="BaseTypeId" class="control-label"></label>
-                <select asp-for="BaseTypeId" class="form-control" asp-items="ViewBag.BaseTypeId"></select>
-                <span asp-validation-for="BaseTypeId" class="text-danger"></span>
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-brush mr-2"></i>
+                    @ViewData["Title"]
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="modal-body">
+                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="BaseTypeId"/>
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1 text-danger">
+                            <i class="fas fa-genderless mr-2"></i>
+                            @Html.Raw("이름")
+                        </label>
+                        <div class="col-xl-8">
+                            <input type="text" asp-for="Name" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("설명")
+                        </label>
+                        <div class="col-xl-8">
+                            <input type="text" asp-for="Description" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-row p-2" style="display:none" id="warning_div">
+                        <span class="text-danger font-weight-bold" id="warning_span"></span>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
+                <button type="button" class="btn btn-secondary btn-md" data-save="modal">@Html.Raw("확인")</button>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script src="~/vendor/jquery/jquery.js"></script>

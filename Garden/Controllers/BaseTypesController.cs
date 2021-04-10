@@ -110,7 +110,7 @@ namespace Garden.Controllers
             {
                 return NotFound();
             }
-            return View(baseType);
+            return PartialView(baseType);
         }
 
         // POST: BaseTypes/Edit/5
@@ -143,9 +143,9 @@ namespace Garden.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                
             }
-            return View(baseType);
+            return PartialView(baseType);
         }
 
         // GET: BaseTypes/Delete/5
@@ -163,7 +163,7 @@ namespace Garden.Controllers
                 return NotFound();
             }
 
-            return View(baseType);
+            return PartialView(baseType);
         }
 
         // POST: BaseTypes/Delete/5
@@ -174,7 +174,7 @@ namespace Garden.Controllers
             var baseType = await _context.BaseType.FindAsync(id);
             _context.BaseType.Remove(baseType);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return PartialView(baseType);
         }
 
         private bool BaseTypeExists(int id)

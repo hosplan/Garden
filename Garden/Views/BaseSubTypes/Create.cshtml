@@ -21,6 +21,7 @@
                 <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                     <div class="form-row p-2">
                         <label class="col-xl-4 mt-1">
                             @Html.Raw("기본 타입 선택")
@@ -52,8 +53,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-secondary btn-md" data-save="modal">확인</button>
+                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
+                <button type="button" class="btn btn-secondary btn-md" data-save="modal">@Html.Raw("확인")</button>
             </div>
         </div>
     </div>
@@ -64,3 +65,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script src="~/vendor/jquery/jquery.js"></script>

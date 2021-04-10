@@ -25,11 +25,19 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr class="p-1">
-                            <td class="border-bottom">
-                                <button class="btn btn-link text-primary" onclick="GetBasySubTypeList(@item.Id)">
-                                    <i class="far fa-fw fa-circle mr-2"></i>
+                        <tr class="p-1 border-bottom">
+                            <td>
+                                <button class="btn btn-link text-info" onclick="GetBasySubTypeList(@item.Id)">
+                                    <i class="fas fa-fw fa-circle mr-2"></i>
                                     @item.Name
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-link text-danger float-right" onclick="openModal('BaseTypes','Delete',@item.Id)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn btn-link text-success float-right" onclick="openModal('BaseTypes','Edit',@item.Id)">
+                                    <i class="fas fa-brush"></i>
                                 </button>
                             </td>
                         </tr>

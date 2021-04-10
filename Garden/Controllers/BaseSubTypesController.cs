@@ -92,8 +92,8 @@ namespace Garden.Controllers
             {
                 return NotFound();
             }
-            ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id", baseSubType.BaseTypeId);
-            return View(baseSubType);
+            //ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id", baseSubType.BaseTypeId);
+            return PartialView(baseSubType);
         }
 
         // POST: BaseSubTypes/Edit/5
@@ -126,10 +126,9 @@ namespace Garden.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id", baseSubType.BaseTypeId);
-            return View(baseSubType);
+            //ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id", baseSubType.BaseTypeId);
+            return PartialView(baseSubType);
         }
 
         // GET: BaseSubTypes/Delete/5
@@ -148,7 +147,7 @@ namespace Garden.Controllers
                 return NotFound();
             }
 
-            return View(baseSubType);
+            return PartialView(baseSubType);
         }
 
         // POST: BaseSubTypes/Delete/5
@@ -159,7 +158,8 @@ namespace Garden.Controllers
             var baseSubType = await _context.BaseSubType.FindAsync(id);
             _context.BaseSubType.Remove(baseSubType);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return PartialView(baseSubType);
         }
 
         private bool BaseSubTypeExists(int id)
