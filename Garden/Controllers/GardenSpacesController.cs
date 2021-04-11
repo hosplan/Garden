@@ -22,8 +22,14 @@ namespace Garden.Controllers
         // GET: GardenSpaces
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.GardenSpace.Include(g => g.BaseSubType);
-            return View(await applicationDbContext.ToListAsync());
+             List<GardenSpace>applicationDbContext = await _context.GardenSpace
+                                                                   .Include(gardenSpace => gardenSpace.BaseSubType)
+                                                                   .Include(gardenSpace => gardenSpace.GardenUsers)
+                                                                   .Include(gardenSpace => gardenSpace.GardenTasks)
+                                                                   .AsNoTracking()
+                                                                   .ToListAsync();
+
+            return View(applicationDbContext);
         }
 
         // GET: GardenSpaces/Details/5
@@ -48,8 +54,9 @@ namespace Garden.Controllers
         // GET: GardenSpaces/Create
         public IActionResult Create()
         {
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id");
-            return View();
+            // 1 - 정원타입
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.AsNoTracking().Where(z => z.BaseTypeId == 1).ToList(), "Id", "Name");
+            return PartialView();
         }
 
         // POST: GardenSpaces/Create
@@ -61,12 +68,14 @@ namespace Garden.Controllers
         {
             if (ModelState.IsValid)
             {
+                gardenSpace.IsActivate = true;
+                gardenSpace.CreatedDate = DateTime.Now;
+
                 _context.Add(gardenSpace);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", gardenSpace.SubTypeId);
-            return View(gardenSpace);
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.AsNoTracking().Where(z => z.BaseTypeId == 1).ToList(), "Id", "Name");
+            return PartialView();
         }
 
         // GET: GardenSpaces/Edit/5
