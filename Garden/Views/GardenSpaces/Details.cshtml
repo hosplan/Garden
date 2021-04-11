@@ -1,42 +1,111 @@
 ﻿@model Garden.Models.GardenSpace
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "정원 자세히 보기";
 }
 
-<h1>Details</h1>
+<div class="col-xl-12 mb-5">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button class="btn btn-success" onclick="openModal('GardenSpaces','Edit', @Model.Id)">
+                <i class="fas fa-brush fa-sm text-white-50"></i>
+                @Html.Raw("수정")
+            </button>
+            <button class="btn btn-danger" onclick="openModal('GardenSpaces','Delete', @Model.Id)">
+                <i class="fas fa-trash fa-sm text-white-50"></i>
+                @Html.Raw("삭제")
+            </button>
+        </div>       
+    </div>
+</div>
 
 <div>
-    <h4>GardenSpace</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActivate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsActivate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BaseSubType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BaseSubType.Id)
-        </dd>
-    </dl>
+    정원 인원 - 최근에 등록된 인원
+    정원 정보 - 오늘의 업무
+    정원 정보 - 스케줄
+    정원 정보 - 내일의 업무
+    정원 정보 - 어제의 업무 (업무 유/무)
+    정원 전체 인원
+    정원 오늘 생일인 인원, 등록된지 1년된 인원
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="col-xl-6">
+    <div class="card">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                @Html.Raw("업무")
+            </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create',@Model.Id)">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("업무 생성")
+                    </button>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create',@Model.Id)">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("관련 타입 생성")
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-12">
+                    <table class="table">
+                        <thead>
+                            <tr class="text-info">
+                                <th><i class="fas fa-tag fa-fw mr-1"></i>@Html.Raw("구분")</th>
+                                <th><i class="fas fa-asterisk fa-fw mr-1"></i>@Html.Raw("제목")</th>
+                                <th><i class="fas fa-users fa-fw mr-1"></i>@Html.Raw("참여자")</th>
+                                <th><i class="fas fa-calendar fa-fw mr-1"></i>@Html.Raw("생성일자")</th>
+                                <th><i class="fas fa-tools"></i></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xl-6">
+    <div class="card">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                @Html.Raw("업무 상세내용")
+            </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create',@Model.Id)">
+                        <i class="fas fa-brush text-success mr-3"></i>
+                        @Html.Raw("업무 수정")
+                    </button>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create',@Model.Id)">
+                        <i class="fas fa-trash text-danger mr-3"></i>
+                        @Html.Raw("업무 삭제")
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                내용
+                해당 업무의 종료 일자 - 4주, 8주, 12주 정하기 나름
+            </div>
+            <div>
+                담당자 정보
+                수강생 정보
+                수강생 수업 요일, 수강생 수업 일자, 수강생 수업 특이사항 
+            </div>
+        </div>
+    </div>
 </div>
