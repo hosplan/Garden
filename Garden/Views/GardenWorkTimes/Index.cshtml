@@ -13,37 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.WorkingTime)
+                @Html.DisplayNameFor(model => model.StartTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsMon)
+                @Html.DisplayNameFor(model => model.EndTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsTue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsWed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsThu)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsFri)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsSat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsSun)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BaseSubType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GardenTask)
+                @Html.DisplayNameFor(model => model.GardenSpace)
             </th>
             <th></th>
         </tr>
@@ -52,37 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.WorkingTime)
+                @Html.DisplayFor(modelItem => item.StartTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsMon)
+                @Html.DisplayFor(modelItem => item.EndTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsTue)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsWed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsThu)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsFri)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsSat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsSun)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BaseSubType.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GardenTask.Id)
+                @Html.DisplayFor(modelItem => item.GardenSpace.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

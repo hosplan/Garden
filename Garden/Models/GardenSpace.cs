@@ -24,5 +24,7 @@ namespace Garden.Models
         public virtual ICollection<GardenUser> GardenUsers { get; set; }
         public virtual ICollection<GardenTaskAttachMap> GardenTaskAttachMaps { get; set; }
         public virtual ICollection<GardenTask> GardenTasks { get; set; }
+        public virtual ICollection<GardenWorkTime> GardenWorkTimes { get; set; }
+        public virtual ICollection<GardenWorkDay> GardenWorkDays { get; set; }
     }
 }

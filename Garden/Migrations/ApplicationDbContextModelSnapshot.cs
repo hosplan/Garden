@@ -16,7 +16,7 @@ namespace Garden.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Garden.Models.Attachment", b =>
@@ -60,6 +60,7 @@ namespace Garden.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -83,6 +84,7 @@ namespace Garden.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -260,6 +262,18 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenUserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GardenWorkDayId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GardenWorkTimeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TaskWeek")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GardenManagerId");
@@ -268,10 +282,14 @@ namespace Garden.Migrations
 
                     b.HasIndex("GardenUserId");
 
+                    b.HasIndex("GardenWorkDayId");
+
+                    b.HasIndex("GardenWorkTimeId");
+
                     b.ToTable("GardenUserTaskMap");
                 });
 
-            modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
+            modelBuilder.Entity("Garden.Models.GardenWorkDay", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -282,9 +300,6 @@ namespace Garden.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("GardenSpaceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GardenTaskId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsFri")
@@ -311,16 +326,34 @@ namespace Garden.Migrations
                     b.Property<int?>("SubTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WorkingTime")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GardenSpaceId");
 
-                    b.HasIndex("GardenTaskId");
-
                     b.HasIndex("SubTypeId");
+
+                    b.ToTable("GardenWorkDay");
+                });
+
+            modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("GardenSpaceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GardenSpaceId");
 
                     b.ToTable("GardenWorkTime");
                 });
@@ -602,7 +635,7 @@ namespace Garden.Migrations
             modelBuilder.Entity("Garden.Models.GardenTask", b =>
                 {
                     b.HasOne("Garden.Models.GardenSpace", "GardenSpace")
-                        .WithMany()
+                        .WithMany("GardenTasks")
                         .HasForeignKey("GardenSpaceId");
 
                     b.HasOne("Garden.Models.BaseSubType", "BaseSubType")
@@ -662,22 +695,30 @@ namespace Garden.Migrations
                         .WithMany("GardenUserTaskMaps")
                         .HasForeignKey("GardenUserId");
 
+                    b.HasOne("Garden.Models.GardenWorkDay", "GardenWorkDay")
+                        .WithMany("GardenUserTaskMaps")
+                        .HasForeignKey("GardenWorkDayId");
+
+                    b.HasOne("Garden.Models.GardenWorkTime", "GardenWorkTime")
+                        .WithMany("GardenUserTaskMaps")
+                        .HasForeignKey("GardenWorkTimeId");
+
                     b.Navigation("GardenManagerTask");
 
                     b.Navigation("GardenTask");
 
                     b.Navigation("GardenUserTask");
+
+                    b.Navigation("GardenWorkDay");
+
+                    b.Navigation("GardenWorkTime");
                 });
 
-            modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
+            modelBuilder.Entity("Garden.Models.GardenWorkDay", b =>
                 {
-                    b.HasOne("Garden.Models.GardenSpace", null)
-                        .WithMany("GardenWorkTimes")
+                    b.HasOne("Garden.Models.GardenSpace", "GardenSpace")
+                        .WithMany("GardenWorkDays")
                         .HasForeignKey("GardenSpaceId");
-
-                    b.HasOne("Garden.Models.GardenTask", "GardenTask")
-                        .WithMany("GardenWorkTimes")
-                        .HasForeignKey("GardenTaskId");
 
                     b.HasOne("Garden.Models.BaseSubType", "BaseSubType")
                         .WithMany()
@@ -685,7 +726,16 @@ namespace Garden.Migrations
 
                     b.Navigation("BaseSubType");
 
-                    b.Navigation("GardenTask");
+                    b.Navigation("GardenSpace");
+                });
+
+            modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
+                {
+                    b.HasOne("Garden.Models.GardenSpace", "GardenSpace")
+                        .WithMany("GardenWorkTimes")
+                        .HasForeignKey("GardenSpaceId");
+
+                    b.Navigation("GardenSpace");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -753,7 +803,11 @@ namespace Garden.Migrations
                 {
                     b.Navigation("GardenTaskAttachMaps");
 
+                    b.Navigation("GardenTasks");
+
                     b.Navigation("GardenUsers");
+
+                    b.Navigation("GardenWorkDays");
 
                     b.Navigation("GardenWorkTimes");
                 });
@@ -761,14 +815,22 @@ namespace Garden.Migrations
             modelBuilder.Entity("Garden.Models.GardenTask", b =>
                 {
                     b.Navigation("GardenUserTaskMaps");
-
-                    b.Navigation("GardenWorkTimes");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenUser", b =>
                 {
                     b.Navigation("GardenManagerTaskMaps");
 
+                    b.Navigation("GardenUserTaskMaps");
+                });
+
+            modelBuilder.Entity("Garden.Models.GardenWorkDay", b =>
+                {
+                    b.Navigation("GardenUserTaskMaps");
+                });
+
+            modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
+                {
                     b.Navigation("GardenUserTaskMaps");
                 });
 #pragma warning restore 612, 618

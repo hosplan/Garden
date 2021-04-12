@@ -23,6 +23,7 @@ namespace Garden.Data
         public DbSet<Garden.Models.GardenTaskAttachMap> GardenTaskAttachMap { get; set; }
         public DbSet<Garden.Models.GardenUser> GardenUser { get; set; }
         public DbSet<Garden.Models.GardenUserTaskMap> GardenUserTaskMap { get; set; }
+        public DbSet<Garden.Models.GardenWorkDay> GardenWorkDay { get; set; }
         public DbSet<Garden.Models.GardenWorkTime> GardenWorkTime { get; set; }
     }
 }

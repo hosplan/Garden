@@ -17,7 +17,18 @@ namespace Garden.Models
         public Nullable<int> GardenUserId { get; set; }
         [Display(Name ="업무")]
         public Nullable<int> GardenTaskId { get; set; }
-    
+        [Display(Name ="업무 시간")]
+        public Nullable<int> GardenWorkTimeId { get; set; }
+        [Display(Name ="업무 요일")]
+        public Nullable<int> GardenWorkDayId { get; set; }
+        [Display(Name = "완료 여부")]
+        public bool IsComplete { get; set; }
+        [Display(Name ="주 단위")]
+        public int TaskWeek { get; set; }
+        [ForeignKey("GardenWorkTimeId")]
+        public virtual GardenWorkTime GardenWorkTime { get; set; }
+        [ForeignKey("GardenWorkDayId")]
+        public virtual GardenWorkDay GardenWorkDay { get; set; }
         [ForeignKey("GardenManagerId")]
         public virtual GardenUser GardenManagerTask { get; set; }
 

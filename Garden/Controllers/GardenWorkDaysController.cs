@@ -10,23 +10,23 @@ using Garden.Models;
 
 namespace Garden.Controllers
 {
-    public class GardenWorkTimesController : Controller
+    public class GardenWorkDaysController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public GardenWorkTimesController(ApplicationDbContext context)
+        public GardenWorkDaysController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: GardenWorkTimes
+        // GET: GardenWorkDays
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.GardenWorkTime.Include(g => g.GardenSpace);
+            var applicationDbContext = _context.GardenWorkDay.Include(g => g.BaseSubType);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: GardenWorkTimes/Details/5
+        // GET: GardenWorkDays/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +34,44 @@ namespace Garden.Controllers
                 return NotFound();
             }
 
-            var gardenWorkTime = await _context.GardenWorkTime
-                .Include(g => g.GardenSpace)
+            var GardenWorkDay = await _context.GardenWorkDay
+                .Include(g => g.BaseSubType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (gardenWorkTime == null)
+            if (GardenWorkDay == null)
             {
                 return NotFound();
             }
 
-            return View(gardenWorkTime);
+            return View(GardenWorkDay);
         }
 
-        // GET: GardenWorkTimes/Create
+        // GET: GardenWorkDays/Create
         public IActionResult Create()
         {
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id");
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id");
+            ViewData["GardenTaskId"] = new SelectList(_context.GardenTask, "Id", "Id");
             return View();
         }
 
-        // POST: GardenWorkTimes/Create
+        // POST: GardenWorkDays/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,GardenSpaceId")] GardenWorkTime gardenWorkTime)
+        public async Task<IActionResult> Create([Bind("Id,WorkingTime,GardenTaskId,IsMon,IsTue,IsWed,IsThu,IsFri,IsSat,IsSun,SubTypeId,CreateDate")] GardenWorkDay GardenWorkDay)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gardenWorkTime);
+                _context.Add(GardenWorkDay);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenWorkTime.GardenSpaceId);
-            return View(gardenWorkTime);
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", GardenWorkDay.SubTypeId);
+            ViewData["GardenTaskId"] = new SelectList(_context.GardenTask, "Id", "Id");
+            return View(GardenWorkDay);
         }
 
-        // GET: GardenWorkTimes/Edit/5
+        // GET: GardenWorkDays/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +79,24 @@ namespace Garden.Controllers
                 return NotFound();
             }
 
-            var gardenWorkTime = await _context.GardenWorkTime.FindAsync(id);
-            if (gardenWorkTime == null)
+            var GardenWorkDay = await _context.GardenWorkDay.FindAsync(id);
+            if (GardenWorkDay == null)
             {
                 return NotFound();
             }
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenWorkTime.GardenSpaceId);
-            return View(gardenWorkTime);
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", GardenWorkDay.SubTypeId);
+            ViewData["GardenTaskId"] = new SelectList(_context.GardenTask, "Id", "Id");
+            return View(GardenWorkDay);
         }
 
-        // POST: GardenWorkTimes/Edit/5
+        // POST: GardenWorkDays/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartTime,EndTime,GardenSpaceId")] GardenWorkTime gardenWorkTime)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkingTime,GardenTaskId,IsMon,IsTue,IsWed,IsThu,IsFri,IsSat,IsSun,SubTypeId,CreateDate")] GardenWorkDay GardenWorkDay)
         {
-            if (id != gardenWorkTime.Id)
+            if (id != GardenWorkDay.Id)
             {
                 return NotFound();
             }
@@ -102,12 +105,12 @@ namespace Garden.Controllers
             {
                 try
                 {
-                    _context.Update(gardenWorkTime);
+                    _context.Update(GardenWorkDay);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GardenWorkTimeExists(gardenWorkTime.Id))
+                    if (!GardenWorkDayExists(GardenWorkDay.Id))
                     {
                         return NotFound();
                     }
@@ -118,11 +121,12 @@ namespace Garden.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenWorkTime.GardenSpaceId);
-            return View(gardenWorkTime);
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", GardenWorkDay.SubTypeId);
+            ViewData["GardenTaskId"] = new SelectList(_context.GardenTask, "Id", "Id");
+            return View(GardenWorkDay);
         }
 
-        // GET: GardenWorkTimes/Delete/5
+        // GET: GardenWorkDays/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,31 +134,31 @@ namespace Garden.Controllers
                 return NotFound();
             }
 
-            var gardenWorkTime = await _context.GardenWorkTime
-                .Include(g => g.GardenSpace)
+            var GardenWorkDay = await _context.GardenWorkDay
+                .Include(g => g.BaseSubType)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (gardenWorkTime == null)
+            if (GardenWorkDay == null)
             {
                 return NotFound();
             }
 
-            return View(gardenWorkTime);
+            return View(GardenWorkDay);
         }
 
-        // POST: GardenWorkTimes/Delete/5
+        // POST: GardenWorkDays/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var gardenWorkTime = await _context.GardenWorkTime.FindAsync(id);
-            _context.GardenWorkTime.Remove(gardenWorkTime);
+            var GardenWorkDay = await _context.GardenWorkDay.FindAsync(id);
+            _context.GardenWorkDay.Remove(GardenWorkDay);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GardenWorkTimeExists(int id)
+        private bool GardenWorkDayExists(int id)
         {
-            return _context.GardenWorkTime.Any(e => e.Id == id);
+            return _context.GardenWorkDay.Any(e => e.Id == id);
         }
     }
 }
