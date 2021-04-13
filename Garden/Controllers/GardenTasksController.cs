@@ -26,6 +26,41 @@ namespace Garden.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public JsonResult GetGardenTaskList(int id)
+        {
+            List<object> returnValue_object_list = new List<object>();
+          
+
+            if (id == 0)
+            {
+                return Json(returnValue_object_list);
+            }
+
+            List<GardenTask> gardenTask_list = _context.GardenTask
+                                                       .Include(gardenTask => gardenTask.BaseSubType)
+                                                       .Include(gardenTask => gardenTask.GardenUserTaskMaps)
+                                                       .AsNoTracking()
+                                                       .Where(gardenTask => gardenTask.GardenSpaceId == id)
+                                                       .ToList();
+
+            foreach(GardenTask gardenTask in gardenTask_list)
+            {
+                returnValue_object_list.Add(new
+                {
+                    id = gardenTask.Id,
+                    typeName = gardenTask.BaseSubType.Name,
+                    name = gardenTask.Name,
+                    userCount = gardenTask.GardenUserTaskMaps.Count(),
+                    todayTask = gardenTask.GetTodayTask,
+                    isActive = gardenTask.IsActivate,                    
+                    createDate = gardenTask.CreateDate.ToShortDateString()
+                });
+            }
+
+            var jsonResult = new { data = returnValue_object_list };
+            return Json(jsonResult);
+        }
+
         // GET: GardenTasks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,13 +80,17 @@ namespace Garden.Controllers
 
             return View(gardenTask);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">GardenSpaceId</param>
+        /// <returns></returns>
         // GET: GardenTasks/Create
-        public IActionResult Create()
+        public IActionResult Create(int Id)
         {
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id");
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id");
-            return View();
+            ViewData["GardenSpaceId"] = Id;
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Name");
+            return PartialView();
         }
 
         // POST: GardenTasks/Create
@@ -63,13 +102,16 @@ namespace Garden.Controllers
         {
             if (ModelState.IsValid)
             {
+                gardenTask.IsActivate = true;
+                gardenTask.CreateDate = DateTime.Now;
+
                 _context.Add(gardenTask);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", gardenTask.SubTypeId);
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenTask.GardenSpaceId);
-            return View(gardenTask);
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Name");
+            ViewData["GardenSpaceId"] = gardenTask.GardenSpaceId;
+            return PartialView(gardenTask);
         }
 
         // GET: GardenTasks/Edit/5

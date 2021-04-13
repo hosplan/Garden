@@ -23,9 +23,9 @@ namespace Garden.Controllers
         public  IActionResult Index()
         {            
             List<BaseSubType> baseSubType_list = _context.BaseSubType
-                                                                                                        .Include(baseSubType => baseSubType.BaseType)
-                                                                                                        .AsNoTracking()
-                                                                                                        .ToList();
+                                                            .Include(baseSubType => baseSubType.BaseType)
+                                                            .AsNoTracking()
+                                                            .ToList();
 
             return View(baseSubType_list);
         }

@@ -28,5 +28,18 @@ namespace Garden.Models
         public virtual GardenSpace GardenSpace { get; set; }
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
 
+
+        public int GetTodayTask
+        {
+            get
+            {
+                List<GardenUserTaskMap> todayTask_list 
+                    = GardenUserTaskMaps
+                        .Where(z => z.TaskDate.ToShortDateString() == DateTime.Now.ToShortDateString())
+                        .ToList();
+
+                return todayTask_list.Count();
+            }
+        }
     }
 }

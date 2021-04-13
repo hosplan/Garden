@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210412150509_initial")]
+    [Migration("20210413155756_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,14 +264,14 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GardenWorkDayId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("GardenWorkTimeId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("TaskDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("TaskWeek")
                         .HasColumnType("int");
@@ -284,57 +284,9 @@ namespace Garden.Migrations
 
                     b.HasIndex("GardenUserId");
 
-                    b.HasIndex("GardenWorkDayId");
-
                     b.HasIndex("GardenWorkTimeId");
 
                     b.ToTable("GardenUserTaskMap");
-                });
-
-            modelBuilder.Entity("Garden.Models.GardenWorkDay", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("GardenSpaceId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsFri")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSat")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSun")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsThu")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTue")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsWed")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("SubTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GardenSpaceId");
-
-                    b.HasIndex("SubTypeId");
-
-                    b.ToTable("GardenWorkDay");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
@@ -686,7 +638,7 @@ namespace Garden.Migrations
             modelBuilder.Entity("Garden.Models.GardenUserTaskMap", b =>
                 {
                     b.HasOne("Garden.Models.GardenUser", "GardenManagerTask")
-                        .WithMany("GardenManagerTaskMaps")
+                        .WithMany("GardenManagerTasks")
                         .HasForeignKey("GardenManagerId");
 
                     b.HasOne("Garden.Models.GardenTask", "GardenTask")
@@ -694,12 +646,8 @@ namespace Garden.Migrations
                         .HasForeignKey("GardenTaskId");
 
                     b.HasOne("Garden.Models.GardenUser", "GardenUserTask")
-                        .WithMany("GardenUserTaskMaps")
+                        .WithMany("GardenUserTasks")
                         .HasForeignKey("GardenUserId");
-
-                    b.HasOne("Garden.Models.GardenWorkDay", "GardenWorkDay")
-                        .WithMany("GardenUserTaskMaps")
-                        .HasForeignKey("GardenWorkDayId");
 
                     b.HasOne("Garden.Models.GardenWorkTime", "GardenWorkTime")
                         .WithMany("GardenUserTaskMaps")
@@ -711,24 +659,7 @@ namespace Garden.Migrations
 
                     b.Navigation("GardenUserTask");
 
-                    b.Navigation("GardenWorkDay");
-
                     b.Navigation("GardenWorkTime");
-                });
-
-            modelBuilder.Entity("Garden.Models.GardenWorkDay", b =>
-                {
-                    b.HasOne("Garden.Models.GardenSpace", "GardenSpace")
-                        .WithMany("GardenWorkDays")
-                        .HasForeignKey("GardenSpaceId");
-
-                    b.HasOne("Garden.Models.BaseSubType", "BaseSubType")
-                        .WithMany()
-                        .HasForeignKey("SubTypeId");
-
-                    b.Navigation("BaseSubType");
-
-                    b.Navigation("GardenSpace");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
@@ -809,8 +740,6 @@ namespace Garden.Migrations
 
                     b.Navigation("GardenUsers");
 
-                    b.Navigation("GardenWorkDays");
-
                     b.Navigation("GardenWorkTimes");
                 });
 
@@ -821,14 +750,9 @@ namespace Garden.Migrations
 
             modelBuilder.Entity("Garden.Models.GardenUser", b =>
                 {
-                    b.Navigation("GardenManagerTaskMaps");
+                    b.Navigation("GardenManagerTasks");
 
-                    b.Navigation("GardenUserTaskMaps");
-                });
-
-            modelBuilder.Entity("Garden.Models.GardenWorkDay", b =>
-                {
-                    b.Navigation("GardenUserTaskMaps");
+                    b.Navigation("GardenUserTasks");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>

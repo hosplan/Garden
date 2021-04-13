@@ -22,7 +22,7 @@ namespace Garden.Controllers
         // GET: GardenUserTaskMaps
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.GardenUserTaskMap.Include(g => g.GardenTask).Include(g => g.GardenUserTask);
+            var applicationDbContext = _context.GardenUserTaskMap.Include(g => g.GardenTask);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace Garden.Controllers
 
             var gardenUserTaskMap = await _context.GardenUserTaskMap
                 .Include(g => g.GardenTask)
-                .Include(g => g.GardenUserTask)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (gardenUserTaskMap == null)
             {
@@ -137,7 +136,6 @@ namespace Garden.Controllers
 
             var gardenUserTaskMap = await _context.GardenUserTaskMap
                 .Include(g => g.GardenTask)
-                .Include(g => g.GardenUserTask)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (gardenUserTaskMap == null)
             {

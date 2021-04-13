@@ -23,8 +23,8 @@ namespace Garden.Models
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
         [InverseProperty("GardenUserTask")]
-        public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
+        public virtual ICollection<GardenUserTaskMap> GardenUserTasks { get; set; }
         [InverseProperty("GardenManagerTask")]
-        public virtual ICollection<GardenUserTaskMap> GardenManagerTaskMaps { get; set; }
+        public virtual ICollection<GardenUserTaskMap> GardenManagerTasks { get; set; }
     }
 }

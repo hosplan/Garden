@@ -3,63 +3,64 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="col-xl-12">
+    <div class="bg-white shadow p-3">
+        <div class="row">
+            <label class="text-info font-weight-bold col-xl-1 m-2">
+                <i class="fas fa-archive fa-fw"></i>
+                @Html.Raw("나의 정원")
+            </label>
+            <div class="col-xl-3">
+                <select class="form-control"></select>
+            </div>
+        </div>       
+    </div>
+</div>
 
-<h1>Index</h1>
+<div class="col-xl-12 mt-3">
+    <div class="card">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-clipboard-list fa-fw"></i>
+                @Html.Raw("정원 업무")
+            </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create')">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("업무 생성")
+                    </button>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create')">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("관련 타입 생성")
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-12">
+                    <table class="table table-hover" id="gardenTask_dt">
+                        <thead>
+                            <tr class="text-info">
+                                <th class="text-left"><i class="fas fa-tag fa-fw mr-1"></i>@Html.Raw("구분")</th>
+                                <th class="text-left"><i class="fas fa-asterisk fa-fw mr-1"></i>@Html.Raw("제목")</th>
+                                <th class="text-center"><i class="fas fa-users fa-fw mr-1"></i>@Html.Raw("참여자")</th>
+                                <th class="text-center"><i class="fas fa-clipboard-list fa-fw mr-1"></i>@Html.Raw("오늘의 업무")</th>
+                                <th class="text-center"><i class="fas fa-flag fa-fw mr-1"></i>@Html.Raw("활성화 여부")</th>
+                                <th class="text-right"><i class="fas fa-tools"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActivate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BaseSubType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GardenSpace)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActivate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BaseSubType.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GardenSpace.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
