@@ -22,6 +22,9 @@ namespace Garden.Controllers
         // GET: GardenTasks
         public async Task<IActionResult> Index()
         {
+            
+            var tt = _context.GardenUser.Where(z => z.UserId == )
+            ViewData["Garden_list"] = new SelectList(_context.GardenSpace, "Id", "Name");
             var applicationDbContext = _context.GardenTask.Include(g => g.BaseSubType).Include(g => g.GardenSpace);
             return View(await applicationDbContext.ToListAsync());
         }

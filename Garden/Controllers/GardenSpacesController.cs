@@ -70,7 +70,7 @@ namespace Garden.Controllers
             {
                 gardenSpace.IsActivate = true;
                 gardenSpace.CreatedDate = DateTime.Now;
-
+                
                 _context.Add(gardenSpace);
                 await _context.SaveChangesAsync();
             }
