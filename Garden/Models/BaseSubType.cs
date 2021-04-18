@@ -10,9 +10,8 @@ namespace Garden.Models
     public class BaseSubType
     {
         [Key]
-        public int Id { get; set; }
-
-        public Nullable<int> BaseTypeId { get; set; }
+        public string Id { get; set; }
+        public string BaseTypeId { get; set; }
 
         [ForeignKey("BaseTypeId")]
         public virtual BaseType BaseType { get; set; }

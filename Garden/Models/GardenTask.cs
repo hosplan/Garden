@@ -15,7 +15,8 @@ namespace Garden.Models
         public string Name { get; set; }
         [Display(Name="내용")]
         public string Description { get; set; }
-        public Nullable<int> SubTypeId { get; set; }
+        [Display(Name = "타입")]
+        public string SubTypeId { get; set; }
         [Display(Name="활성화 여부")]
         public bool IsActivate { get; set; }
         [Display(Name="생성 날짜")]

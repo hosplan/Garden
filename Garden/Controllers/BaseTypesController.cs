@@ -30,9 +30,9 @@ namespace Garden.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public JsonResult GetBaseSubTypeList(int id)
+        public JsonResult GetBaseSubTypeList(string id)
         {
-            if (id == 0)
+            if (string.IsNullOrEmpty(id))
                 id = _context.BaseType.First().Id;
 
             ViewData["BaseTypeId"] = id;
@@ -59,7 +59,7 @@ namespace Garden.Controllers
         }
 
         // GET: BaseTypes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -118,7 +118,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,IsSubTypeEditable")] BaseType baseType)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Description,IsSubTypeEditable")] BaseType baseType)
         {
             if (id != baseType.Id)
             {
@@ -149,7 +149,7 @@ namespace Garden.Controllers
         }
 
         // GET: BaseTypes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -177,7 +177,7 @@ namespace Garden.Controllers
             return PartialView(baseType);
         }
 
-        private bool BaseTypeExists(int id)
+        private bool BaseTypeExists(string id)
         {
             return _context.BaseType.Any(e => e.Id == id);
         }

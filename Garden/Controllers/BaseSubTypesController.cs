@@ -31,7 +31,7 @@ namespace Garden.Controllers
         }
 
         // GET: BaseSubTypes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -101,7 +101,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BaseTypeId,Name,Description")] BaseSubType baseSubType)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,BaseTypeId,Name,Description")] BaseSubType baseSubType)
         {
             if (id != baseSubType.Id)
             {
@@ -117,7 +117,7 @@ namespace Garden.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BaseSubTypeExists(baseSubType.Id))
+                    if (!string.IsNullOrEmpty(baseSubType.Id))
                     {
                         return NotFound();
                     }
@@ -132,7 +132,7 @@ namespace Garden.Controllers
         }
 
         // GET: BaseSubTypes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -162,7 +162,7 @@ namespace Garden.Controllers
             return PartialView(baseSubType);
         }
 
-        private bool BaseSubTypeExists(int id)
+        private bool BaseSubTypeExists(string id)
         {
             return _context.BaseSubType.Any(e => e.Id == id);
         }

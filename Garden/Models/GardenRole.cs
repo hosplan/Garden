@@ -12,7 +12,8 @@ namespace Garden.Models
         [Key]
         public int Id { get; set; }
         public Nullable<int> GardenId { get; set; }
-        public Nullable<int> SubTypeId { get; set; }
+        [Display(Name ="타입")]
+        public string SubTypeId { get; set; }
 
         [ForeignKey("SubTypeId")]
         public virtual BaseSubType BaseSubType { get; set; }

@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
+using Garden.Helper;
+using System.Security.Claims;
 
 namespace Garden.Controllers
 {
     public class GardenSpacesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly GardenHelper _gardenHelper;
 
-        public GardenSpacesController(ApplicationDbContext context)
+        public GardenSpacesController(ApplicationDbContext context, GardenHelper gardenHelper)
         {
             _context = context;
+            _gardenHelper = gardenHelper;
         }
 
         // GET: GardenSpaces
@@ -55,7 +59,7 @@ namespace Garden.Controllers
         public IActionResult Create()
         {
             // 1 - 정원타입
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.AsNoTracking().Where(z => z.BaseTypeId == 1).ToList(), "Id", "Name");
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.AsNoTracking().Where(z => z.BaseTypeId == "GARDEN_TYPE").ToList(), "Id", "Name");
             return PartialView();
         }
 
@@ -73,9 +77,26 @@ namespace Garden.Controllers
                 
                 _context.Add(gardenSpace);
                 await _context.SaveChangesAsync();
+
+                string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                int gardenRole_id = _gardenHelper.CreateGardenRole(gardenSpace.Id, "GARDEN_MANAGER_ROLE_TYPE_1");
+                
+                if(gardenRole_id == 0)
+                {
+                    //에러메세지로. 추후 추가
+                }
+
+                bool returnValue = _gardenHelper.CreateGardenUser(gardenSpace.Id, userId, gardenRole_id);
+
+                if(returnValue == false)
+                {
+                    //에러메세지로. 추후 추가
+                }
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.AsNoTracking().Where(z => z.BaseTypeId == 1).ToList(), "Id", "Name");
-            return PartialView();
+            //ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.AsNoTracking().Where(z => z.BaseTypeId == "GARDEN_TYPE").ToList(), "Id", "Name");
+            return RedirectToAction("Index");
+            //return PartialView();
         }
 
         // GET: GardenSpaces/Edit/5

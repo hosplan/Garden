@@ -10,42 +10,46 @@ $(function () {
         });
     });
 
-    placeholderElement.on('click', '[data-save="modal"]', function (event) {
-        event.preventDefault();
+    //function submitEnter() {
+    //    $('#save_btn').trigger('click');
+    //}
 
-        var form = $(this).parents('.modal').find('form');
-        var actionUrl = form.attr('action');
-        var dataToSend = form.serialize();
+    //placeholderElement.on('click', '[data-save="modal"]', function (event) {
+    //    event.preventDefault();
 
-        $.post(actionUrl, dataToSend).done(function (data) {
+    //    var form = $(this).parents('.modal').find('form');
+    //    var actionUrl = form.attr('action');
+    //    var dataToSend = form.serialize();
 
-            var newBody = $('.modal-body', data);
-            placeholderElement.find('.modal-body').replaceWith(newBody);
+    //    $.post(actionUrl, dataToSend).done(function (data) {
 
-            var isValid = newBody.find('[name="IsValid"]').val() == 'True';
-            if (isValid) {
-                var replaceURL = newBody.find('[name="ReplaceURL"]').val();
-                var replaceTarget = newBody.find('[name="ReplaceTarget"]').val();
+    //        var newBody = $('.modal-body', data);
+    //        placeholderElement.find('.modal-body').replaceWith(newBody);
 
-                placeholderElement.find('.modal').modal('hide');
+    //        var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+    //        if (isValid) {
+    //            var replaceURL = newBody.find('[name="ReplaceURL"]').val();
+    //            var replaceTarget = newBody.find('[name="ReplaceTarget"]').val();
 
-                if (!replaceTarget) {
-                    if (!replaceURL) {
-                        location.reload();
-                    }
-                    else {
-                        window.location.href = replaceURL;
-                    }
-                }
-                else {
-                    if (!replaceURL) {
-                        location.reload();
-                    }
-                    else {
-                        $(replaceTarget).load(replaceURL);
-                    }
-                }
-            }
-        });
-    });
+    //            placeholderElement.find('.modal').modal('hide');
+
+    //            if (!replaceTarget) {
+    //                if (!replaceURL) {
+    //                    location.reload();
+    //                }
+    //                else {
+    //                    window.location.href = replaceURL;
+    //                }
+    //            }
+    //            else {
+    //                if (!replaceURL) {
+    //                    location.reload();
+    //                }
+    //                else {
+    //                    $(replaceTarget).load(replaceURL);
+    //                }
+    //            }
+    //        }
+    //    });
+    //});
 });

@@ -16,10 +16,16 @@ namespace Garden.Models
         public Nullable<int> GardenSpaceId { get; set; }
         [Display(Name ="등록날짜")]
         [DataType(DataType.Date)]
-        public DateTime RegDate { get; set; }
+        public DateTime CreateDate { get; set; }
 
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
+
+        public Nullable<int> GardenRoleId { get; set; }
+
+        [ForeignKey("GardenRoleId")]
+        public virtual GardenRole GardenRole { get; set; }
+
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
         [InverseProperty("GardenUserTask")]

@@ -18,11 +18,11 @@ namespace Garden.Data
                 if (context.BaseType.Any() == false)
                 {
                     context.BaseType.AddRange(
-                        new BaseType { Name = "정원 타입", Description = "정원 타입", IsSubTypeEditable = true },
-                        new BaseType { Name = "정원 관리자 역할 타입", Description = "정원 관리자 역할 타입", IsSubTypeEditable = true },
-                        new BaseType { Name = "정원 업무 타입", Description = "정원 업무 타입", IsSubTypeEditable = true },
-                        new BaseType { Name = "정원 업무 시간 타입", Description = "정원 업무 시간 타입", IsSubTypeEditable = true },
-                        new BaseType { Name = "로그 타입", Description = "로그 타입", IsSubTypeEditable = false }
+                        new BaseType { Id="GARDEN_TYPE", Name = "정원 타입", Description = "정원 타입", IsSubTypeEditable = true },
+                        new BaseType { Id="GARDEN_MANAGER_ROLE_TYPE", Name = "정원 관리자 역할 타입", Description = "정원 관리자 역할 타입", IsSubTypeEditable = true },
+                        new BaseType { Id="GARDEN_TASK_TYPE", Name = "정원 업무 타입", Description = "정원 업무 타입", IsSubTypeEditable = true },
+                        new BaseType { Id="GARDEN_TASK_TIME_TYPE", Name = "정원 업무 시간 타입", Description = "정원 업무 시간 타입", IsSubTypeEditable = true },
+                        new BaseType { Id="LOG_TYPE", Name = "로그 타입", Description = "로그 타입", IsSubTypeEditable = false }
                         );
                     context.SaveChanges();
                 }
@@ -33,24 +33,24 @@ namespace Garden.Data
                 {
                     context.BaseSubType.AddRange(
                         //정원 타입
-                        new BaseSubType { BaseTypeId = 1, Name="학원", Description="학원"},
-                        new BaseSubType { BaseTypeId = 1, Name="기타", Description="기타"},
+                        new BaseSubType { Id="GARDEN_TYPE_1", BaseTypeId = "GARDEN_TYPE", Name="학원", Description="학원"},
+                        new BaseSubType { Id="GARDEN_TYPE_2", BaseTypeId = "GARDEN_TYPE", Name="기타", Description="기타"},
                         //정원 관리자 역할 타입
-                        new BaseSubType { BaseTypeId = 2, Name="마스터 정원사", Description="마스터 정원사" },
-                        new BaseSubType { BaseTypeId = 2, Name="수석 정원사", Description = "수석 정원사"},
-                        new BaseSubType { BaseTypeId = 2, Name="정원사", Description ="정원사"},
-                        new BaseSubType { BaseTypeId = 2, Name ="Flower", Description = "Flower"},
+                        new BaseSubType { Id = "GARDEN_MANAGER_ROLE_TYPE_1", BaseTypeId = "GARDEN_MANAGER_ROLE_TYPE", Name="마스터 정원사", Description="마스터 정원사" },
+                        new BaseSubType { Id = "GARDEN_MANAGER_ROLE_TYPE_2", BaseTypeId = "GARDEN_MANAGER_ROLE_TYPE", Name="수석 정원사", Description = "수석 정원사"},
+                        new BaseSubType { Id = "GARDEN_MANAGER_ROLE_TYPE_3", BaseTypeId = "GARDEN_MANAGER_ROLE_TYPE", Name="정원사", Description ="정원사"},
+                        new BaseSubType { Id = "GARDEN_MANAGER_ROLE_TYPE_4", BaseTypeId = "GARDEN_MANAGER_ROLE_TYPE", Name ="Flower", Description = "Flower"},
                         //정원 업무 타입
-                        new BaseSubType { BaseTypeId = 3, Name="수업", Description = "수업"},
-                        new BaseSubType { BaseTypeId = 3, Name = "수강", Description = "수강" },
-                        new BaseSubType { BaseTypeId = 3, Name ="기타", Description = "기타"},
+                        new BaseSubType { Id = "GARDEN_TASK_TYPE_1", BaseTypeId = "GARDEN_TASK_TYPE", Name="수업", Description = "수업"},
+                        new BaseSubType { Id = "GARDEN_TASK_TYPE_2", BaseTypeId = "GARDEN_TASK_TYPE", Name = "수강", Description = "수강" },
+                        new BaseSubType { Id = "GARDEN_TASK_TYPE_3", BaseTypeId = "GARDEN_TASK_TYPE", Name ="기타", Description = "기타"},
                         //정원 업무 시간 타입
-                        new BaseSubType { BaseTypeId = 4, Name="수업", Description = "수업"},
-                        new BaseSubType { BaseTypeId = 4, Name ="수강", Description = "수강"},
-                        new BaseSubType { BaseTypeId = 4, Name = "기타", Description = "기타" },
+                        new BaseSubType { Id = "GARDEN_TASK_TIME_TYPE_1", BaseTypeId = "GARDEN_TASK_TIME_TYPE", Name="수업", Description = "수업"},
+                        new BaseSubType { Id = "GARDEN_TASK_TIME_TYPE_2", BaseTypeId = "GARDEN_TASK_TIME_TYPE", Name ="수강", Description = "수강"},
+                        new BaseSubType { Id = "GARDEN_TASK_TIME_TYPE_3", BaseTypeId = "GARDEN_TASK_TIME_TYPE", Name = "기타", Description = "기타" },
                         //로그 타입
-                        new BaseSubType { BaseTypeId = 5, Name = "시스템 로그", Description = "시스템 로그" },
-                        new BaseSubType { BaseTypeId = 5, Name = "작업 로그", Description = "작업 로그" }
+                        new BaseSubType { Id = "LOG_TYPE_1", BaseTypeId = "LOG_TYPE", Name = "시스템 로그", Description = "시스템 로그" },
+                        new BaseSubType { Id = "LOG_TYPE_2", BaseTypeId = "LOG_TYPE", Name = "작업 로그", Description = "작업 로그" }
                         );
                     context.SaveChanges();
                 }

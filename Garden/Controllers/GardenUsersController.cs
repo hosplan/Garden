@@ -59,7 +59,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,IsActivate,GardenSpaceId,RegDate")] GardenUser gardenUser)
+        public async Task<IActionResult> Create([Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate")] GardenUser gardenUser)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,IsActivate,GardenSpaceId,RegDate")] GardenUser gardenUser)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate")] GardenUser gardenUser)
         {
             if (id != gardenUser.Id)
             {

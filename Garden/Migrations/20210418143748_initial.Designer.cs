@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210413155756_initial")]
+    [Migration("20210418143748_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,13 +50,11 @@ namespace Garden.Migrations
 
             modelBuilder.Entity("Garden.Models.BaseSubType", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("BaseTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("BaseTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -74,10 +72,8 @@ namespace Garden.Migrations
 
             modelBuilder.Entity("Garden.Models.BaseType", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -126,8 +122,8 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("SubTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -154,8 +150,8 @@ namespace Garden.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("SubTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -186,12 +182,17 @@ namespace Garden.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("RegUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SubTypeId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GardenSpaceId");
+
+                    b.HasIndex("RegUserId");
 
                     b.HasIndex("SubTypeId");
 
@@ -227,19 +228,24 @@ namespace Garden.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("GardenRoleId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("GardenSpaceId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActivate")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("RegDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GardenRoleId");
 
                     b.HasIndex("GardenSpaceId");
 
@@ -592,6 +598,10 @@ namespace Garden.Migrations
                         .WithMany("GardenTasks")
                         .HasForeignKey("GardenSpaceId");
 
+                    b.HasOne("Garden.Models.ApplicationUser", "RegUser")
+                        .WithMany()
+                        .HasForeignKey("RegUserId");
+
                     b.HasOne("Garden.Models.BaseSubType", "BaseSubType")
                         .WithMany()
                         .HasForeignKey("SubTypeId");
@@ -599,6 +609,8 @@ namespace Garden.Migrations
                     b.Navigation("BaseSubType");
 
                     b.Navigation("GardenSpace");
+
+                    b.Navigation("RegUser");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenTaskAttachMap", b =>
@@ -622,6 +634,10 @@ namespace Garden.Migrations
 
             modelBuilder.Entity("Garden.Models.GardenUser", b =>
                 {
+                    b.HasOne("Garden.Models.GardenRole", "GardenRole")
+                        .WithMany()
+                        .HasForeignKey("GardenRoleId");
+
                     b.HasOne("Garden.Models.GardenSpace", "GardenSpace")
                         .WithMany("GardenUsers")
                         .HasForeignKey("GardenSpaceId");
@@ -629,6 +645,8 @@ namespace Garden.Migrations
                     b.HasOne("Garden.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("GardenRole");
 
                     b.Navigation("GardenSpace");
 

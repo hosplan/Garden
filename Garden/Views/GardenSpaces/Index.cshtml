@@ -4,7 +4,7 @@
     ViewData["Title"] = "나의 정원";
 }
 
-<div class="col-xl-12 mb-5">
+<div class="col-xl-12 mb-3">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">@Html.Raw("정원 목록")</h1>
         <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="openModal('GardenSpaces','Create')">
@@ -16,7 +16,7 @@
 
 @foreach(GardenSpace gardenSpace in Model)
 {
-    <div class="col-xl-4">
+    <div class="col-xl-4 p-3">
         <div class="card shadow border-left-primary">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <a class="m-0 font-weight-bold text-primary" asp-action="Details" asp-route-id="@gardenSpace.Id">
