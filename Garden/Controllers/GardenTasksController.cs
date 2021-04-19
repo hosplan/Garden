@@ -20,10 +20,17 @@ namespace Garden.Controllers
         }
 
         // GET: GardenTasks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? search_gardenSpace_id)
         {
-            
-            ViewData["Garden_list"] = new SelectList(_context.GardenSpace, "Id", "Name");
+            if(search_gardenSpace_id == null || search_gardenSpace_id == 0)
+            {
+                GardenSpace gardenSpace = _context.GardenSpace.FirstOrDefault();
+                
+                if(gardenSpace != null)                
+                    search_gardenSpace_id = gardenSpace.Id;                              
+            }
+
+            ViewData["Garden_list"] = new SelectList(_context.GardenSpace, "Id", "Name", search_gardenSpace_id);
             var applicationDbContext = _context.GardenTask.Include(g => g.BaseSubType).Include(g => g.GardenSpace);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -90,8 +97,14 @@ namespace Garden.Controllers
         // GET: GardenTasks/Create
         public IActionResult Create(int Id)
         {
-            ViewData["GardenSpaceId"] = Id;
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Name");
+            GardenSpace gardenSpace = _context.GardenSpace.FirstOrDefault(z => z.Id == Id);
+            if(gardenSpace == null)
+            {
+                return PartialView();
+            }
+            ViewData["gardenSpace_name"] = gardenSpace.Name;
+            ViewData["gardenSpace_id"] = Id;
+            ViewData["subType_id"] = new SelectList(_context.BaseSubType, "Id", "Name");
             return PartialView();
         }
 
@@ -110,10 +123,14 @@ namespace Garden.Controllers
                 _context.Add(gardenTask);
                 await _context.SaveChangesAsync();
 
+                return RedirectToAction("Index", new { search_gardenSpace_id = gardenTask.GardenSpaceId });
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Name");
-            ViewData["GardenSpaceId"] = gardenTask.GardenSpaceId;
-            return PartialView(gardenTask);
+
+            GardenSpace gardenSpace = _context.GardenSpace.FirstOrDefault(z => z.Id == gardenTask.GardenSpaceId);
+            ViewData["gardenSpace_name"] = gardenSpace.Name;
+            ViewData["gardenSpace_id"] = gardenTask.GardenSpaceId;
+            ViewData["subType_id"] = new SelectList(_context.BaseSubType, "Id", "Name");
+            return PartialView();
         }
 
         // GET: GardenTasks/Edit/5

@@ -2,33 +2,36 @@
 
 @{
     ViewData["Title"] = "정원 업무 생성";
-    int GardenSpaceId = (int)ViewData["GardenSpaceId"];
+    int gardenSpace_id = (int)ViewData["gardenSpace_id"];
+    string gardenSpeace_name = (string)ViewData["gardenSpace_name"];
 }
+<link href="~/js/select2/select2.css" rel="stylesheet" />
 <!-- Modal -->
 <div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
-                    <i class="fas fa-plus-circle mr-2"></i>
-                    @ViewData["Title"]
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
-                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-                <form asp-action="Create">
+        <form asp-action="Create">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
+                        <i class="fas fa-plus-circle mr-2"></i>
+                        @ViewData["Title"] - [@gardenSpeace_name]
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" name="GardenSpaceId" value="@GardenSpaceId"/>
+                    <input type="hidden" name="GardenSpaceId" value="@gardenSpace_id" />
                     <div class="form-row p-2">
                         <label class="col-xl-4 mt-1">
                             @Html.Raw("정원 타입 선택")
                         </label>
                         <div class="col-xl-8">
-                            <select asp-for="SubTypeId" class="form-control" asp-items="ViewBag.SubTypeId"></select>
+                            <select asp-for="SubTypeId" class="form-control select2 mt-1" style="width:100%;" asp-items="ViewBag.subType_id"></select>
                         </div>
                     </div>
 
@@ -55,17 +58,27 @@
                     <div class="form-row p-2" style="display:none" id="warning_div">
                         <span class="text-danger font-weight-bold" id="warning_span"></span>
                     </div>
-                </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
+                    <input type="submit" class="btn btn-secondary btn-md" value="@Html.Raw("확인")" />
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
-                <button type="button" class="btn btn-secondary btn-md" data-save="modal">@Html.Raw("확인")</button>
-            </div>
-        </div>
-    </div>
+        </form>
+    </div>    
 </div>
 
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script src="~/vendor/jquery/jquery.js"></script>
+<script src="~/js/select2/select2.js"></script>
+<script type="text/javascript">
+    
+    $('.select2').select2({
+        dropdownParent: $('#modal-contact')
+    });
+</script>

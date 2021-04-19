@@ -33,9 +33,9 @@ namespace Garden
                options.UseSqlServer(
                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            
-            //services.AddSingleton<GardenHelper, GardenHelper>();
 
+            //services.AddSingleton<GardenHelper, GardenHelper>();
+            services.AddScoped<IGardenHelper, GardenHelper>();
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

@@ -15,9 +15,9 @@ namespace Garden.Controllers
     public class GardenSpacesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly GardenHelper _gardenHelper;
+        private readonly IGardenHelper _gardenHelper;
 
-        public GardenSpacesController(ApplicationDbContext context, GardenHelper gardenHelper)
+        public GardenSpacesController(ApplicationDbContext context, IGardenHelper gardenHelper)
         {
             _context = context;
             _gardenHelper = gardenHelper;

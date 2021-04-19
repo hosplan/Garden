@@ -3,15 +3,16 @@
 @{
     ViewData["Title"] = "Index";
 }
+<link href="~/js/select2/select2.css" rel="stylesheet" />
 <div class="col-xl-12">
     <div class="bg-white shadow p-3">
         <div class="row">
-            <label class="text-info font-weight-bold col-xl-1 m-2">
-                <i class="fas fa-archive fa-fw"></i>
-                @Html.Raw("나의 정원")
-            </label>
-            <div class="col-xl-3">
-                <select class="form-control"></select>
+            <div class="col-xl-6">
+                <span class="text-info font-weight-bold mr-2">
+                    <i class="fas fa-archive fa-fw"></i>
+                    @Html.Raw("나의 정원")
+                </span>               
+                @Html.DropDownList("Garden_list", null, htmlAttributes: new { @class = "select2 form-control w-25" })
             </div>
         </div>       
     </div>
@@ -30,7 +31,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                     <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create')">
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="GetGardenIdAndOpenModal(1)">
                         <i class="fas fa-plus-circle text-primary mr-3"></i>
                         @Html.Raw("업무 생성")
                     </button>
@@ -47,7 +48,7 @@
                     <table class="table table-hover" id="gardenTask_dt">
                         <thead>
                             <tr class="text-info">
-                                <th class="text-left"><i class="fas fa-tag fa-fw mr-1"></i>@Html.Raw("구분")</th>
+                                <th class="text-left" width="60"><i class="fas fa-tag fa-fw mr-1"></i>@Html.Raw("구분")</th>
                                 <th class="text-left"><i class="fas fa-asterisk fa-fw mr-1"></i>@Html.Raw("제목")</th>
                                 <th class="text-center"><i class="fas fa-users fa-fw mr-1"></i>@Html.Raw("참여자")</th>
                                 <th class="text-center"><i class="fas fa-clipboard-list fa-fw mr-1"></i>@Html.Raw("오늘의 업무")</th>
@@ -63,4 +64,8 @@
         </div>
     </div>
 </div>
-
+<script src="~/js/GardenTask.js"></script>
+<script src="~/js/select2/select2.js"></script>
+<script type="text/javascript">
+    $('.select2').select2();
+</script>

@@ -7,7 +7,13 @@ using System.Threading.Tasks;
 
 namespace Garden.Helper
 {
-    public class GardenHelper
+    public interface IGardenHelper
+    {
+        int CreateGardenRole(int gardenSpace_id, string baseSubType_id);
+
+        bool CreateGardenUser(int gardenSpace_id, string user_id, int? gardenRole_id);
+    }
+    public class GardenHelper : IGardenHelper
     {
         private readonly ApplicationDbContext _context;
 
