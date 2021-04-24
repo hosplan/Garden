@@ -2,6 +2,7 @@
 using Garden.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,24 @@ namespace Garden.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        /// <summary>
+        /// 이메일 중복체크
+        /// </summary>
+        /// <param name="register_email">등록자의 아이디</param>
+        /// <returns></returns>
+        public async Task<JsonResult> CheckEmail(string register_id)
+        {
+            if(string.IsNullOrEmpty(register_id))            
+                return new JsonResult(false);
+            
+            IdentityUser user = await _context.Users.FirstOrDefaultAsync(z => z.UserName == register_id);
+
+            if (user != null)
+                return new JsonResult(false);
+
+            return new JsonResult(true);
         }
     }
 }

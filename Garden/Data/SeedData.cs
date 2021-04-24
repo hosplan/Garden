@@ -1,4 +1,5 @@
 ﻿using Garden.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -58,5 +59,55 @@ namespace Garden.Data
 
             }
         }
+
+        #region 역할 추가
+        public static void SeedRoles(RoleManager<ApplicationRole> roleManager)
+        {
+            if (!roleManager.RoleExistsAsync("Admin").Result)
+            {
+                ApplicationRole role = new ApplicationRole();
+                role.Name = "Admin";
+                role.Description = "System Administrator.";
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            }
+
+            if (!roleManager.RoleExistsAsync("Manager").Result)
+            {
+                ApplicationRole role = new ApplicationRole();
+                role.Name = "Manager";
+                role.Description = "System Manager.";
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            }
+
+            if (!roleManager.RoleExistsAsync("User").Result)
+            {
+                ApplicationRole role = new ApplicationRole();
+                role.Name = "User";
+                role.Description = "System User.";
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            }
+        }
+        #endregion
+
+        #region 관리자 계정 추가
+        // system 계정 추가
+        public static void SeedSystemAccount(UserManager<ApplicationUser> userManager)
+        {
+            if(userManager.FindByNameAsync("SYSTEM").Result == null)
+            {
+                ApplicationUser user = new ApplicationUser();
+
+                user.UserName = "SYSTEM";
+                user.Email = "system@system.kr";
+                user.Name = "관리자";
+                user.IsActive = true;
+
+                IdentityResult result = userManager.CreateAsync(user, @"emth02290821").Result;
+
+                if (result.Succeeded)
+                    userManager.AddToRoleAsync(user, "Admin").Wait();
+            }
+        }
+        #endregion
     }
 }

@@ -12,40 +12,75 @@
         <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-                <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-5 d-none d-lg-block bg-register-image" style="background-image: url('/img/flowers.jpg')"></div>
                 <div class="col-lg-7">
                     <div class="p-5">
                         <div class="text-center">
                             <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                         </div>
-                        <form class="user">
+                        <form class="user" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                             <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                                           placeholder="First Name">
+                                <div class="col-sm-1">
+                                    <i class="fas fa-user fa-lg mt-3" id="register_name_icon"></i>
+                                    <input type="checkbox" class="mt-2" style="width:30px; height:30px; display:none" id="register_name_checkbox" />
                                 </div>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control form-control-user" id="exampleLastName"
-                                           placeholder="Last Name">
+                                <div class="col-sm-11">
+                                    <input type="text" id="register_name" class="form-control form-control-user" asp-for="Input.Name"
+                                           placeholder="@Html.Raw("이름")" onkeyup="registerHideIcon('register_name_icon','register_name_checkbox')">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                       placeholder="Email Address">
-                            </div>
+
                             <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="password" class="form-control form-control-user"
-                                           id="exampleInputPassword" placeholder="Password">
+                                <div class="col-sm-1">
+                                    <i class="fas fa-envelope fa-lg mt-3" id="register_email_icon"></i>
+                                    <input type="checkbox" class="mt-2" style="width:30px; height:30px; display:none" id="register_email_checkbox" />
                                 </div>
-                                <div class="col-sm-6">
-                                    <input type="password" class="form-control form-control-user"
-                                           id="exampleRepeatPassword" placeholder="Repeat Password">
+                                <div class="col-sm-11">
+                                    <input type="text" id="register_name" class="form-control form-control-user" asp-for="Input.Email"
+                                           placeholder="@Html.Raw("이메일")" onkeyup="registerHideIcon('register_email_icon','register_email_checkbox')">
                                 </div>
                             </div>
-                            <a href="login.html" class="btn btn-primary btn-user btn-block">
-                                Register Account
-                            </a>
+
+                            <div class="form-group row">
+                                <div class="col-sm-1">
+                                    <i class="fas fa-tag fa-lg mt-3" id="register_id_icon"></i>
+                                    <input type="checkbox" class="mt-2" style="width:30px; height:30px; display:none" id="register_id_checkbox" />
+                                </div>
+                                <div class="col-sm-8 mb-3 mb-sm-0">
+                                    <input type="text" class="form-control form-control-user" id="register_id" asp-for="Input.UserName"
+                                           placeholder="@Html.Raw("아이디")">
+                                </div>
+                                <div class="col-sm-3">
+                                    <button type="button" class="btn btn-primary btn-user btn-block" onclick="checkEmail()">
+                                        @Html.Raw("중복확인")
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-1">
+                                    <i class="fas fa-lock fa-lg mt-3" id="register_password_icon"></i>
+                                    <input type="checkbox" class="mt-2 form-check" style="width:30px; height:30px; display:none" id="register_password_checkbox" />
+                                </div>
+                                <div class="col-sm-11">
+                                    <input type="password" class="form-control form-control-user" id="register_password" asp-for="Input.Password"
+                                           placeholder="@Html.Raw("비밀번호")" onkeyup="checkPasswordValue()">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-1">
+                                    <i class="fas fa-lock fa-lg mt-3" id="register_password_check_icon"></i>
+                                    <input type="checkbox" class="mt-2" style="width:30px; height:30px; display:none" id="register_password_check_checkbox" />
+                                </div>
+                                <div class="col-sm-11">
+                                    <input type="password" class="form-control form-control-user" id="register_password_check"
+                                           placeholder="@Html.Raw("비밀번호 확인")" onkeyup="checkPasswordLength()">
+                                </div>
+                            </div>
+
+                            <input type="submit" class="btn btn-primary btn-user btn-block" style="display:none;" id="create_account_btn" value="@Html.Raw("계정 생성하기")" />
+
                             <hr>
                             <a href="index.html" class="btn btn-google btn-user btn-block">
                                 <i class="fab fa-google fa-fw"></i> Register with Google
@@ -56,10 +91,10 @@
                         </form>
                         <hr>
                         <div class="text-center">
-                            <a class="small" href="forgot-password.html">Forgot Password?</a>
+                            <a class="small" href="forgot-password.html">@Html.Raw("비밀번호를 잊으셨나요?")</a>
                         </div>
                         <div class="text-center">
-                            <a class="small" href="login.html">Already have an account? Login!</a>
+                            <a class="small" href="login.html">@Html.Raw("로그인 하기")</a>
                         </div>
                     </div>
                 </div>
@@ -71,7 +106,7 @@
 <script src="~/vendor/bootstrap/js/bootstrap.js"></script>
 <script src="~/vendor/jquery-easing/jquery.easing.js"></script>
 <script src="~/js/sb-admin-2.js"></script>
-
+<script src="~/js/register.js"></script>
 @*<h1>@ViewData["Title"]</h1>
 
     <div class="row">
