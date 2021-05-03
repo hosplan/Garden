@@ -61,29 +61,29 @@ namespace Garden.Data
         }
 
         #region 역할 추가
-        public static void SeedRoles(RoleManager<ApplicationRole> roleManager)
+        public static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
             if (!roleManager.RoleExistsAsync("Admin").Result)
             {
-                ApplicationRole role = new ApplicationRole();
-                role.Name = "Admin";
-                role.Description = "System Administrator.";
+                IdentityRole role = new IdentityRole();
+                role.Id = Guid.NewGuid().ToString();
+                role.Name = "Admin";               
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
             if (!roleManager.RoleExistsAsync("Manager").Result)
             {
-                ApplicationRole role = new ApplicationRole();
+                IdentityRole role = new IdentityRole();
+                role.Id = Guid.NewGuid().ToString();
                 role.Name = "Manager";
-                role.Description = "System Manager.";
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
             if (!roleManager.RoleExistsAsync("User").Result)
             {
-                ApplicationRole role = new ApplicationRole();
+                IdentityRole role = new IdentityRole();
+                role.Id = Guid.NewGuid().ToString();
                 role.Name = "User";
-                role.Description = "System User.";
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
         }
@@ -91,7 +91,7 @@ namespace Garden.Data
 
         #region 관리자 계정 추가
         // system 계정 추가
-        public static void SeedSystemAccount(UserManager<ApplicationUser> userManager)
+        public static void SeedSystemAccount(UserManager<IdentityUser> userManager)
         {
             if(userManager.FindByNameAsync("SYSTEM").Result == null)
             {
@@ -104,7 +104,7 @@ namespace Garden.Data
                 user.EmailConfirmed = true;
 
 
-                IdentityResult result = userManager.CreateAsync(user, @"emth02290821").Result;
+                IdentityResult result = userManager.CreateAsync(user, "emth022944W!").Result;
 
                 if (result.Succeeded)
                     userManager.AddToRoleAsync(user, "Admin").Wait();

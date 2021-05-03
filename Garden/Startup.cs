@@ -1,5 +1,6 @@
 using Garden.Data;
 using Garden.Helper;
+using Garden.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,9 +36,16 @@ namespace Garden
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             //services.AddSingleton<GardenHelper, GardenHelper>();
+            //UserManager
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+              .AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddScoped<IGardenHelper, GardenHelper>();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
         }
