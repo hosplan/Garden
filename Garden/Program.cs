@@ -1,5 +1,7 @@
 using Garden.Data;
+using Garden.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,10 +25,19 @@ namespace Garden
 
                 try
                 {
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+
+                    //var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     // 기본 Seed 추가
                     SeedData.Initialize(services);
+                    //역할 추가
+                    SeedData.SeedRoles(roleManager);
+                    //관리자 추가
+                    SeedData.SeedSystemAccount(userManager);
+                
                 }
-                catch
+                catch(Exception ex)
                 {
 
                     //var logger = services.GetRequiredService<ILogger<Program>>();

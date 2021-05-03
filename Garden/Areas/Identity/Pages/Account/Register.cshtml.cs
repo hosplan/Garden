@@ -83,7 +83,7 @@ namespace Garden.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { Name = Input.Name, Email = Input.Email, UserName = Input.Email };
+                var user = new ApplicationUser { Name = Input.Name, Email = Input.Email, UserName = Input.UserName };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

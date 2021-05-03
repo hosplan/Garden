@@ -26,12 +26,13 @@
                                 </div>
                                 <form id="account" method="post">
                                     <div class="form-group">
-                                        <input type="email" class="form-control form-control-user"
+                                        @*<input type="email" class="form-control form-control-user"
                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                               placeholder="아이디 입력">
+                                               placeholder="아이디 입력">*@
+                                        <input type="text" class="form-control form-control-user" name="UserName" placeholder="아이디 입력"/>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
+                                        <input type="password" name="Password" class="form-control form-control-user"
                                                id="exampleInputPassword" placeholder="비밀번호 입력">
                                     </div>
                                     <div class="form-group">
@@ -44,7 +45,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <input type="submit" class="btn btn-primary btn-user btn-block"/>
+                                    <input type="submit" class="btn btn-primary btn-user btn-block" value="로그인"/>
                                     <hr>
                                     <a href="index.html" class="btn btn-google btn-user btn-block">
                                         <i class="fab fa-google fa-fw"></i> Login with Google
@@ -55,10 +56,16 @@
                                 </form>
                                 <hr>
                                 <div class="text-center">
-                                    <a class="small" href="#">@Html.Raw("비밀번호 찾기")</a>
+                                    <a class="small" href="#">
+                                        <i class="fas fa-lock mr-1"></i>@Html.Raw("비밀번호 찾기")
+                                    </a>
+                                    <a class="small ml-3" href="/Identity/Account/Register">
+                                        <i class="fas fa-feather mr-1"></i>
+                                        @Html.Raw("계정 만들기")
+                                    </a>
                                 </div>
                                 <div class="text-center">
-                                    <a class="small" href="/Identity/Account/Register">@Html.Raw("계정 만들기")</a>
+                                   
                                 </div>
                             </div>
                         </div>

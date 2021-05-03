@@ -6,6 +6,7 @@
 }
 <link href="~/vendor/fontawesome-free/css/all.css" rel="stylesheet" />
 <link href="~/css/sb-admin-2.css" rel="stylesheet" />
+<link href="~/js/sweetalert2/sweetalert2.bundle.css" rel="stylesheet" />
 <div class="container">
 
     <div class="card o-hidden border-0 shadow-lg my-5">
@@ -65,6 +66,7 @@
                                 <div class="col-sm-11">
                                     <input type="password" class="form-control form-control-user" id="register_password" asp-for="Input.Password"
                                            placeholder="@Html.Raw("비밀번호")" onkeyup="checkPasswordValue()">
+                                    <span id="password_validation_warning" class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -74,8 +76,8 @@
                                     <input type="checkbox" class="mt-2" style="width:30px; height:30px; display:none" id="register_password_check_checkbox" />
                                 </div>
                                 <div class="col-sm-11">
-                                    <input type="password" class="form-control form-control-user" id="register_password_check"
-                                           placeholder="@Html.Raw("비밀번호 확인")" onkeyup="checkPasswordLength()">
+                                    <input type="password" asp-for="Input.ConfirmPassword" class="form-control form-control-user" id="register_password_check"
+                                           placeholder="@Html.Raw("비밀번호 확인")" onkeyup="checkPasswordLength()" disabled>
                                 </div>
                             </div>
 
@@ -94,7 +96,7 @@
                             <a class="small" href="forgot-password.html">@Html.Raw("비밀번호를 잊으셨나요?")</a>
                         </div>
                         <div class="text-center">
-                            <a class="small" href="login.html">@Html.Raw("로그인 하기")</a>
+                            <a class="btn btn-link btn-md" href="/Identity/Account/Login">@Html.Raw("로그인 하기")</a>
                         </div>
                     </div>
                 </div>
@@ -103,6 +105,7 @@
     </div>
 </div>
 <script src="~/vendor/jquery/jquery.js"></script>
+<script src="~/js/sweetalert2/sweetalert2.bundle.js"></script>
 <script src="~/vendor/bootstrap/js/bootstrap.js"></script>
 <script src="~/vendor/jquery-easing/jquery.easing.js"></script>
 <script src="~/js/sb-admin-2.js"></script>

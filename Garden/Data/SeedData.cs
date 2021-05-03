@@ -101,6 +101,8 @@ namespace Garden.Data
                 user.Email = "system@system.kr";
                 user.Name = "관리자";
                 user.IsActive = true;
+                user.EmailConfirmed = true;
+
 
                 IdentityResult result = userManager.CreateAsync(user, @"emth02290821").Result;
 
