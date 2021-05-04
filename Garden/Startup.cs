@@ -35,18 +35,16 @@ namespace Garden
                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            //services.AddSingleton<GardenHelper, GardenHelper>();
-            //UserManager
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
               .AddRoles<IdentityRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IGardenHelper, GardenHelper>();
 
-            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddTransient<GlobalValueService>();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             services.AddControllersWithViews();
         }
 
