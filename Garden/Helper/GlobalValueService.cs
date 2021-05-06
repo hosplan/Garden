@@ -20,6 +20,23 @@ namespace Garden.Helper
             _httpContextAccessor = httpContextAccessor;
             loginUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
+        
+        public Dictionary<string, string> GardenRoleName
+        {
+            get
+            {
+                Dictionary<string, string> role_Dic = new Dictionary<string, string>();
+                var role_list = _context.Roles.ToList();
+                
+                foreach(var role in role_list)
+                {
+                    role_Dic.Add(role.Id, role.Name);
+                }
+
+                return role_Dic;
+            }
+            
+        }
 
         public string loginUserName
         {

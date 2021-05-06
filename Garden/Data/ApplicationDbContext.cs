@@ -24,5 +24,6 @@ namespace Garden.Data
         public DbSet<Garden.Models.GardenUser> GardenUser { get; set; }
         public DbSet<Garden.Models.GardenUserTaskMap> GardenUserTaskMap { get; set; }
         public DbSet<Garden.Models.GardenWorkTime> GardenWorkTime { get; set; }
+        public DbSet<Garden.Models.Permission> Permission { get; set; }
     }
 }

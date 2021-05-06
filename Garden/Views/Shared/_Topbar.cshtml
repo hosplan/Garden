@@ -1,4 +1,9 @@
-﻿<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+﻿@using Garden.Helper
+@inject GlobalValueService GlobalValue
+@{ 
+    Dictionary<string, string> role_dic = GlobalValue.GardenRoleName;
+}
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -93,6 +98,55 @@
                     </div>
                 </a>
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+            </div>
+        </li>
+
+        <!-- Nav Item - Permission -->
+        <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" onclick="getControllerAndActionName()" href="#" id="alertsDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-lock fa-fw"></i>
+            </a>
+            <!-- Dropdown - Alerts -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                 aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                    <i class="fas fa-lock fa-fw"></i>
+                    @Html.Raw("권한 제어")
+                </h6>
+                <input type="hidden" id="currentController" />
+                <input type="hidden" id="currentAction"/>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="display:none"></th>
+                            <th class="text-center m-2">@Html.Raw("역할 명")</th>
+                            <th class="text-center m-2">@Html.Raw("읽기")</th>
+                            <th class="text-center m-2">@Html.Raw("생성")</th>
+                            <th class="text-center m-2">@Html.Raw("수정")</th>
+                            <th class="text-center m-2">@Html.Raw("삭제")</th>
+                        </tr>                   
+                    </thead>
+                    <tbody>
+                        @foreach(var item in role_dic)
+                        {
+                            <tr>
+                                <td class="text-center" style="display:none">@item.Key</td>                                
+                                <td class="text-center p-3">
+                                    @item.Value
+                                </td>
+                                <td class="text-center"><input type="checkbox" id="read_@item.Value" style="width:25px; height:25px;" onclick="changePermission('@item.Key','read',this)" /></td>
+                                <td class="text-center"><input type="checkbox" id="create_@item.Value" style="width:25px; height:25px;" onclick="changePermission('@item.Key','create',this)" /></td>
+                                <td class="text-center"><input type="checkbox" id="update_@item.Value" style="width:25px; height:25px;" onclick="changePermission('@item.Key','update',this)" /></td>
+                                <td class="text-center"><input type="checkbox" id="delete_@item.Value" style="width:25px; height:25px;" onclick="changePermission('@item.Key','delete',this)" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @*<button class="dropdown-item text-center font-weight-bold bg-primary text-white">
+                    <i class="fas fa-check-circle fa-fw"></i>
+                    @Html.Raw("저장하기")
+                </button>*@
             </div>
         </li>
 
@@ -202,7 +256,7 @@
                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         @Html.Raw("Logout")
                     </button>
-                </form>             
+                </form>
             </div>
         </li>
     </ul>

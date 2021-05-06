@@ -12,6 +12,8 @@ namespace Garden.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -101,6 +103,30 @@ namespace Garden.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permission",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ControllerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    IsCreate = table.Column<bool>(type: "bit", nullable: false),
+                    IsUpdate = table.Column<bool>(type: "bit", nullable: false),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Permission_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -577,6 +603,11 @@ namespace Garden.Migrations
                 name: "IX_GardenWorkTime_GardenSpaceId",
                 table: "GardenWorkTime",
                 column: "GardenSpaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permission_RoleId",
+                table: "Permission",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -606,7 +637,7 @@ namespace Garden.Migrations
                 name: "GardenUserTaskMap");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Permission");
 
             migrationBuilder.DropTable(
                 name: "Attachment");
@@ -619,6 +650,9 @@ namespace Garden.Migrations
 
             migrationBuilder.DropTable(
                 name: "GardenWorkTime");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

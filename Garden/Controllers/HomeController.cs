@@ -34,6 +34,41 @@ namespace Garden.Controllers
             }
             return View();
         }
+        [HttpPost]
+        public async Task<JsonResult> GetControllerAndActionName(string pathName)
+        {
+            try
+            {
+                string[] temp = pathName.Split('/');
+                if (temp.Length < 3)
+                {
+                    temp = (pathName + "/Index").Split('/');
+                }
+
+                var permission_list = await _context.Permission
+                                                .Include(z => z.Role)
+                                                .Where(z => z.ControllerName == temp[1] &&
+                                                            z.ActionName == temp[2])                                                   
+                                                .Select( z => new
+                                                {
+                                                    name = _context.Roles.AsNoTracking().FirstOrDefault(r => r.Id == z.RoleId).Name,
+                                                    isRead = z.IsRead,
+                                                    isCreate = z.IsCreate,
+                                                    isUpdate = z.IsUpdate,
+                                                    isDelete = z.IsDelete
+                                                })
+                                                .AsNoTracking()
+                                                .ToListAsync();
+
+                var value = new { controller = temp[1], action = temp[2], permission = permission_list };
+
+                return new JsonResult(value);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
 
         public IActionResult Privacy()
         {

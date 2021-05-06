@@ -23,6 +23,7 @@ namespace Garden.Models
 
         public ApplicationRole(string roleName) : base(roleName)
         {
+            
         }
 
         public ApplicationRole(string roleName, string description) : base(roleName)
