@@ -1,8 +1,10 @@
 ﻿using Garden.Data;
 using Garden.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Garden.Helper
@@ -22,6 +24,7 @@ namespace Garden.Helper
             _context = context;
         }
 
+        
         #region 정원 유저 역할 초기 생성
         public int CreateGardenRole(int gardenSpace_id, string baseSubType_id)
         {

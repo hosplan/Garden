@@ -1,4 +1,5 @@
 ﻿using Garden.Data;
+using Garden.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,39 @@ namespace Garden.Helper
             }
             
         }
+        public Permission GetPermission
+        {
+            get
+            {
+                Permission returnPermission = new Permission();
+                try
+                {
+                    var routeValues = _httpContextAccessor.HttpContext.Request.RouteValues;
+                    if (routeValues.ContainsKey("controller") && routeValues.ContainsKey("action"))
+                    {
+                        List<string> roleId_list = _context.UserRoles.Where(r => r.UserId == loginUserId).Select(z => z.RoleId).ToList();
+                        List<Permission> permission_list = _context.Permission.Where(z => z.ControllerName == (string)routeValues["controller"]
+                                                                                        && z.ActionName == (string)routeValues["action"]
+                                                                                        && roleId_list.Contains(z.RoleId)).ToList();
 
+                        foreach (var permission in permission_list)
+                        {
+                            returnPermission.IsCreate = (returnPermission.IsCreate || permission.IsCreate);
+                            returnPermission.IsRead = (returnPermission.IsRead || permission.IsRead);
+                            returnPermission.IsUpdate = (returnPermission.IsUpdate || permission.IsUpdate);
+                            returnPermission.IsDelete = (returnPermission.IsDelete || permission.IsDelete);
+                        }
+                    }
+                    return returnPermission;
+                }
+                catch
+                {
+                    return new Permission();
+                }
+
+
+            }
+        }
         public string loginUserName
         {
             get

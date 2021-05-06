@@ -14,18 +14,13 @@
             console.log(jsonValue);
 
             for (let i = 0; i < jsonValue.permission.length; i++) {
-                console.log(jsonValue.permission[i]);
                 if (jsonValue.permission[i].isRead == true) {
-                    console.log("z");
-                    let tt = 'read_' + jsonValue.permission[i].name;
                     document.getElementById('read_'+jsonValue.permission[i].name).checked = true;
                 }
                 if (jsonValue.permission[i].isCreate == true) {
-                    console.log("z");
                     document.getElementById('create_'+jsonValue.permission[i].name).checked = true;
                 }
                 if (jsonValue.permission[i].isUpdate == true) {
-                    console.log("z");
                     document.getElementById('update_'+jsonValue.permission[i].name).checked = true;
                 }
                 if (jsonValue.permission[i].isDelete == true) {
@@ -64,4 +59,8 @@ function changePermission(id, actionName, obj) {
         }
     };
     httpRequest.send('id=' + id + '&action=' + actionName + '&controllerPath=' + controllerPath + '&actionPath=' + actionPath + '&isCheck=' + isCheck);
+}
+
+window.onload = function () {
+    permissionCheck();
 }

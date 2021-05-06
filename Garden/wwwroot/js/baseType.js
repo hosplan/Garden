@@ -27,8 +27,8 @@ var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, full, meta) {
-                return '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" value="/BaseSubTypes/Delete?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-trash"></i></button>' +
-                    '<button type="button" class="btn btn-link text-success p-0 float-right" value="/BaseSubTypes/Edit?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-brush"></i></button>';
+                return '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" data-permission="delete" value="/BaseSubTypes/Delete?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-trash"></i></button>' +
+                    '<button type="button" class="btn btn-link text-success p-0 float-right" data-permission="update" value="/BaseSubTypes/Edit?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-brush"></i></button>';
             }
         }
     ],
