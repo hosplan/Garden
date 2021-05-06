@@ -27,8 +27,16 @@ var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, full, meta) {
-                return '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" data-permission="delete" value="/BaseSubTypes/Delete?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-trash"></i></button>' +
-                    '<button type="button" class="btn btn-link text-success p-0 float-right" data-permission="update" value="/BaseSubTypes/Edit?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-brush"></i></button>';
+                let update_btn = '';
+                let delete_btn = '';
+                if (document.getElementById('permission_update').value == 'true') {
+                    update_btn = '<button type="button" class="btn btn-link text-success p-0 float-right" data-permission="update" value="/BaseSubTypes/Edit?id=' + data + '" onclick="datatable_openModal(this)"><i class="fas fa-brush"></i></button>';
+                }
+                if (document.getElementById('permission_delete').value == 'true') {
+                    delete_btn = '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" data-permission="delete" value="/BaseSubTypes/Delete?id=' + data + '" onclick="datatable_openModal(this)"><i class="fas fa-trash"></i></button>';
+                }
+                return delete_btn + update_btn;
+                    
             }
         }
     ],
