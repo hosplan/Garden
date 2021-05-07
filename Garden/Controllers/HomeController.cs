@@ -1,5 +1,7 @@
 ﻿using Garden.Data;
+using Garden.Helper;
 using Garden.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +19,19 @@ namespace Garden.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IGardenHelper _gardenHelper;
+
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper)
         {
             _logger = logger;
             _context = context;
-
+            _httpContextAccessor = httpContextAccessor;
+            _gardenHelper = gardenHelper;
         }
+
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -81,6 +88,11 @@ namespace Garden.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult NotAccess()
+        {
+            return View();
+        }
+
         /// <summary>
         /// 이메일 중복체크
         /// </summary>
@@ -97,6 +109,23 @@ namespace Garden.Controllers
                 return new JsonResult(false);
 
             return new JsonResult(true);
+        }
+
+        //사용자 관리 페이지 이동
+        public IActionResult IndexForUser()
+        {
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                           this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                           this.ControllerContext.RouteData.Values["action"].ToString());
+
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
+            List<ApplicationUser> userInfo_list = _context.Users.Where(z => z.NormalizedUserName != "SYSTEM" 
+                                                                      && z.UserName != "SYSTEM")
+                                                             .ToList();
+
+            return View(userInfo_list);
         }
     }
 }

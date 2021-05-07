@@ -77,7 +77,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        &copy; 2021 - EFAM_CORE - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        &copy; 2021 - Garden - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </div>
                 </div>
             </footer>
@@ -123,7 +123,7 @@
             //생성
             let permission_create = document.getElementById('permission_create').value;
             //읽기
-            let permission_read = document.getElementById('permission_read').value;
+            //let permission_read = document.getElementById('permission_read').value;
             //수정
             let permission_update = document.getElementById('permission_update').value;
             //삭제
@@ -136,19 +136,24 @@
                 }
             }
 
-            if (permission_read == 'false') {
-                let permission_read_btn = document.querySelectorAll("[data-permission='read']");
-                for (let i = 0; i < permission_read_btn.length; i++) {
-                    permission_read_btn[i].remove();
-                }
-            }
+            //if (permission_read == 'false') {
+            //    let currentPath = window.location.pathname;
+            //    console.log(currentPath);
+
+            //    if (currentPath == "/Home/index" || currentPath == "/" || currentPath == "/Home/NotAccess")
+            //        return false;
+
+            //    location.href = "/Home/NotAccess";
+
+            //    let permission_read_btn = document.querySelectorAll("[data-permission='read']");
+            //    for (let i = 0; i < permission_read_btn.length; i++) {
+            //        permission_read_btn[i].remove();
+            //    }
+            //}
 
             if (permission_update == 'false') {
-                console.log("여기까지는 옴");
                 let permission_update_btn = document.querySelectorAll('[data-permission="update"]');
-                console.log(permission_update_btn.length);
                 for (let i = 0; i < permission_update_btn.length; i++) {
-                    console.log("zzzzz");
                     permission_update_btn[i].remove();
                 }
             }

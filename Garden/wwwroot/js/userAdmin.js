@@ -64,3 +64,44 @@ function changePermission(id, actionName, obj) {
 window.onload = function () {
     permissionCheck();
 }
+
+
+//baseSubType - datatable
+$('#userAdmin_dt').DataTable({
+    'ajax': {
+        'url': "/UserAdmins/GetUserList",
+        'type': 'GET',
+        'datatype': 'json'
+    },
+    'columns': [
+        {
+            'data': 'Name', 'className': 'text-left m-2',
+        },
+        {
+            'data': 'Role', 'className': 'text-left m-2',
+            'render': function (data) {
+                return data;
+            }
+        },
+        { 'data': 'GardenInfo', 'className': 'text-left m-2' },
+        {
+            'data': 'IsActive', 'clssName': 'm-2', 'orderable': false,
+            'render': function (data, type, row, meta) {
+                if (data == true) {
+                    return '<input type="checkbox" value=' + row.Id + ' style="width:25px; height:25px;" checked  />';
+                } else {
+                    return '<input type="checkbox" value=' + row.Id + ' style="width:25px; height:25px;"  />';
+                }
+
+            }
+        }
+    ],
+    'responsive': true,
+    'deferRender': true,
+    'ordering': true,
+    'info': true,
+    'paging': true,
+    'pageLength': 10,
+    'searching': true,
+    'processing': true,
+});

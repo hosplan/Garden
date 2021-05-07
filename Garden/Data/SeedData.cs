@@ -61,29 +61,29 @@ namespace Garden.Data
         }
 
         #region 역할 추가
-        public static void SeedRoles(RoleManager<IdentityRole> roleManager)
+        public static void SeedRoles(RoleManager<ApplicationRole> roleManager)
         {
             if (!roleManager.RoleExistsAsync("Admin").Result)
             {
-                IdentityRole role = new IdentityRole();
-                role.Id = Guid.NewGuid().ToString();
-                role.Name = "Admin";               
+                ApplicationRole role = new ApplicationRole();
+                role.Name = "Admin";
+                role.Description = "Admin";
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
             if (!roleManager.RoleExistsAsync("Manager").Result)
             {
-                IdentityRole role = new IdentityRole();
-                role.Id = Guid.NewGuid().ToString();
+                ApplicationRole role = new ApplicationRole();
                 role.Name = "Manager";
+                role.Description = "Manager";
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
             if (!roleManager.RoleExistsAsync("User").Result)
             {
-                IdentityRole role = new IdentityRole();
-                role.Id = Guid.NewGuid().ToString();
+                ApplicationRole role = new ApplicationRole();
                 role.Name = "User";
+                role.Description = "User";
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
         }
@@ -91,7 +91,7 @@ namespace Garden.Data
 
         #region 관리자 계정 추가
         // system 계정 추가
-        public static void SeedSystemAccount(UserManager<IdentityUser> userManager)
+        public static void SeedSystemAccount(UserManager<ApplicationUser> userManager)
         {
             if(userManager.FindByNameAsync("SYSTEM").Result == null)
             {

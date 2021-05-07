@@ -1,9 +1,11 @@
 ﻿using Garden.Data;
 using Garden.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Garden.Controllers
@@ -80,6 +82,43 @@ namespace Garden.Controllers
             return new JsonResult(true);
         }
 
+        public JsonResult GetUserList()
+        {
+            List<object> object_list = new List<object>();
+
+            List<ApplicationUser> user_list = _context.Users
+                                                      .AsNoTracking()
+                                                      .Where(z => z.NormalizedUserName != "SYSTEM" && z.UserName != "SYSTEM")
+                                                      .ToList();
+
+            StringBuilder roleName_list = new StringBuilder();
+
+            foreach (ApplicationUser user in user_list)
+            {
+                var role_list = _context.UserRoles.AsNoTracking().Where(z => z.UserId == user.Id);
+
+                foreach (var role in role_list)
+                {
+                    ApplicationRole roleInfo = _context.Roles.AsNoTracking().FirstOrDefault(z => z.Id == role.RoleId);
+                    roleName_list.Append("<span class='badge badge-primary'>" + roleInfo.Name + "</span>");
+                }
+
+                object_list.Add(new
+                {
+                    Id = user.Id,
+                    Role = roleName_list,
+                    Name = user.UserName,
+                    GardenInfo = _context.GardenUser.Where(z => z.UserId == user.Id).Count(),
+                    IsActive = user.IsActive
+                });
+                roleName_list.Clear();
+            }
+
+
+            var jsonValue = new { data = object_list };
+
+            return Json(jsonValue);
+        }
         public IActionResult Index()
         {
 

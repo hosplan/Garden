@@ -20,8 +20,8 @@ namespace Garden
 
                 try
                 {
-                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
                     //var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     // 기본 Seed 추가
@@ -39,6 +39,7 @@ namespace Garden
                     //logger.LogError(ex, "An error occurred seeding the DB.");
                 }
             }
+
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -9,6 +9,7 @@ using Garden.Data;
 using Garden.Models;
 using Garden.Helper;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Garden.Controllers
 {
@@ -16,17 +17,26 @@ namespace Garden.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IGardenHelper _gardenHelper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GardenSpacesController(ApplicationDbContext context, IGardenHelper gardenHelper)
+        public GardenSpacesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
             _gardenHelper = gardenHelper;
         }
 
         // GET: GardenSpaces
         public async Task<IActionResult> Index()
         {
-             List<GardenSpace>applicationDbContext = await _context.GardenSpace
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
+            List<GardenSpace>applicationDbContext = await _context.GardenSpace
                                                                    .Include(gardenSpace => gardenSpace.BaseSubType)
                                                                    .Include(gardenSpace => gardenSpace.GardenUsers)
                                                                    .Include(gardenSpace => gardenSpace.GardenTasks)

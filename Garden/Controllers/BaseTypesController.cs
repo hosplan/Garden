@@ -7,21 +7,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Garden.Helper;
 
 namespace Garden.Controllers
 {
     public class BaseTypesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public BaseTypesController(ApplicationDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IGardenHelper _gardenHelper;
+        public BaseTypesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
+            _gardenHelper = gardenHelper;
         }
 
         // GET: BaseTypes
         public async Task<IActionResult> Index()
         {
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             return View(await _context.BaseType.AsNoTracking().ToListAsync());
         }
         /// <summary>
