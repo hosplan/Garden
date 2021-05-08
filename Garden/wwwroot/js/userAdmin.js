@@ -1,72 +1,4 @@
-﻿function getControllerAndActionName() {
-    let httpRequest = new XMLHttpRequest();
-    let pathName = window.location.pathname;
-    if (!httpRequest) {
-        console.log("컨트롤러와 페이지 이름을 가져오기위한 인스턴스를 만들 수 없습니다.");
-        return false;
-    }
-
-    httpRequest.open('POST', '/Home/GetControllerAndActionName', true);
-    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    httpRequest.onload = function () {
-        if (this.status === 200) {
-            let jsonValue = JSON.parse(this.response);
-            console.log(jsonValue);
-
-            for (let i = 0; i < jsonValue.permission.length; i++) {
-                if (jsonValue.permission[i].isRead == true) {
-                    document.getElementById('read_'+jsonValue.permission[i].name).checked = true;
-                }
-                if (jsonValue.permission[i].isCreate == true) {
-                    document.getElementById('create_'+jsonValue.permission[i].name).checked = true;
-                }
-                if (jsonValue.permission[i].isUpdate == true) {
-                    document.getElementById('update_'+jsonValue.permission[i].name).checked = true;
-                }
-                if (jsonValue.permission[i].isDelete == true) {
-                    document.getElementById('delete_'+jsonValue.permission[i].name).checked = true;
-                }
-            }
-
-            document.getElementById('currentController').value = jsonValue.controller;
-            document.getElementById('currentAction').value = jsonValue.action;
-
-        }
-    };
-    httpRequest.send('pathName=' + pathName);
-}
-
-
-function changePermission(id, actionName, obj) {
-
-    let controllerPath = document.getElementById('currentController').value;
-    let actionPath = document.getElementById('currentAction').value;
-    let isCheck = obj.checked;
-
-    let httpRequest = new XMLHttpRequest();
-    if (!httpRequest) {
-        console.log("xmlHttp 인스턴스를 만들 수 없습니다");
-        return false;
-    }
-
-    httpRequest.open('POST', '/UserAdmins/ChangePermission', true);
-    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    httpRequest.onload = function () {
-        if (this.status === 200) {
-            console.log(this.responseText);
-        } else {
-            console.log("request에 문제가 있다.");
-        }
-    };
-    httpRequest.send('id=' + id + '&action=' + actionName + '&controllerPath=' + controllerPath + '&actionPath=' + actionPath + '&isCheck=' + isCheck);
-}
-
-window.onload = function () {
-    permissionCheck();
-}
-
-
-//baseSubType - datatable
+﻿//baseSubType - datatable
 $('#userAdmin_dt').DataTable({
     'ajax': {
         'url': "/UserAdmins/GetUserList",
@@ -75,27 +7,44 @@ $('#userAdmin_dt').DataTable({
     },
     'columns': [
         {
-            'data': 'Name', 'className': 'text-left m-2',
+            'data': 'userName', 'className': 'text-left m-2',
+            'render': function (data, type, row, meta) {
+                return data;
+            },
+         
         },
         {
-            'data': 'Role', 'className': 'text-left m-2',
-            'render': function (data) {
+            'data': 'name', 'className': 'text-left m-2',
+            'render': function (data, type, row, meta) {
+                return data;
+            },
+
+        },
+        {
+            'data': 'userRole', 'className': 'text-left m-2',
+            'render': function (data, type, row, meta) {
+                return "<button class='btn btn-link p-0' type='button' onclick='openModal(\"UserAdmins\", \"Edit\", \""+row.id+"\")'>"+data+"</button>";        
+            },
+        },      
+        {
+            'data': 'gardenInfo', 'className': 'text-left m-2',
+            'render': function (data, type, row, meta) {
                 return data;
             }
         },
-        { 'data': 'GardenInfo', 'className': 'text-left m-2' },
         {
-            'data': 'IsActive', 'clssName': 'm-2', 'orderable': false,
+            'data': 'isActive', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {
                 if (data == true) {
-                    return '<input type="checkbox" value=' + row.Id + ' style="width:25px; height:25px;" checked  />';
+                    return '<input type="checkbox" value=' + row.id + ' onclick="changeActive(this)" style="width:25px; height:25px;" checked  />';
                 } else {
-                    return '<input type="checkbox" value=' + row.Id + ' style="width:25px; height:25px;"  />';
+                    return '<input type="checkbox" value=' + row.id + ' onclick="changeActive(this)" style="width:25px; height:25px;"  />';
                 }
 
             }
         }
     ],
+    'retrieve' : true,
     'responsive': true,
     'deferRender': true,
     'ordering': true,
@@ -105,3 +54,52 @@ $('#userAdmin_dt').DataTable({
     'searching': true,
     'processing': true,
 });
+
+//역할 수정
+function roleChange(userId, roleId, obj) {
+    let httpRequest = new XMLHttpRequest();
+    if (!httpRequest) {
+        errorMessage();
+        return false;
+    }
+
+    httpRequest.open('POST', '/UserAdmins/RoleChange', true);
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.onload = function () {
+        if (this.status === 200) {
+            console.log(this.responseText);
+
+            if (this.response == "false") {
+                errorMessage();
+            }
+        }
+    };
+    httpRequest.send('userId=' + userId + '&roleId=' + roleId + '&isCheck=' + obj.checked);
+}
+
+function reloadPage() {
+    location.reload();
+}
+//활성화/비활성화 변경
+function changeActive(obj) {
+    let httpRequest = new XMLHttpRequest();
+    if (!httpRequest) {
+        errorMessage();
+        return false;
+    }
+
+    httpRequest.open('POST', '/UserAdmins/ChangeActive', true);
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.onload = function () {
+        if (this.status === 200) {
+            console.log(this.responseText);
+
+            if (this.response == "false") {
+                errorMessage();
+            }
+        } else {
+            console.log("request에 문제가 있다.");
+        }
+    };
+    httpRequest.send('id=' + obj.value + '&isCheck=' + obj.checked);
+}

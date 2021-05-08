@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Garden.Models.ApplicationRole>
+
+@{
+    ViewData["Title"] = "역할 수정";
+    string userId = (string)ViewData["userId"];
+    Dictionary<string, string> role_isActive_dic = (Dictionary<string, string>)ViewData["role_isActive_dic"];
+}
+
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-brush mr-2"></i>
+                    @ViewData["Title"]
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" value="@userId"/>
+                    <div class="form-row p-2">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">@Html.Raw("역할 명")</th>
+                                    <th class="text-center">@Html.Raw("활성화 여부")</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center">@item.Name</td>
+                                        <td class="text-center">
+                                            @{ 
+                                                string check_info = role_isActive_dic.ContainsKey(item.Id) == true ? role_isActive_dic[item.Id]: "";
+                                            }
+                                            <input type="checkbox" onclick="roleChange('@userId','@item.Id', this)" style="width:25px; height:25px;" @check_info />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" onclick="reloadPage()">@Html.Raw("닫기")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script src="~/js/userAdmin.js"></script>
+<script src="~/vendor/jquery/jquery.js"></script>
+
