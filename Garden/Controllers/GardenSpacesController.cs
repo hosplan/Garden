@@ -49,6 +49,13 @@ namespace Garden.Controllers
         // GET: GardenSpaces/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             if (id == null)
             {
                 return NotFound();
