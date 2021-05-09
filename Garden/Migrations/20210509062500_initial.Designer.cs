@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210507053944_initial")]
+    [Migration("20210509062500_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace Garden.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Grade")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)

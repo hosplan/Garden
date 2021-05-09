@@ -28,7 +28,7 @@ namespace Garden.Helper
             get
             {
                 Dictionary<string, string> role_Dic = new Dictionary<string, string>();
-                var role_list = _context.Roles.ToList();
+                var role_list = _context.Roles.ToList().OrderBy(z => z.Grade);
                 
                 foreach(var role in role_list)
                 {
@@ -36,8 +36,25 @@ namespace Garden.Helper
                 }
 
                 return role_Dic;
+            }            
+        }
+
+        /// <summary>
+        /// 역할의 등급값 가져오기(가장 높은값)
+        /// </summary>
+        public int GetGrade
+        {
+            get
+            {
+                var userRole_list = _context.UserRoles.Where(z => z.UserId == loginUserId);
+                List<int> grade = new List<int>();
+                foreach(var userRole in userRole_list)
+                {
+                    ApplicationRole roleInfo = _context.Roles.OrderBy(z => z.Grade).FirstOrDefault(z => z.Id == userRole.RoleId);
+                    grade.Add(roleInfo.Grade);                        
+                }
+                return grade.First();
             }
-            
         }
         public Permission GetPermission
         {

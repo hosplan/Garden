@@ -1,24 +1,4 @@
-﻿function GetBasySubTypeList(id) {
-    //let httpRequest = new XMLHttpRequest();
-
-    //if (!httpRequest) {
-    //    console.log("xmlHttp 인스턴스를 만들 수 없습니다");
-    //    return false;
-    //}
-
-    //httpRequest.open('POST', '/BaseTypes/GetBaseSubTypeList', true);
-    //httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    //httpRequest.onload = function () {
-    //    if (this.status === 200) {
-    //        console.log(this.responseText);
-    //    } else {
-    //        console.log("request에 문제가 있다.");
-    //    }
-    //};
-    //httpRequest.send('id=' + id);
-    let url = '/BaseTypes/GetBaseSubTypeList?id=' + id + '';
-    baseSubType_dataTable.ajax.url(url).load();
-}
+﻿
 let gardenSpace_option = document.getElementById('Garden_list');
 gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
 

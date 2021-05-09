@@ -22,7 +22,6 @@ namespace Garden
                 {
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
-
                     //var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     // 기본 Seed 추가
                     SeedData.Initialize(services);

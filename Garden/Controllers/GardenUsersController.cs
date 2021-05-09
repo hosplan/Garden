@@ -7,23 +7,103 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
+using Microsoft.AspNetCore.Http;
+using Garden.Helper;
+using System.Security.Claims;
+using System.Text;
 
 namespace Garden.Controllers
 {
     public class GardenUsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IGardenHelper _gardenHelper;
 
-        public GardenUsersController(ApplicationDbContext context)
+        public GardenUsersController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _gardenHelper = gardenHelper;
         }
 
         // GET: GardenUsers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? search_gardenSpace_id)
         {
-            var applicationDbContext = _context.GardenUser.Include(g => g.GardenSpace).Include(g => g.User);
-            return View(await applicationDbContext.ToListAsync());
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
+            var myRole = _context.UserRoles.AsNoTracking().Where(z => z.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+            ApplicationRole adminRole = _context.Roles.AsNoTracking().FirstOrDefault(z => z.Name == "Admin");
+
+            List<GardenSpace> gardenSpace_list = new List<GardenSpace>();
+            //관리자인 경우
+            if(myRole.FirstOrDefault(z => z.RoleId == adminRole.Id) != null)
+            {
+                gardenSpace_list = await _context.GardenSpace.AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                gardenSpace_list = await _context.GardenSpace
+                                                .Include(z => z.GardenUsers)
+                                                .AsNoTracking()
+                                                .Where(z => z.GardenUsers.Any(z => z.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                                                .ToListAsync();               
+            }
+
+            if (search_gardenSpace_id == null || search_gardenSpace_id == 0)
+            {                           
+                search_gardenSpace_id = gardenSpace_list.First().Id;
+            }
+
+            ViewData["Garden_list"] = new SelectList(gardenSpace_list, "Id", "Name", search_gardenSpace_id);
+
+            //var applicationDbContext = _context.GardenUser.Include(g => g.GardenSpace).Include(g => g.User);
+            return View();
+        }
+
+        /// <summary>
+        /// 정원 관리자 목록 가져오기
+        /// </summary>
+        /// <param name="id">정원id</param>
+        /// <returns></returns>
+        public async Task<JsonResult> GetGardenUserList(int? id)
+        {
+            List<object> object_list = new List<object>();
+
+            if (id == null)
+            {
+                var jsonNullValue = new { data = object_list };
+                return Json(jsonNullValue);
+            }
+
+            List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                             .Include(gUser => gUser.GardenRole)
+                                                                .ThenInclude(gRole => gRole.BaseSubType)
+                                                             .Include(gUser => gUser.User)
+                                                             .AsNoTracking()
+                                                             .Where(gUser => gUser.GardenSpaceId == id)
+                                                             .ToListAsync();
+
+            foreach(GardenUser gardenUser in gardenUser_list)
+            {
+                object_list.Add(new
+                {
+                    roleType = gardenUser.GardenRole.BaseSubType.Name,
+                    userName = gardenUser.User.UserName,
+                    name = gardenUser.User.Name,
+                    regDate = gardenUser.CreateDate.ToShortDateString(),
+                    isActive = gardenUser.IsActivate,
+                    id = gardenUser.Id,
+                });
+            }
+
+            var jsonValue = new { data = object_list };
+            return Json(jsonValue);
         }
 
         // GET: GardenUsers/Details/5

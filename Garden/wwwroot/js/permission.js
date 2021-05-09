@@ -38,7 +38,6 @@
 
 
 function changePermission(id, actionName, obj) {
-
     let controllerPath = document.getElementById('currentController').value;
     let actionPath = document.getElementById('currentAction').value;
     let isCheck = obj.checked;

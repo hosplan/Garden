@@ -75,7 +75,7 @@ namespace Garden.Controllers
                     userCount = gardenTask.GardenUserTaskMaps.Count(),
                     todayTask = gardenTask.GetTodayTask,
                     isActive = gardenTask.IsActivate,                    
-                    createDate = gardenTask.CreateDate.ToShortDateString()
+                    createDate = gardenTask.CreateDate.ToShortDateString(),
                 });
             }
 

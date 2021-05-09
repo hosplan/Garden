@@ -158,7 +158,7 @@
             if (permission_update == 'false') {
                 let permission_update_btn = document.querySelectorAll('[data-permission="update"]');
                 for (let i = 0; i < permission_update_btn.length; i++) {
-                    permission_update_btn[i].remove();
+                    permission_update_btn[i].disabled;
                 }
             }
 

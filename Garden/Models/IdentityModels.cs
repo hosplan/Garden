@@ -29,14 +29,19 @@ namespace Garden.Models
             
         }
 
-        public ApplicationRole(string roleName, string description) : base(roleName)
+        public ApplicationRole(string roleName, string description, int grade) : base(roleName)
         {
             this.Description = description;
+            this.Grade = grade;
         }
 
         [Display(Name = "상세 설명")]
         [Required]
         public string Description { get; set; }
+
+        [Display(Name = "등급")]
+        [Required]
+        public int Grade { get; set; }
     }
 
 

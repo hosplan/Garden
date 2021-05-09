@@ -82,6 +82,7 @@ function reloadPage() {
 }
 //활성화/비활성화 변경
 function changeActive(obj) {
+
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
         errorMessage();

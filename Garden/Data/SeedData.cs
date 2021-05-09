@@ -68,6 +68,16 @@ namespace Garden.Data
                 ApplicationRole role = new ApplicationRole();
                 role.Name = "Admin";
                 role.Description = "Admin";
+                role.Grade = 0;
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            }
+
+            if(!roleManager.RoleExistsAsync("SuperManager").Result)
+            {
+                ApplicationRole role = new ApplicationRole();
+                role.Name = "SuperManager";
+                role.Description = "SuperManager";
+                role.Grade = 1;
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
@@ -76,6 +86,7 @@ namespace Garden.Data
                 ApplicationRole role = new ApplicationRole();
                 role.Name = "Manager";
                 role.Description = "Manager";
+                role.Grade = 2;
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
@@ -84,6 +95,7 @@ namespace Garden.Data
                 ApplicationRole role = new ApplicationRole();
                 role.Name = "User";
                 role.Description = "User";
+                role.Grade = 3;
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
         }

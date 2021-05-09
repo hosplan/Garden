@@ -103,7 +103,7 @@ namespace Garden.Controllers
                 {
                     //에러메세지로. 추후 추가
                 }
-
+                //정원 생성자는 마스터 정원사로 지정 된다.
                 bool returnValue = _gardenHelper.CreateGardenUser(gardenSpace.Id, userId, gardenRole_id);
 
                 if(returnValue == false)
