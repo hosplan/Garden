@@ -1,13 +1,16 @@
-﻿<!-- Earnings (Monthly) Card Example -->
+﻿@model Garden.Models.GardenSpace 
+<!-- Earnings (Monthly) Card Example -->
 <div class="col-xl-3 col-md-6 mb-4">
     <div class="card border-left-primary shadow h-100 py-2">
         <div class="card-body">
             <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
+                <div class="col mr-2">                
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                         @Html.Raw("총 인원")
                     </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        @Model.GardenUsers.Count()
+                    </div>
                 </div>
                 <div class="col-auto">
                     <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -24,9 +27,11 @@
             <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                        @Html.Raw("오늘의 총 업무 갯수")
+                        @Html.Raw("이달의 업무 갯수")
                     </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        @Model.GardenTasks.Count() / @Model.GardenTasks.Count()
+                    </div>
                 </div>
                 <div class="col-auto">
                     <i class="fas fa-clipboard fa-2x text-gray-300"></i>
@@ -43,7 +48,7 @@
             <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                        @Html.Raw("D-Day")
+                        @Html.Raw("공지사항")
                     </div>
                     <div class="row no-gutters align-items-center">
                         <div class="col-auto">

@@ -62,8 +62,10 @@ namespace Garden.Controllers
             }
 
             var gardenSpace = await _context.GardenSpace
-                .Include(g => g.BaseSubType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                                            .Include(gSpace => gSpace.BaseSubType)
+                                            .Include(gSpace => gSpace.GardenUsers)
+                                            .Include(gSpace => gSpace.GardenTasks)
+                                            .FirstOrDefaultAsync(m => m.Id == id);
             if (gardenSpace == null)
             {
                 return NotFound();
