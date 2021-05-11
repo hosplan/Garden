@@ -4,6 +4,7 @@
     ViewData["Title"] = "정원 들여다 보기";
 }
 
+<link href="~/js/fullcalendar-5.6.0/lib/main.css" rel="stylesheet" />
 <div class="col-xl-12 mb-3">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
@@ -22,19 +23,7 @@
 
 @await Html.PartialAsync("_DetailsForDashBoard", Model)
 
-@*<div>
-        정원 인원 - 최근에 등록된 인원
-        정원 정보 - 오늘의 업무
-        정원 정보 - 스케줄
-        정원 정보 - 내일의 업무
-        정원 정보 - 어제의 업무 (업무 유/무)
-        정원 전체 인원
-        정원 오늘 생일인 인원, 등록된지 1년된 인원
-    </div>*@
-
-
 <input type="hidden" id="gardenSpaceId" value="@Model.Id" />
-
 <div class="col-xl-12">
     <div class="card">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -42,9 +31,31 @@
                 <i class="fas fa-calendar fa-fw"></i>
                 @Html.Raw("일정")
             </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" data-permission="create" onclick="openModal('GardenTasks','Create', '@Model.Id')" value="">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("일정 추가")
+                    </button>               
+                </div>
+            </div>
         </div>
         <div class="card-body">
-
+            <div id="calendar"></div>
         </div>
     </div>
 </div>
+<script src="~/js/fullcalendar-5.6.0/lib/main.js"></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth'
+        });
+        calendar.render();
+    });
+</script>
