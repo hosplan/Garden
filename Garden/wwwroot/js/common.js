@@ -20,6 +20,10 @@ function datatable_openModal(obj) {
     click_common_btn(obj.value);
 }
 
+function reloadPage() {
+    location.reload();
+}
+
 function errorMessage() {
     Swal.fire({
         title: '문제가 발생하였습니다!',
@@ -27,6 +31,20 @@ function errorMessage() {
         icon: 'error',
         confirmButtonText: '확인'
     });
+}
+
+//선택한 정원에 해당하는 모달창 open
+function GetGardenIdAndOpenModal(token) {
+    let gardenSpace_option = document.getElementById('Garden_list');
+    gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
+
+    if (token == 1) {
+        console.log("gardenUser: " + gardenSpace_option);
+        openModal('GardenUsers', 'Create', gardenSpace_option);
+    }
+    else if (token == 2) {
+        openModal('GardenTasks', 'Create', gardenSpace_option);
+    }
 }
 
 //url 클릭

@@ -1,13 +1,6 @@
-﻿
+﻿$('.select2').select2();
 let gardenSpace_option = document.getElementById('Garden_list');
 gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
-
-function GetGardenIdAndOpenModal(token) {
-   
-    if (token == 1) {
-        openModal('GardenTasks', 'Create', gardenSpace_option);
-    }
-}
 
 //baseSubType - datatable
 var baseSubType_dataTable = $('#gardenTask_dt').DataTable({

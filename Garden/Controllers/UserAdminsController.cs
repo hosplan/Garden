@@ -188,7 +188,7 @@ namespace Garden.Controllers
 
                 return new JsonResult(true);
             }
-            catch(Exception ex)
+            catch
             {
                 return new JsonResult(false);
             }

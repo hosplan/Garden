@@ -22,15 +22,7 @@ namespace Garden.Models
 
         [Display(Name ="업무 시간")]
         public Nullable<int> GardenWorkTimeId { get; set; }
-        
-        [Display(Name = "수행날짜")]
-        [DataType(DataType.Date)]
-        public DateTime TaskDate { get; set; }
-        [Display(Name = "완료 여부")]
-        public bool IsComplete { get; set; }
 
-        [Display(Name ="주 단위")]
-        public int TaskWeek { get; set; }
         [ForeignKey("GardenWorkTimeId")]
         public virtual GardenWorkTime GardenWorkTime { get; set; }
 

@@ -378,6 +378,9 @@ namespace Garden.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TaskDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
+                    TaskWeek = table.Column<int>(type: "int", nullable: false),
                     GardenSpaceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -435,10 +438,7 @@ namespace Garden.Migrations
                     GardenManagerId = table.Column<int>(type: "int", nullable: true),
                     GardenUserId = table.Column<int>(type: "int", nullable: true),
                     GardenTaskId = table.Column<int>(type: "int", nullable: true),
-                    GardenWorkTimeId = table.Column<int>(type: "int", nullable: true),
-                    TaskDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
-                    TaskWeek = table.Column<int>(type: "int", nullable: false)
+                    GardenWorkTimeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

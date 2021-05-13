@@ -46,6 +46,7 @@ namespace Garden.Helper
         {
             get
             {
+
                 var userRole_list = _context.UserRoles.Where(z => z.UserId == loginUserId);
                 List<int> grade = new List<int>();
                 foreach(var userRole in userRole_list)
@@ -53,6 +54,10 @@ namespace Garden.Helper
                     ApplicationRole roleInfo = _context.Roles.OrderBy(z => z.Grade).FirstOrDefault(z => z.Id == userRole.RoleId);
                     grade.Add(roleInfo.Grade);                        
                 }
+
+                if (grade.Count() == 0)
+                    return -1;
+
                 return grade.First();
             }
         }

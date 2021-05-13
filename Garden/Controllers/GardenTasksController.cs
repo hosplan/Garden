@@ -25,6 +25,25 @@ namespace Garden.Controllers
             _gardenHelper = gardenHelper;
         }
 
+        /// <summary>
+        /// 정원 업무 참가시키기
+        /// </summary>
+        /// <param name="id">GardenTaskId</param>
+        /// <returns></returns>
+        public async Task<IActionResult> AttendGardenUser(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            GardenTask gardenTask = await _context.GardenTask.FirstOrDefaultAsync(z => z.Id == id);
+
+            ViewData["gardenSpace_id"] = gardenTask.GardenSpaceId;
+        
+            return PartialView(gardenTask);
+        }
+
+       
+
         // GET: GardenTasks
         public async Task<IActionResult> Index(int? search_gardenSpace_id)
         {
@@ -63,6 +82,7 @@ namespace Garden.Controllers
                                                        .Include(gardenTask => gardenTask.GardenUserTaskMaps)
                                                        .AsNoTracking()
                                                        .Where(gardenTask => gardenTask.GardenSpaceId == id)
+                                                       .OrderBy(gardenTask => gardenTask.CreateDate)
                                                        .ToList();
 
             foreach(GardenTask gardenTask in gardenTask_list)
@@ -73,7 +93,7 @@ namespace Garden.Controllers
                     typeName = gardenTask.BaseSubType.Name,
                     name = gardenTask.Name,
                     userCount = gardenTask.GardenUserTaskMaps.Count(),
-                    todayTask = gardenTask.GetTodayTask,
+                    todayTask = 0,
                     isActive = gardenTask.IsActivate,                    
                     createDate = gardenTask.CreateDate.ToShortDateString(),
                 });
@@ -86,6 +106,12 @@ namespace Garden.Controllers
         // GET: GardenTasks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                         this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                         this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             if (id == null)
             {
                 return NotFound();

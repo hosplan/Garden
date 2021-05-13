@@ -1,0 +1,85 @@
+﻿@model Garden.Models.GardenTask
+
+@{
+    ViewData["Title"] = "정원 업무 참여자 추가";
+    int gardenSpace_id = (int)ViewData["gardenSpace_id"];
+
+}
+<link href="~/js/select2/select2.css" rel="stylesheet" />
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    @ViewData["Title"]
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="GardenSpaceId" value="@gardenSpace_id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">                 
+                    <div class="col-xl-12">
+                        <table class="table table-hover" id="attendUser_dt">
+                            <thead>
+                                <tr>
+                                    <th>@Html.Raw("아이디")</th>
+                                    <th>@Html.Raw("이름")</th>
+                                    <th>@Html.Raw("참여 여부")</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("닫기")</button>
+            </div>
+        </div>
+    </div>    
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script src="~/vendor/jquery/jquery.js"></script>
+<script type="text/javascript">
+    //baseSubType - datatable
+    var gardenUser_dataTable = $('#attendUser_dt').DataTable({
+        'ajax': {
+            'url': "/GardenUsers/GetGardenUserList?id=" + gardenSpace_option + "",
+            'type': 'GET',
+            'datatype': 'json'
+        },
+        'columns': [
+            { 'data': 'userName', 'className': 'text-center m-2' },
+            { 'data': 'name', 'className': 'text-center m-2' },
+            {
+                'data': 'isActive', 'className': 'text-center m-2',
+                'render': function (data, type, row, meta) {
+                    let isCheck = '';
+                    if (data == true) {
+                        isCheck = 'checked';
+                    }
+                    return '<input type="checkbox" data-permission="update" style="width:25px; height:25px;" onclick="changeIsActive()" ' + isCheck + '/>';
+                }
+            },
+        ],
+        'responsive': true,
+        'deferRender': true,
+        'ordering': true,
+        'info': true,
+        'paging': true,
+        'pageLength': 10,
+        'searching': true,
+        'processing': true,
+    });
+</script>

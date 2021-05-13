@@ -30,40 +30,135 @@ namespace Garden.Controllers
         // GET: GardenUsers
         public async Task<IActionResult> Index(int? search_gardenSpace_id)
         {
-            //check read permission
-            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
-                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
-                                                            this.ControllerContext.RouteData.Values["action"].ToString());
-            if (!isRead)
-                return RedirectToAction("NotAccess", "Home");
-
-            var myRole = _context.UserRoles.AsNoTracking().Where(z => z.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
-            ApplicationRole adminRole = _context.Roles.AsNoTracking().FirstOrDefault(z => z.Name == "Admin");
-
-            List<GardenSpace> gardenSpace_list = new List<GardenSpace>();
-            //관리자인 경우
-            if(myRole.FirstOrDefault(z => z.RoleId == adminRole.Id) != null)
+            try
             {
-                gardenSpace_list = await _context.GardenSpace.AsNoTracking().ToListAsync();
+                //check read permission
+                bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                                this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                                this.ControllerContext.RouteData.Values["action"].ToString());
+                if (!isRead)
+                    return RedirectToAction("NotAccess", "Home");
+
+                var myRole = _context.UserRoles.AsNoTracking().Where(z => z.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList();
+                ApplicationRole adminRole = _context.Roles.AsNoTracking().FirstOrDefault(z => z.Name == "Admin");
+
+                List<GardenSpace> gardenSpace_list = new List<GardenSpace>();
+                //관리자인 경우
+                if (myRole.FirstOrDefault(z => z.RoleId == adminRole.Id) != null)
+                {
+                    gardenSpace_list = await _context.GardenSpace.AsNoTracking().ToListAsync();
+                }
+                else
+                {
+                    gardenSpace_list = await _context.GardenSpace
+                                                    .Include(z => z.GardenUsers)
+                                                    .AsNoTracking()
+                                                    .Where(z => z.GardenUsers.Any(z => z.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                                                    .ToListAsync();
+                }
+
+                if ((search_gardenSpace_id == null || search_gardenSpace_id == 0) && gardenSpace_list.Count() != 0)
+                    search_gardenSpace_id = gardenSpace_list.First().Id;
+                else
+                    search_gardenSpace_id = 0;
+
+                ViewData["Garden_list"] = new SelectList(gardenSpace_list, "Id", "Name", search_gardenSpace_id);
+
             }
-            else
+            catch
             {
-                gardenSpace_list = await _context.GardenSpace
-                                                .Include(z => z.GardenUsers)
-                                                .AsNoTracking()
-                                                .Where(z => z.GardenUsers.Any(z => z.UserId == _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
-                                                .ToListAsync();               
+               
             }
-
-            if (search_gardenSpace_id == null || search_gardenSpace_id == 0)
-            {                           
-                search_gardenSpace_id = gardenSpace_list.First().Id;
-            }
-
-            ViewData["Garden_list"] = new SelectList(gardenSpace_list, "Id", "Name", search_gardenSpace_id);
-
+           
             //var applicationDbContext = _context.GardenUser.Include(g => g.GardenSpace).Include(g => g.User);
             return View();
+        }
+
+        /// <summary>
+        /// 정원에 참여시키는 모달창 열기
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> GetActiveUserList(int? id)
+        {
+            List<object> object_list = new List<object>();
+
+            try
+            {
+                List<ApplicationUser> activeUser_list = await _context.Users
+                                                                       .Where(user => user.IsActive == true && 
+                                                                              user.UserName != "SYSTEM").ToListAsync();
+
+                List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                                 .Include(gUser => gUser.User)
+                                                                 .Where(gUser => gUser.GardenSpaceId == id).ToListAsync();
+
+                //기존에 정원 관리사에 포함되어 있는 유저는 삭제
+                foreach(GardenUser gardenUser in gardenUser_list)
+                {
+                    bool t = activeUser_list.Remove(gardenUser.User);
+                }
+                    
+                
+                
+                foreach(ApplicationUser activeUser in activeUser_list)
+                {
+                    object_list.Add(new
+                    {
+                        id = activeUser.Id,
+                        name = activeUser.Name,
+                        userName = activeUser.UserName
+                    });
+                }
+            }
+            catch
+            {
+
+            }
+            var jsonValue = new { data = object_list };
+            return Json(jsonValue);
+        }
+
+        /// <summary>
+        /// 참여시키기 혹은 빼기
+        /// </summary>
+        /// <param name="userId">userId</param>
+        /// <param name="isCheck">체크여부</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<JsonResult> AttendForGardenUser(string userId, bool isCheck, int? gardenSpaceId, string gardenRoleId)
+        {
+            if (userId == null || !gardenSpaceId.HasValue)
+                return new JsonResult(false);
+
+            try
+            {
+                GardenUser gardenUser = await _context.GardenUser
+                                                      .FirstOrDefaultAsync(gUser => gUser.UserId == userId && 
+                                                                           gUser.GardenSpaceId == gardenSpaceId);
+                                
+                if (gardenUser == null && isCheck == true)
+                {
+                    int gardenRole_id = _gardenHelper.CreateGardenRole(gardenSpaceId.Value, gardenRoleId);
+                    bool returnValue = _gardenHelper.CreateGardenUser(gardenSpaceId.Value, userId, gardenRole_id);
+
+                    if (returnValue == false)
+                        return new JsonResult(false);
+                }
+                else if(gardenUser != null && isCheck == false)
+                {
+                    gardenUser.IsActivate = false;
+
+                    _context.Update(gardenUser);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+            return new JsonResult(true);
         }
 
         /// <summary>
@@ -127,11 +222,15 @@ namespace Garden.Controllers
         }
 
         // GET: GardenUsers/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id");
-            return View();
+            if (id == null)
+                return NotFound();
+
+            ViewData["roleType_list"] = new SelectList(_context.BaseSubType.Where(subType => subType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE" && subType.Id != "GARDEN_MANAGER_ROLE_TYPE_1").ToList(), "Id", "Name");
+            ViewData["gardenSpace_id"] = id;
+
+            return PartialView();
         }
 
         // POST: GardenUsers/Create
@@ -151,7 +250,53 @@ namespace Garden.Controllers
             ViewData["UserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", gardenUser.UserId);
             return View(gardenUser);
         }
+        /// <summary>
+        /// 정원 관리자 역할 변경 모달창 열기
+        /// </summary>
+        /// <param name="id">gardenUserId</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> EditForGardenUserRole(int? id)
+        {
+            GardenUser gardenUser = await _context.GardenUser
+                                                  .Include(gUser => gUser.User)
+                                                  .AsNoTracking()
+                                                  .FirstOrDefaultAsync(gUser => gUser.Id == id);
 
+            ViewData["edit_roleType_list"] = new SelectList(_context.BaseSubType.Where(subType => subType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE" && subType.Id != "GARDEN_MANAGER_ROLE_TYPE_1").ToList(), "Id", "Name");
+
+            return PartialView(gardenUser);
+        }
+        /// <summary>
+        /// 정원 관리자 역할 변경
+        /// </summary>
+        /// <param name="id">gardenUserId</param>
+        /// <param name="gardenRoleTypeId">정원 역할 id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<JsonResult> EditForGardenUserRole(int gardenUserId, string gardenRoleTypeId)
+        {
+            if(gardenUserId == 0 || string.IsNullOrEmpty(gardenRoleTypeId))
+            {
+                return new JsonResult(false);
+            }
+            
+            try
+            {
+                GardenUser gardenUser = await _context.GardenUser.FirstOrDefaultAsync(gUser => gUser.Id == gardenUserId);
+                GardenRole gardenRole = await _context.GardenRole.FirstOrDefaultAsync(gRole => gRole.SubTypeId == gardenRoleTypeId);
+                gardenUser.GardenRoleId = gardenRole.Id;
+
+                _context.Update(gardenUser);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+
+            return new JsonResult(true);
+        }
         // GET: GardenUsers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

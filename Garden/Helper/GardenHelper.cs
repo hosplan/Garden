@@ -13,7 +13,6 @@ namespace Garden.Helper
     public interface IGardenHelper
     {
         int CreateGardenRole(int gardenSpace_id, string baseSubType_id);
-
         bool CreateGardenUser(int gardenSpace_id, string user_id, int? gardenRole_id);
 
         bool CheckReadPermission(string loginUserId, string controllerName, string actionName);

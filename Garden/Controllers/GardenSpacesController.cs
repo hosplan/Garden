@@ -98,7 +98,7 @@ namespace Garden.Controllers
                 await _context.SaveChangesAsync();
 
                 string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+                
                 int gardenRole_id = _gardenHelper.CreateGardenRole(gardenSpace.Id, "GARDEN_MANAGER_ROLE_TYPE_1");
                 
                 if(gardenRole_id == 0)

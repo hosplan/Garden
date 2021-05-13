@@ -34,23 +34,23 @@ namespace Garden.Models
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
 
 
-        public int GetTodayTask
-        {
-            get
-            {
-                if (GardenUserTaskMaps == null)
-                    return 0;
+        //public int GetTodayTask
+        //{
+        //    get
+        //    {
+        //        if (GardenUserTaskMaps == null)
+        //            return 0;
 
-                List<GardenUserTaskMap> todayTask_list 
-                    = GardenUserTaskMaps
-                        .Where(z => z.TaskDate.ToShortDateString() == DateTime.Now.ToShortDateString())
-                        .ToList();
+        //        List<GardenUserTaskMap> todayTask_list 
+        //            = GardenUserTaskMaps
+        //                .Where(z => z.TaskDate.ToShortDateString() == DateTime.Now.ToShortDateString())
+        //                .ToList();
 
-                if (todayTask_list == null)
-                    return 0;
+        //        if (todayTask_list == null)
+        //            return 0;
 
-                return todayTask_list.Count();
-            }
-        }
+        //        return todayTask_list.Count();
+        //    }
+        //}
     }
 }

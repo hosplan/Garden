@@ -31,7 +31,7 @@
                             @Html.Raw("정원 타입 선택")
                         </label>
                         <div class="col-xl-8">
-                            <select asp-for="SubTypeId" class="form-control select2 mt-1" style="width:100%;" asp-items="ViewBag.subType_id"></select>
+                            <select asp-for="SubTypeId" class="form-control garden_type_select2 mt-1" style="width:100%;" asp-items="ViewBag.subType_id"></select>
                         </div>
                     </div>
 
@@ -76,9 +76,8 @@
 
 <script src="~/vendor/jquery/jquery.js"></script>
 <script src="~/js/select2/select2.js"></script>
-<script type="text/javascript">
-    
-    $('.select2').select2({
+<script type="text/javascript">    
+    $('.garden_type_select2').select2({
         dropdownParent: $('#modal-contact')
     });
 </script>

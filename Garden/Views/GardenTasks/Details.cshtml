@@ -1,12 +1,15 @@
 ﻿@model Garden.Models.GardenTask
 
 @{
-    ViewData["Title"] = "정원 업무 들여다보기";
+    ViewData["Title"] = "자세히 보기";
 }
 
 <div class="col-xl-12 mb-3">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+        <h1 class="h3 mb-0 text-gray-800">
+            <span class="text-info font-weight-bold mr-2">@Model.Name </span>
+            @ViewData["Title"]
+        </h1>
         <div class="btn-group" role="group" aria-label="Basic example">
             <button class="btn btn-success" onclick="openModal('GardenTasks','Edit', @Model.Id)">
                 <i class="fas fa-brush fa-sm text-white-50"></i>
@@ -35,7 +38,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                             <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                            <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="GetGardenIdAndOpenModal(1)">
+                            <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="openModal('GardenTasks','AttendGardenUser','@Model.Id')">
                                 <i class="fas fa-plus-circle text-primary mr-3"></i>
                                 @Html.Raw("정원 관리사 추가")
                             </button>

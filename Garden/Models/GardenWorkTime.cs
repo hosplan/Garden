@@ -18,6 +18,14 @@ namespace Garden.Models
         [DataType(DataType.Date)]
         public DateTime EndTime { get; set; }
 
+        [Display(Name = "수행날짜")]
+        [DataType(DataType.Date)]
+        public DateTime TaskDate { get; set; }
+        [Display(Name = "완료 여부")]
+        public bool IsComplete { get; set; }
+
+        [Display(Name = "주 단위")]
+        public int TaskWeek { get; set; }
         public int? GardenSpaceId { get; set; }
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }

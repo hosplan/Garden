@@ -77,9 +77,7 @@ function roleChange(userId, roleId, obj) {
     httpRequest.send('userId=' + userId + '&roleId=' + roleId + '&isCheck=' + obj.checked);
 }
 
-function reloadPage() {
-    location.reload();
-}
+
 //활성화/비활성화 변경
 function changeActive(obj) {
 

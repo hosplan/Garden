@@ -1,0 +1,68 @@
+﻿@model Garden.Models.GardenUser
+
+
+<link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+<link href="~/js/select2/select2.css" rel="stylesheet" />
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    @Model.User.UserName / @Model.User.Name - @Html.Raw("역할 변경")  
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row p-2">
+                    <div class="col-xl-12">
+                        <select class="edit_subType_select2 form-control w-100" onchange="changeRole(@Model.Id, this)" id="edit_roleType_list" asp-items="@ViewBag.edit_roleType_list"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" onclick="reloadPage()" data-dismiss="modal">@Html.Raw("닫기")</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="~/vendor/jquery/jquery.js"></script>
+<script src="~/js/select2/select2.js"></script>
+
+<script type="text/javascript">
+    $('.edit_subType_select2').select2({
+        dropdownParent: $('#modal-contact')
+    });
+
+    //정원관리자 역할 변경
+    function changeRole(gardenUserId,obj) {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenUsers/EditForGardenUserRole', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200) {
+                console.log(this.responseText);
+
+                if (this.response == "false") {
+                    errorMessage();
+                }
+            } else {
+                console.log("request에 문제가 있다.");
+           }
+        };
+        httpRequest.send('gardenUserId=' + gardenUserId +'&gardenRoleTypeId=' + obj.value);
+    }
+</script>

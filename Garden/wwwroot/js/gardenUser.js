@@ -1,4 +1,4 @@
-﻿$('.select2').select2();
+﻿$('.gardenSpace_select2').select2();
 
 let gardenSpace_option = document.getElementById('Garden_list');
 gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
@@ -11,6 +11,15 @@ if (document.getElementById('permission_update').value == 'false') {
 
 if (document.getElementById('permission_delete').value == 'false') {
     deletePermission = 'disabled';
+}
+
+//다른 정원 정보 불러오기
+function GetOtherGarden() {
+    let change_gardenSpace_option = document.getElementById('Garden_list');
+    change_gardenSpace_option = change_gardenSpace_option.options[change_gardenSpace_option.selectedIndex].value;
+
+    let url = '/GardenUsers/GetGardenUserList?id=' + change_gardenSpace_option + '';
+    gardenUser_dataTable.ajax.url(url).load();
 }
 
 //baseSubType - datatable
@@ -43,7 +52,7 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {
-                return '<button type="button" data-permission="delete" class="btn btn-link text-danger p-0 ml-3 float-right" '+deletePermission+' onclick="removeValue(\''+data+'\')"><i class="fas fa-trash"></i></button>';                  
+                return '<button type="button" data-permission="create" class="btn btn-link text-danger p-0 ml-3 float-right" '+deletePermission+' onclick="removeValue(\''+data+'\')"><i class="fas fa-trash"></i></button>';                  
             }
         }
     ],

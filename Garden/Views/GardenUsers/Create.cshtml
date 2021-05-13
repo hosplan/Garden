@@ -1,46 +1,120 @@
 ﻿@model Garden.Models.GardenUser
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "정원에 참여시키기";
+    int gardenSpace_id = (int)ViewData["gardenSpace_id"];
 }
 
-<h1>Create</h1>
+<link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+<link href="~/js/select2/select2.css" rel="stylesheet" />
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    @ViewData["Title"]
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="gardenSpace_id" value="@gardenSpace_id"/>
+                <div class="w-100 p-2 shadow mb-3">
+                    <div class="form-row p-2">
+                        <label class="col-xl-1">
+                            @Html.Raw("역할 : ")
+                        </label>
+                        <div class="col-xl-11">
+                            @Html.DropDownList("roleType_list", null, htmlAttributes: new { @class = "subType_select2 form-control w-100" })
+                        </div>
+                    </div>
+                </div>
 
-<h4>GardenUser</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                <table class="table table-hover w-100" id="active_user_dt">
+                    <thead>
+                        <tr>
+                            <th class="m-2">@Html.Raw("아이디")</th>
+                            <th class="m-2">@Html.Raw("이름")</th>
+                            <th class="m-2">@Html.Raw("참여")</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActivate" /> @Html.DisplayNameFor(model => model.IsActivate)
-                </label>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" onclick="reloadPage()" data-dismiss="modal">@Html.Raw("닫기")</button>
             </div>
-            <div class="form-group">
-                <label asp-for="GardenSpaceId" class="control-label"></label>
-                <select asp-for="GardenSpaceId" class ="form-control" asp-items="ViewBag.GardenSpaceId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script src="~/vendor/jquery/jquery.js"></script>
+<script src="~/vendor/datatables/jquery.dataTables.js"></script>
+<script src="~/vendor/datatables/dataTables.bootstrap4.js"></script>
+<script src="~/js/select2/select2.js"></script>
+
+<script type="text/javascript">
+    $('.subType_select2').select2({
+        dropdownParent: $('#modal-contact')
+    });
+
+    var gardenUser_dataTable = $('#active_user_dt').DataTable({
+        'ajax': {
+            'url': "/GardenUsers/GetActiveUserList?id=" + document.getElementById("gardenSpace_id").value + "",
+            'type': 'GET',
+            'datatype': 'json'
+        },
+        'columns': [         
+            { 'data': 'userName', 'className': 'text-center m-2' },
+            { 'data': 'name', 'className': 'text-center m-2' },
+            {
+                'data': 'id', 'className': 'text-center m-2',
+                'render': function (data, type, row, meta) {
+                    return '<input type="checkbox" data-permission="update" style="width:25px; height:25px;" onclick="attendGarden(\''+row.id+'\',this)"/>';
+                }
+            },         
+        ],
+        'responsive': true,
+        'deferRender': true,
+        'ordering': true,
+        'info': false,
+        'paging': true,
+        'searching': true,
+        'processing': true,
+    });
+
+    //참석 시키기
+    function attendGarden(userId,obj) {
+        console.log(userId);
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+        let gardenRole_option = document.getElementById('roleType_list');
+        gardenRole_option = gardenRole_option.options[gardenRole_option.selectedIndex].value;
+
+
+        httpRequest.open('POST', '/GardenUsers/AttendForGardenUser', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200) {
+                console.log(this.responseText);
+
+                if (this.response == "false") {
+                    errorMessage();
+                }
+            } else {
+                console.log("request에 문제가 있다.");
+            }
+        };
+
+        httpRequest.send('userId=' + userId + '&isCheck=' + obj.checked + '&gardenSpaceId=' + document.getElementById('gardenSpace_id').value + '&gardenRoleId' + gardenRole_option);
+    }
+</script>

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210509062500_initial")]
+    [Migration("20210513052030_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -384,15 +384,6 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenWorkTimeId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("TaskDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TaskWeek")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GardenManagerId");
@@ -419,8 +410,17 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenSpaceId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsComplete")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TaskDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskWeek")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
