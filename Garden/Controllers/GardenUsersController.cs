@@ -285,7 +285,11 @@ namespace Garden.Controllers
             {
                 GardenUser gardenUser = await _context.GardenUser.FirstOrDefaultAsync(gUser => gUser.Id == gardenUserId);
                 GardenRole gardenRole = await _context.GardenRole.FirstOrDefaultAsync(gRole => gRole.SubTypeId == gardenRoleTypeId);
-                gardenUser.GardenRoleId = gardenRole.Id;
+                
+                if(gardenRole == null)
+                    gardenUser.GardenRoleId = _gardenHelper.CreateGardenRole(gardenUser.GardenSpaceId.Value, gardenRoleTypeId);
+                else
+                    gardenUser.GardenRoleId = gardenRole.Id;
 
                 _context.Update(gardenUser);
                 await _context.SaveChangesAsync();

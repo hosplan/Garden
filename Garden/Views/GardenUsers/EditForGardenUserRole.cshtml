@@ -8,9 +8,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
-                    <i class="fas fa-plus-circle mr-2"></i>
-                    @Model.User.UserName / @Model.User.Name - @Html.Raw("역할 변경")  
+                <h5 class="modal-title text-success font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-brush mr-2"></i>
+                    @Model.User.UserName/@Model.User.Name - @Html.Raw("역할 변경")  
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -18,8 +18,17 @@
             </div>
             <div class="modal-body">
                 <div class="form-row p-2">
-                    <div class="col-xl-12">
-                        <select class="edit_subType_select2 form-control w-100" onchange="changeRole(@Model.Id, this)" id="edit_roleType_list" asp-items="@ViewBag.edit_roleType_list"></select>
+                    <div class="col-xl-4">
+                        <h6 class="text-info font-weight-bold mt-1">
+                            <i class="fas fa-user-tag"></i>
+                            @Html.Raw("역할 선택 : ")
+                        </h6>
+                    </div>
+                    <div class="col-xl-8">
+                        <input type="hidden" id="gardenUser" value="@Model.Id"/>
+                        @Html.DropDownList("edit_roleType_list", null,"변경할 역할을 선택하세요!" ,htmlAttributes: new { @class = "edit_subType_select2 form-control", @onchange="changeRole(this)" })
+
+                        @*<select class="edit_subType_select2 form-control w-100" onchange="changeRole(@Model.Id, this)" id="edit_roleType_list" asp-items="@ViewBag.edit_roleType_list"></select>*@
                     </div>
                 </div>
             </div>
@@ -43,7 +52,8 @@
     });
 
     //정원관리자 역할 변경
-    function changeRole(gardenUserId,obj) {
+    function changeRole(obj) {
+        let gardenUserId = document.getElementById('gardenUser').value;
         let httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
             errorMessage();
