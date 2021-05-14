@@ -27,10 +27,10 @@ namespace Garden.Models
         public virtual GardenWorkTime GardenWorkTime { get; set; }
 
         [ForeignKey("GardenManagerId")]
-        public virtual GardenUser GardenManagerTask { get; set; }
+        public virtual GardenUser GardenManager { get; set; }
 
         [ForeignKey("GardenUserId")]
-        public virtual GardenUser GardenUserTask { get; set; }
+        public virtual GardenUser GardenUser { get; set; }
 
         [ForeignKey("GardenTaskId")]
         public virtual GardenTask GardenTask { get; set; }

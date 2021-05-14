@@ -10,7 +10,6 @@ function openModal(controllerName, actionName, id) {
 }
 
 function openModalForDataTable(obj, id) {
-    console.log("fuck");
     let tt = obj.querySelector("[data-url]");
     console.log(tt);
 }

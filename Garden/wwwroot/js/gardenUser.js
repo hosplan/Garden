@@ -65,3 +65,33 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
     'searching': true,
     'processing': true,
 });
+
+function removeValue(gardenUserId) {
+    Swal.fire({
+        title: '문제가 발생하였습니다!',
+        text: '잠시후에 다시 시도해주세요!',
+        icon: 'error',
+        confirmButtonText: '확인'
+    }).then(function (result) {
+        if (result.value) {
+            let httpRequest = new XMLHttpRequest();
+            if (!httpRequest) {
+                errorMessage();
+                return false;
+            }
+
+            httpRequest.open('POST', '/GardenUsers/DeleteGardenUser', true);
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            httpRequest.onload = function () {
+                if (this.status === 200) {
+                    console.log(this.responseText);
+
+                    if (this.response == "false") {
+                        errorMessage();
+                    }
+                }
+            };
+            httpRequest.send('userId=' + gardenUserId);
+        }
+    });
+}
