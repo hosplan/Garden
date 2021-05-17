@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210513052030_initial")]
+    [Migration("20210517133021_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -410,6 +410,9 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenSpaceId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GardenTaskId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
@@ -425,6 +428,8 @@ namespace Garden.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GardenSpaceId");
+
+                    b.HasIndex("GardenTaskId");
 
                     b.ToTable("GardenWorkTime");
                 });
@@ -685,7 +690,7 @@ namespace Garden.Migrations
 
             modelBuilder.Entity("Garden.Models.GardenUserTaskMap", b =>
                 {
-                    b.HasOne("Garden.Models.GardenUser", "GardenManagerTask")
+                    b.HasOne("Garden.Models.GardenUser", "GardenManager")
                         .WithMany("GardenManagerTasks")
                         .HasForeignKey("GardenManagerId");
 
@@ -693,21 +698,19 @@ namespace Garden.Migrations
                         .WithMany("GardenUserTaskMaps")
                         .HasForeignKey("GardenTaskId");
 
-                    b.HasOne("Garden.Models.GardenUser", "GardenUserTask")
+                    b.HasOne("Garden.Models.GardenUser", "GardenUser")
                         .WithMany("GardenUserTasks")
                         .HasForeignKey("GardenUserId");
 
-                    b.HasOne("Garden.Models.GardenWorkTime", "GardenWorkTime")
+                    b.HasOne("Garden.Models.GardenWorkTime", null)
                         .WithMany("GardenUserTaskMaps")
                         .HasForeignKey("GardenWorkTimeId");
 
-                    b.Navigation("GardenManagerTask");
+                    b.Navigation("GardenManager");
 
                     b.Navigation("GardenTask");
 
-                    b.Navigation("GardenUserTask");
-
-                    b.Navigation("GardenWorkTime");
+                    b.Navigation("GardenUser");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
@@ -716,7 +719,13 @@ namespace Garden.Migrations
                         .WithMany("GardenWorkTimes")
                         .HasForeignKey("GardenSpaceId");
 
+                    b.HasOne("Garden.Models.GardenTask", "GardenTask")
+                        .WithMany()
+                        .HasForeignKey("GardenTaskId");
+
                     b.Navigation("GardenSpace");
+
+                    b.Navigation("GardenTask");
                 });
 
             modelBuilder.Entity("Garden.Models.Permission", b =>

@@ -371,30 +371,6 @@ namespace Garden.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GardenWorkTime",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TaskDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
-                    TaskWeek = table.Column<int>(type: "int", nullable: false),
-                    GardenSpaceId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GardenWorkTime", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GardenWorkTime_GardenSpace_GardenSpaceId",
-                        column: x => x.GardenSpaceId,
-                        principalTable: "GardenSpace",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GardenUser",
                 columns: table => new
                 {
@@ -425,6 +401,37 @@ namespace Garden.Migrations
                         name: "FK_GardenUser_GardenSpace_GardenSpaceId",
                         column: x => x.GardenSpaceId,
                         principalTable: "GardenSpace",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GardenWorkTime",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TaskDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsComplete = table.Column<bool>(type: "bit", nullable: false),
+                    TaskWeek = table.Column<int>(type: "int", nullable: false),
+                    GardenTaskId = table.Column<int>(type: "int", nullable: true),
+                    GardenSpaceId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GardenWorkTime", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GardenWorkTime_GardenSpace_GardenSpaceId",
+                        column: x => x.GardenSpaceId,
+                        principalTable: "GardenSpace",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GardenWorkTime_GardenTask_GardenTaskId",
+                        column: x => x.GardenTaskId,
+                        principalTable: "GardenTask",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -604,6 +611,11 @@ namespace Garden.Migrations
                 column: "GardenSpaceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GardenWorkTime_GardenTaskId",
+                table: "GardenWorkTime",
+                column: "GardenTaskId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Permission_RoleId",
                 table: "Permission",
                 column: "RoleId");
@@ -642,9 +654,6 @@ namespace Garden.Migrations
                 name: "Attachment");
 
             migrationBuilder.DropTable(
-                name: "GardenTask");
-
-            migrationBuilder.DropTable(
                 name: "GardenUser");
 
             migrationBuilder.DropTable(
@@ -654,10 +663,13 @@ namespace Garden.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "GardenRole");
 
             migrationBuilder.DropTable(
-                name: "GardenRole");
+                name: "GardenTask");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "GardenSpace");

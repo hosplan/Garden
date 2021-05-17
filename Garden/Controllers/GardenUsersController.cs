@@ -161,6 +161,8 @@ namespace Garden.Controllers
             return new JsonResult(true);
         }
 
+       
+
         /// <summary>
         /// 정원 관리자 목록 가져오기
         /// </summary>
@@ -213,6 +215,7 @@ namespace Garden.Controllers
                 .Include(g => g.GardenSpace)
                 .Include(g => g.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (gardenUser == null)
             {
                 return NotFound();
@@ -356,6 +359,19 @@ namespace Garden.Controllers
             return View(gardenUser);
         }
 
+        private async Task<List<GardenUserTaskMap>> LoadGardenUserTaskMapList(int gardenUserId)
+        {
+            List<GardenUserTaskMap> gardenUserTaskMap_list = await _context.GardenUserTaskMap
+                                                                        .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                                        .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                                        .Include(gUserTaskMap => gUserTaskMap.GardenTask)
+                                                                        .Where(gUserTaskMap => gUserTaskMap.GardenManagerId == gardenUserId
+                                                                               || gUserTaskMap.GardenUserId == gardenUserId)
+                                                                        .ToListAsync();
+
+            return gardenUserTaskMap_list;
+        }
+
         [HttpPost]
         public async Task<JsonResult> DeleteGardenUser(int? gardenUserId)
         {
@@ -363,31 +379,27 @@ namespace Garden.Controllers
                 return new JsonResult(false);
 
             GardenUser gardenUser = await _context.GardenUser.FirstOrDefaultAsync(gUser => gUser.Id == gardenUserId);
-
-            List<GardenUserTaskMap> gardenUserTaskMap_list = await _context.GardenUserTaskMap
-                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenUser)
-                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenManager)
-                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenTask)
-                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenWorkTime)
-                                                                            .Where(gUserTaskMap => gUserTaskMap.GardenManagerId == gardenUserId
-                                                                                   || gUserTaskMap.GardenUserId == gardenUserId)
-                                                                            .ToListAsync();
-
+            List<GardenUserTaskMap> gardenUserTaskMap_list = await LoadGardenUserTaskMapList(gardenUserId.Value);
+            
             List<GardenTask> remove_gardenTask_list = new List<GardenTask>();
-            List<GardenUser> remove_gardenUser_list = new List<GardenUser>();
-            List<GardenWorkTime> remove_gardenWorkItem_list = new List<GardenWorkTime>();
-
             foreach(GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
             {
-                //자신이 담당자인경우 해당 Task는 삭제 해야된다.
-                //또한 자신이 포함된 수업이 삭제 되기때문에
-                //해당 수업과 연결되어 있는 수강자 map 까지 삭제 해줘야 한다.
-                if(gardenUserTaskMap.GardenManagerId != null)
-                {
-                    remove_gardenTask_list.Add(gardenUserTaskMap.GardenTask);
-
-                }
+                remove_gardenTask_list.Add(gardenUserTaskMap.GardenTask);
             }
+
+            try
+            {
+                _context.RemoveRange(remove_gardenTask_list);
+                await _context.SaveChangesAsync();
+
+                _context.Remove(gardenUser);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+            
 
             return new JsonResult(true);
         }

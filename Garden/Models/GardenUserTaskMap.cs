@@ -20,12 +20,6 @@ namespace Garden.Models
         [Display(Name ="업무")]
         public Nullable<int> GardenTaskId { get; set; }
 
-        [Display(Name ="업무 시간")]
-        public Nullable<int> GardenWorkTimeId { get; set; }
-
-        [ForeignKey("GardenWorkTimeId")]
-        public virtual GardenWorkTime GardenWorkTime { get; set; }
-
         [ForeignKey("GardenManagerId")]
         public virtual GardenUser GardenManager { get; set; }
 

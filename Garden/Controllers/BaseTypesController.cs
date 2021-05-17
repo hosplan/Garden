@@ -59,7 +59,8 @@ namespace Garden.Controllers
             foreach(BaseSubType baseSubType in baseSubType_list)
             {
                 returnValue_object_list.Add(new
-                {                   
+                {        
+                    type = baseSubType.BaseTypeId,
                     name = baseSubType.Name,
                     description = baseSubType.Description,
                     id = baseSubType.Id

@@ -41,8 +41,104 @@ namespace Garden.Controllers
         
             return PartialView(gardenTask);
         }
+        public async Task<JsonResult> AttendGardenTaskManager(int gardenUserId, int gardenTaskId)
+        {
+            GardenUserTaskMap create_gardenUserTaskMap = new GardenUserTaskMap();
 
-       
+            create_gardenUserTaskMap.GardenManagerId = gardenUserId;
+            create_gardenUserTaskMap.GardenTaskId = gardenTaskId;
+            try
+            {
+                _context.Add(create_gardenUserTaskMap);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+
+            return new JsonResult(true);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AttendGardenTaskUser(int gardenUserId, int gardenTaskId)
+        {
+            GardenUserTaskMap create_gardenUserTaskMap = new GardenUserTaskMap();
+
+            create_gardenUserTaskMap.GardenUserId = gardenUserId;
+            create_gardenUserTaskMap.GardenTaskId = gardenTaskId;
+
+            try
+            {
+                _context.Add(create_gardenUserTaskMap);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+
+            return new JsonResult(true);
+        }
+
+        /// <summary>
+        /// 정원 관리자 목록 가져오기
+        /// </summary>
+        /// <param name="id">정원id</param>
+        /// <returns></returns>
+        public async Task<JsonResult> LoadGardenUserList(int gardenSpaceId, int gardenTaskId)
+        {
+            List<object> object_list = new List<object>();
+
+            if (gardenSpaceId == 0 || gardenTaskId == 0)
+            {
+                var jsonNullValue = new { data = object_list };
+                return Json(jsonNullValue);
+            }
+
+            List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                             .Include(gUser => gUser.GardenRole)
+                                                                .ThenInclude(gRole => gRole.BaseSubType)
+                                                             .Include(gUser => gUser.User)                                                            
+                                                             .AsNoTracking()
+                                                             .Where(gUser => gUser.GardenSpaceId == gardenSpaceId)
+                                                             .ToListAsync();
+
+            List<GardenUserTaskMap> gardenTaskMap_list = await _context.GardenUserTaskMap
+                                                                .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                                .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                                .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == gardenTaskId)
+                                                                .ToListAsync();
+
+            foreach(GardenUserTaskMap gardenTaskMap in gardenTaskMap_list)
+            {
+               
+                if(gardenUser_list.Contains(gardenTaskMap.GardenManager))
+                {
+                    gardenUser_list.Remove(gardenTaskMap.GardenManager);    
+                }
+                else if(gardenUser_list.Contains(gardenTaskMap.GardenUser))
+                {
+                    gardenUser_list.Remove(gardenTaskMap.GardenUser);
+                }                
+            }
+
+
+            foreach (GardenUser gardenUser in gardenUser_list)
+            {
+                object_list.Add(new
+                {
+                    roleType = gardenUser.GardenRole.BaseSubType.Name,
+                    userName = gardenUser.User.UserName,
+                    name = gardenUser.User.Name,
+                    regDate = gardenUser.CreateDate.ToShortDateString(),
+                    id = gardenUser.Id,
+                });
+            }
+
+            var jsonValue = new { data = object_list };
+            return Json(jsonValue);
+        }
 
         // GET: GardenTasks
         public async Task<IActionResult> Index(int? search_gardenSpace_id)
@@ -134,16 +230,16 @@ namespace Garden.Controllers
         /// <param name="id">GardenSpaceId</param>
         /// <returns></returns>
         // GET: GardenTasks/Create
-        public IActionResult Create(int Id)
+        public IActionResult Create(int id)
         {
-            GardenSpace gardenSpace = _context.GardenSpace.FirstOrDefault(z => z.Id == Id);
+            GardenSpace gardenSpace = _context.GardenSpace.FirstOrDefault(z => z.Id == id);
             if(gardenSpace == null)
             {
                 return PartialView();
             }
             ViewData["gardenSpace_name"] = gardenSpace.Name;
-            ViewData["gardenSpace_id"] = Id;
-            ViewData["subType_id"] = new SelectList(_context.BaseSubType, "Id", "Name");
+            ViewData["gardenSpace_id"] = id;
+            ViewData["subType_id"] = new SelectList(_context.BaseSubType.Where(sType => sType.BaseTypeId == "GARDEN_TASK_TIME_TYPE"), "Id", "Name");
             return PartialView();
         }
 

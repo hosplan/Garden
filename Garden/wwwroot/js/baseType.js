@@ -13,6 +13,9 @@ var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
     },
     'columns': [
         {
+            'data':'type', 'className':'text-left m-2'
+        },
+        {
             'data': 'name', 'className': 'text-left m-2',
             'render': function (data) {
                 return '<span class="font-weight-bold text-info">'+data+'</span>';

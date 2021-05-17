@@ -8,7 +8,7 @@
 <link href="~/js/select2/select2.css" rel="stylesheet" />
 <!-- Modal -->
 <div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
@@ -22,12 +22,13 @@
             <div class="modal-body">
                 @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
                 <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" name="GardenSpaceId" value="@gardenSpace_id" />
+                <input type="hidden" asp-for="Id"/>
+                <input type="hidden" name="GardenSpaceId" id="gardenSpaceId" value="@gardenSpace_id" />
+                
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">                 
                     <div class="col-xl-12">
-                        <table class="table table-hover" id="attendUser_dt">
+                        <table class="table table-hover w-100" id="attendUser_dt">
                             <thead>
                                 <tr>
                                     <th>@Html.Raw("아이디")</th>
@@ -40,7 +41,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("닫기")</button>
+                <button type="button" class="btn btn-info btn-md" data-dismiss="modal" onclick="reloadPage()">@Html.Raw("닫기")</button>
             </div>
         </div>
     </div>    
@@ -50,12 +51,14 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-<script src="~/vendor/jquery/jquery.js"></script>
+
 <script type="text/javascript">
     //baseSubType - datatable
+    let gardenSpaceId = document.getElementById('gardenSpaceId').value;
+    let gardenTaskId = document.getElementById('Id').value;
     var gardenUser_dataTable = $('#attendUser_dt').DataTable({
         'ajax': {
-            'url': "/GardenUsers/GetGardenUserList?id=" + gardenSpace_option + "",
+            'url': "/GardenTasks/LoadGardenUserList?gardenSpaceId=" + gardenSpaceId + "&gardenTaskId=" + gardenTaskId+"",
             'type': 'GET',
             'datatype': 'json'
         },
@@ -63,13 +66,10 @@
             { 'data': 'userName', 'className': 'text-center m-2' },
             { 'data': 'name', 'className': 'text-center m-2' },
             {
-                'data': 'isActive', 'className': 'text-center m-2',
+                'data': 'id', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    let isCheck = '';
-                    if (data == true) {
-                        isCheck = 'checked';
-                    }
-                    return '<input type="checkbox" data-permission="update" style="width:25px; height:25px;" onclick="changeIsActive()" ' + isCheck + '/>';
+                    return '<button type="button" class="btn btn-primary btn-md" value="manager" onclick="AttendGardenTask(' + data + ',this)">담당자</button>'+
+                           '<button type="button" class="btn btn-primary btn-md ml-2"  value="user" onclick="AttendGardenTask(' + data + ',this)">참여자</button>';
                 }
             },
         ],
@@ -82,4 +82,28 @@
         'searching': true,
         'processing': true,
     });
+
+    function AttendGardenTask(gardenUserId, obj, type) {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+        if (obj.value == "user") {
+            httpRequest.open('POST', '/GardenTasks/AttendGardenTaskUser', true);
+        } else {
+            httpRequest.open('POST', '/GardenTasks/AttendGardenTaskManager', true);
+        }
+        
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 || this.response == "true") {
+                obj.innerText = "참여 됨";
+                obj.disabled = true;
+            } else {
+                errorMessage();
+            }
+        };
+        httpRequest.send('gardenUserId=' + gardenUserId + '&gardenTaskId=' + gardenTaskId);
+    }
 </script>

@@ -52,7 +52,7 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {
-                return '<button type="button" data-permission="delete" class="btn btn-link text-danger p-0 ml-3 float-right" '+deletePermission+' onclick="removeValue(\''+data+'\')"><i class="fas fa-trash"></i></button>';                  
+                return '<button type="button" data-permission="delete" class="btn btn-link text-danger p-0 ml-3 float-right" '+deletePermission+' onclick="removeValue('+data+')"><i class="fas fa-trash"></i></button>';                  
             }
         }
     ],
@@ -66,12 +66,19 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
     'processing': true,
 });
 
+function createGardenUser() {
+    let gardenSpace_option = document.getElementById('Garden_list');
+    gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
+    openModal('GardenUsers', 'Create', gardenSpace_option); 
+}
+
 function removeValue(gardenUserId) {
     Swal.fire({
-        title: '문제가 발생하였습니다!',
-        text: '잠시후에 다시 시도해주세요!',
-        icon: 'error',
-        confirmButtonText: '확인'
+        title: '해당 정원관리사를 삭제 하시겠어요?',
+        icon: 'warning',
+        confirmButtonText: '삭제',
+        showCancelButton: true,
+        cancelButtonText : '취소',        
     }).then(function (result) {
         if (result.value) {
             let httpRequest = new XMLHttpRequest();
@@ -83,15 +90,13 @@ function removeValue(gardenUserId) {
             httpRequest.open('POST', '/GardenUsers/DeleteGardenUser', true);
             httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             httpRequest.onload = function () {
-                if (this.status === 200) {
-                    console.log(this.responseText);
-
-                    if (this.response == "false") {
-                        errorMessage();
-                    }
+                if (this.status === 200 || this.response == "true") {
+                    location.reload();                  
+                } else {
+                    errorMessage();
                 }
             };
-            httpRequest.send('userId=' + gardenUserId);
+            httpRequest.send('gardenUserId=' + gardenUserId);
         }
     });
 }

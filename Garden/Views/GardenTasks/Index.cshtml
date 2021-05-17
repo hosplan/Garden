@@ -31,13 +31,9 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                     <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="GetGardenIdAndOpenModal(1)">
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="SelectingIdOpenModal('GardenTasks', 'Create')">
                         <i class="fas fa-plus-circle text-primary mr-3"></i>
-                        @Html.Raw("업무 생성")
-                    </button>
-                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenTasks','Create')">
-                        <i class="fas fa-plus-circle text-primary mr-3"></i>
-                        @Html.Raw("관련 타입 생성")
+                        @Html.Raw("정원 업무 생성")
                     </button>
                 </div>
             </div>

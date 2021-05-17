@@ -26,6 +26,11 @@ namespace Garden.Models
 
         [Display(Name = "주 단위")]
         public int TaskWeek { get; set; }
+
+        [Display(Name = "업무")]
+        public int? GardenTaskId { get; set; }
+        [ForeignKey("GardenTaskId")]
+        public virtual GardenTask GardenTask { get; set; }
         public int? GardenSpaceId { get; set; }
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }

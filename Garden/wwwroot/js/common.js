@@ -32,19 +32,13 @@ function errorMessage() {
     });
 }
 
-//선택한 정원에 해당하는 모달창 open
-function GetGardenIdAndOpenModal(token) {
+function SelectingIdOpenModal(controllerName, actionName) {
     let gardenSpace_option = document.getElementById('Garden_list');
     gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
-
-    if (token == 1) {
-        console.log("gardenUser: " + gardenSpace_option);
-        openModal('GardenUsers', 'Create', gardenSpace_option);
-    }
-    else if (token == 2) {
-        openModal('GardenTasks', 'Create', gardenSpace_option);
-    }
+    openModal(controllerName, actionName, gardenSpace_option);
 }
+
+
 
 //url 클릭
 function click_common_btn(url) {
