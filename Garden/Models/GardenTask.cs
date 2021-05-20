@@ -32,7 +32,7 @@ namespace Garden.Models
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
-
+        public virtual ICollection<GardenWorkTime> GardenWorkTimes{ get; set; }  
 
         //public int GetTodayTask
         //{

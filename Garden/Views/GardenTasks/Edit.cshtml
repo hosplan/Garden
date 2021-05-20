@@ -4,56 +4,82 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>GardenTask</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<link href="~/js/select2/select2.css" rel="stylesheet" />
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SubTypeId" class="control-label"></label>
-                <select asp-for="SubTypeId" class="form-control" asp-items="ViewBag.SubTypeId"></select>
-                <span asp-validation-for="SubTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActivate" /> @Html.DisplayNameFor(model => model.IsActivate)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GardenSpaceId" class="control-label"></label>
-                <select asp-for="GardenSpaceId" class="form-control" asp-items="ViewBag.GardenSpaceId"></select>
-                <span asp-validation-for="GardenSpaceId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-success font-weight-bold" id="addContactLabel">
+                        <i class="fas fa-brush mr-2"></i>
+                        @Model.Name - 수정
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="CreateDate" value="@Model.CreateDate" />
+                    <input type="hidden" asp-for="GardenSpaceId" value="@Model.GardenSpaceId" />
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("업무 타입")
+                        </label>
+                        <div class="col-xl-8">
+                            <select asp-for="SubTypeId" class="form-control garden_type_select2 mt-1" style="width:100%;" asp-items="ViewBag.subType_id"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("제목")
+                        </label>
+                        <div class="col-xl-8">
+                            <input type="text" class="form-control" asp-for="Name" value="@Model.Name" />
+                        </div>
+                    </div>
+
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("내용")
+                        </label>
+                        <div class="col-xl-8">
+                            <textarea class="form-control" asp-for="Description" value="@Model.Description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("활성화")
+                        </label>
+                        <div class="col-xl-8">
+                            <input type="checkbox" class="mt-1" style="width:25px; height:25px;" asp-for="IsActivate" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
+                    <input type="submit" class="btn btn-secondary btn-md" value="@Html.Raw("확인")" />
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script src="~/vendor/jquery/jquery.js"></script>
+<script src="~/js/select2/select2.js"></script>
+<script type="text/javascript">
+
+    $('.garden_type_select2').select2({
+        dropdownParent: $('#modal-contact')
+    });
+</script>

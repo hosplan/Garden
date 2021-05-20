@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
+using System.Text;
 
 namespace Garden.Controllers
 {
@@ -17,6 +18,97 @@ namespace Garden.Controllers
         public GardenUserTaskMapsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<JsonResult> GetGardenUserWorkTime(int gardenUserTaskMapId)
+        {
+            if(gardenUserTaskMapId == 0)
+            {
+                return new JsonResult(false);
+            }
+
+            GardenUserTaskMap gardenUserTaskMap = await _context.GardenUserTaskMap
+                                                                .Include(gUserTaskMap => gUserTaskMap.GardenTask)
+                                                                    .ThenInclude(gTask => gTask.GardenWorkTimes)
+                                                                .FirstOrDefaultAsync(gUserTaskMap => gUserTaskMap.Id == gardenUserTaskMapId);
+            
+            if(gardenUserTaskMap == null)
+            {
+                return new JsonResult(false);
+            }
+            else if(gardenUserTaskMap.GardenTask.GardenWorkTimes.Count() == 0)
+            {
+                return new JsonResult("empty");
+            }
+
+            List<object> object_list = new List<object>();
+
+            foreach(GardenWorkTime gardenWorkTime in gardenUserTaskMap.GardenTask.GardenWorkTimes)
+            {
+
+            }
+            
+            return new JsonResult(object_list);
+        }
+
+        /// <summary>
+        /// 정원 업무 참여자 목록 불러오기
+        /// </summary>
+        /// <param name="id">GardenTaskId</param>
+        /// <returns></returns>
+        public async Task<JsonResult> GetAttendUserList(int? id)
+        {
+            
+            List<object> object_list = new List<object>();
+            
+            if(id == null)
+            {
+                var empty_jsonValue = new { data = object_list };
+                return Json(empty_jsonValue);
+            }
+
+            List<GardenUserTaskMap> gardenUserTaskMap_list = await _context.GardenUserTaskMap
+                                                                           .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                                                .ThenInclude(gUser => gUser.User)
+                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                                                .ThenInclude(gUser => gUser.User)
+                                                                            .AsNoTracking()
+                                                                            .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == id)
+                                                                            .ToListAsync();
+
+            StringBuilder temp_roleTypeName = new StringBuilder();
+            foreach(GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
+            {
+                GardenUser temp_gardenUserInfo = new GardenUser();
+
+                if(gardenUserTaskMap.GardenManagerId == null)
+                {
+                    temp_gardenUserInfo = gardenUserTaskMap.GardenUser;
+                    temp_roleTypeName.Append("참여자");
+                }                    
+                else
+                {
+                    temp_gardenUserInfo = gardenUserTaskMap.GardenManager;
+                    temp_roleTypeName.Append("담당자");
+                }
+                    
+                
+
+                object_list.Add(new
+                {
+                    roleType = temp_roleTypeName.ToString(),
+                    userName = temp_gardenUserInfo.User.UserName,
+                    name = temp_gardenUserInfo.User.Name,
+                    regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
+                    id = gardenUserTaskMap.Id
+                });
+
+                temp_roleTypeName.Clear();
+            }
+
+            var jsonValue = new { data = object_list };
+
+            return Json(jsonValue);
         }
 
         // GET: GardenUserTaskMaps

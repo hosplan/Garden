@@ -382,6 +382,9 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenWorkTimeId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GardenManagerId");

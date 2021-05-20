@@ -445,6 +445,7 @@ namespace Garden.Migrations
                     GardenManagerId = table.Column<int>(type: "int", nullable: true),
                     GardenUserId = table.Column<int>(type: "int", nullable: true),
                     GardenTaskId = table.Column<int>(type: "int", nullable: true),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GardenWorkTimeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

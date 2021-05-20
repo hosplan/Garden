@@ -214,9 +214,11 @@ namespace Garden.Controllers
             }
 
             var gardenTask = await _context.GardenTask
-                .Include(g => g.BaseSubType)
-                .Include(g => g.GardenSpace)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                                            .Include(gTask => gTask.BaseSubType)
+                                            .Include(gTask => gTask.GardenSpace)
+                                            .Include(gTask => gTask.GardenUserTaskMaps)
+                                            .AsNoTracking()
+                                            .FirstOrDefaultAsync(gTask => gTask.Id == id);
             if (gardenTask == null)
             {
                 return NotFound();
@@ -254,6 +256,7 @@ namespace Garden.Controllers
             {
                 gardenTask.IsActivate = true;
                 gardenTask.CreateDate = DateTime.Now;
+                gardenTask.RegUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 _context.Add(gardenTask);
                 await _context.SaveChangesAsync();
@@ -281,9 +284,10 @@ namespace Garden.Controllers
             {
                 return NotFound();
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", gardenTask.SubTypeId);
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenTask.GardenSpaceId);
-            return View(gardenTask);
+
+            ViewData["subType_id"] = new SelectList(_context.BaseSubType.Where(sType => sType.BaseTypeId == "GARDEN_TASK_TIME_TYPE"), "Id", "Name", gardenTask.SubTypeId);
+
+            return PartialView(gardenTask);
         }
 
         // POST: GardenTasks/Edit/5
@@ -291,13 +295,8 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,SubTypeId,IsActivate,CreateDate,GardenSpaceId")] GardenTask gardenTask)
+        public async Task<IActionResult> Edit([Bind("Id,Name,Description,SubTypeId,IsActivate,CreateDate,GardenSpaceId")] GardenTask gardenTask)
         {
-            if (id != gardenTask.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -318,9 +317,9 @@ namespace Garden.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", gardenTask.SubTypeId);
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenTask.GardenSpaceId);
-            return View(gardenTask);
+            ViewData["subType_id"] = new SelectList(_context.BaseSubType.Where(sType => sType.BaseTypeId == "GARDEN_TASK_TIME_TYPE"), "Id", "Name", gardenTask.SubTypeId);
+
+            return PartialView(gardenTask);
         }
 
         // GET: GardenTasks/Delete/5

@@ -14,6 +14,7 @@ namespace Garden.Models
         public string UserId { get; set; } 
         public bool IsActivate { get; set; }
         public Nullable<int> GardenSpaceId { get; set; }
+
         [Display(Name ="등록날짜")]
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }

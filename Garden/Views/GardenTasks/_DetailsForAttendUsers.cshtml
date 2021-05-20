@@ -1,0 +1,162 @@
+﻿@model Garden.Models.GardenTask
+
+<div class="col-xl-12">
+    <div class="row">
+        <div class="col-xl-5">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-info">
+                        <i class="fas fa-users fa-fw mr-2"></i>
+                        @Html.Raw("업무 참여자")
+                    </h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                            <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="openModal('GardenTasks','AttendGardenUser','@Model.Id')">
+                                <i class="fas fa-plus-circle text-primary mr-3"></i>
+                                @Html.Raw("업무 참여자 추가")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table" id="gardenAttendUser_dt">
+                        <thead>
+                            <tr>
+                                <th>@Html.Raw("역할")</th>
+                                <th>@Html.Raw("아이디")</th>
+                                <th>@Html.Raw("이름")</th>
+                                <th>@Html.Raw("참여일자")</th>
+                                <th class="text-right">@Html.Raw("관리")</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-7">
+            <div class="card shadow">
+                <div class="card-header">
+                    <span class="text-info font-weight-bold">
+                        <i class="fas fa-users fa-fw mr-2"></i>
+                        @Html.Raw("참여자 상세 정보")
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="alert_empty_gardenWorkTime" style="display:none">
+                        <div class="col-xl-12">
+                            <div class="text-center">
+                                <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width:25rem;" src="~/img/undraw_Add_files.svg" />
+                            </div>
+                            <div class="m-auto text-center">
+                                <h3 class="text-warning font-weight-bold">@Html.Raw("앗! 만들어진 업무시간이 없네요.")</h3>
+                                <button type="button" class="btn btn-primary btn-lg mt-2">
+                                    <h2>
+                                        <i class="fas fa-plus-circle mr-2"></i>
+                                        @Html.Raw("업무시간 생성하기")
+                                    </h2>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="user_gardenWorkTime" style="display:none">
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                @Html.Raw("다음 업무 시간")
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                @Html.Raw("완료한 횟수")
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-info h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                @Html.Raw("전체 업무 기간(주 단위)")
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                             style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                             aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12 mt-2">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>@Html.Raw("이름")</th>
+                                        <th>@Html.Raw("업무 날짜")</th>
+                                        <th>@Html.Raw("시작 시간")</th>
+                                        <th>@Html.Raw("종료 시간")</th>
+                                        <th>@Html.Raw("완료 여부")</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/detailsForAttendUsers.js"></script>
