@@ -46,9 +46,21 @@ namespace Garden.Controllers
         }      
 
         // GET: GardenWorkTimes/Create
-        public IActionResult Create()
+        public IActionResult Create(int gardenUserTaskMapId)
         {
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id");
+            GardenUserTaskMap gardenUserTaskMap = _context.GardenUserTaskMap
+                                                          .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                            .ThenInclude(gUser => gUser.User)
+                                                          .AsNoTracking()
+                                                          .FirstOrDefault(gUserTaskMap => gUserTaskMap.Id == gardenUserTaskMapId);
+
+            if (gardenUserTaskMap == null)
+                return NotFound();
+
+            ViewData["GardenTaskId"] = gardenUserTaskMap.GardenTaskId;
+            ViewData["GardenUserId"] = gardenUserTaskMap.GardenUserId;
+            ViewData["GardenUserName"] = gardenUserTaskMap.GardenUser.User.Name;
+
             return View();
         }
 

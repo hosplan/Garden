@@ -64,12 +64,13 @@ function getAttendUserWorkTime(gardenUserTaskMapId) {
     httpRequest.open('POST', '/GardenUserTaskMaps/GetGardenUserWorkTime', true);
     httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     httpRequest.onload = function () {
-        if (this.status === 200 || this.response == "true") {
-            location.reload();
-        }
-        else if (this.response == "empty") {
-            console.log("zz");
-            showEmptyInfo();
+        //if (this.status === 200 || this.response == "true") {
+        //    location.reload();
+             
+        //}
+        
+        if (this.response == "\"empty\"") {
+            showEmptyInfo(gardenUserTaskMapId);
         }
         else {
             errorMessage()
@@ -78,9 +79,10 @@ function getAttendUserWorkTime(gardenUserTaskMapId) {
     httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
 }
 
-function showEmptyInfo() {
+function showEmptyInfo(gardenUserTaskMapId) {
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'block';
     document.getElementById('user_gardenWorkTime').style.display = 'none';
+    document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '';
 }
 
 function createGardenUser() {

@@ -38,7 +38,8 @@ namespace Garden.Controllers
             }
             else if(gardenUserTaskMap.GardenTask.GardenWorkTimes.Count() == 0)
             {
-                return new JsonResult("empty");
+                string isEmpty = "empty";
+                return new JsonResult(isEmpty);
             }
 
             List<object> object_list = new List<object>();
