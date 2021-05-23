@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210520044506_initial")]
+    [Migration("20210523033318_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -723,7 +723,7 @@ namespace Garden.Migrations
                         .HasForeignKey("GardenSpaceId");
 
                     b.HasOne("Garden.Models.GardenTask", "GardenTask")
-                        .WithMany()
+                        .WithMany("GardenWorkTimes")
                         .HasForeignKey("GardenTaskId");
 
                     b.Navigation("GardenSpace");
@@ -815,6 +815,8 @@ namespace Garden.Migrations
             modelBuilder.Entity("Garden.Models.GardenTask", b =>
                 {
                     b.Navigation("GardenUserTaskMaps");
+
+                    b.Navigation("GardenWorkTimes");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenUser", b =>

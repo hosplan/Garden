@@ -69,12 +69,12 @@ namespace Garden.Controllers
 
             List<GardenUserTaskMap> gardenUserTaskMap_list = await _context.GardenUserTaskMap
                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenUser)
-                                                                                .ThenInclude(gUser => gUser.User)
-                                                                            .Include(gUserTaskMap => gUserTaskMap.GardenManager)
-                                                                                .ThenInclude(gUser => gUser.User)
-                                                                            .AsNoTracking()
-                                                                            .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == id)
-                                                                            .ToListAsync();
+                                                                               .ThenInclude(gUser => gUser.User)
+                                                                           .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                                               .ThenInclude(gUser => gUser.User)
+                                                                           .AsNoTracking()
+                                                                           .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == id)
+                                                                           .ToListAsync();
 
             StringBuilder temp_roleTypeName = new StringBuilder();
             foreach(GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
@@ -218,6 +218,29 @@ namespace Garden.Controllers
             return View(gardenUserTaskMap);
         }
 
+        /// <summary>
+        /// 업무참여자 삭제하기
+        /// </summary>
+        /// <param name="gardenUserTaskMapId"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> DeleteAttendUser(int gardenUserTaskMapId)
+        {
+            try
+            {
+                GardenUserTaskMap gardenUserTaskMap = await _context.GardenUserTaskMap.FindAsync(gardenUserTaskMapId);
+
+                if (gardenUserTaskMap == null)
+                    return new JsonResult(false);
+
+                _context.GardenUserTaskMap.Remove(gardenUserTaskMap);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+            return new JsonResult(true);
+        }
         // GET: GardenUserTaskMaps/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

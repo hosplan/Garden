@@ -721,7 +721,7 @@ namespace Garden.Migrations
                         .HasForeignKey("GardenSpaceId");
 
                     b.HasOne("Garden.Models.GardenTask", "GardenTask")
-                        .WithMany()
+                        .WithMany("GardenWorkTimes")
                         .HasForeignKey("GardenTaskId");
 
                     b.Navigation("GardenSpace");
@@ -813,6 +813,8 @@ namespace Garden.Migrations
             modelBuilder.Entity("Garden.Models.GardenTask", b =>
                 {
                     b.Navigation("GardenUserTaskMaps");
+
+                    b.Navigation("GardenWorkTimes");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenUser", b =>

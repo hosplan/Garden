@@ -54,7 +54,7 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
 });
 
 //정원 업무 참여자의 업무시간 정보 가져오기
-function getAttendUserWorkTime(gardenUserTaskMapId){
+function getAttendUserWorkTime(gardenUserTaskMapId) {
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
         errorMessage();
@@ -68,6 +68,7 @@ function getAttendUserWorkTime(gardenUserTaskMapId){
             location.reload();
         }
         else if (this.response == "empty") {
+            console.log("zz");
             showEmptyInfo();
         }
         else {
@@ -88,9 +89,10 @@ function createGardenUser() {
     openModal('GardenUsers', 'Create', gardenSpace_option); 
 }
 
-function removeValue(gardenUserId) {
+function removeValue(gardenUserTaskMapId) {
     Swal.fire({
-        title: '해당 정원관리사를 삭제 하시겠어요?',
+        title: '해당 업무참여자를 삭제 하시겠어요?',
+        text : '관련된 업무가 모두 삭제됩니다!',
         icon: 'warning',
         confirmButtonText: '삭제',
         showCancelButton: true,
@@ -103,7 +105,7 @@ function removeValue(gardenUserId) {
                 return false;
             }
 
-            httpRequest.open('POST', '/GardenUsers/DeleteGardenUser', true);
+            httpRequest.open('POST', '/GardenUserTaskMaps/DeleteAttendUser', true);
             httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             httpRequest.onload = function () {
                 if (this.status === 200 || this.response == "true") {
@@ -112,7 +114,7 @@ function removeValue(gardenUserId) {
                     errorMessage();
                 }
             };
-            httpRequest.send('gardenUserId=' + gardenUserId);
+            httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
         }
     });
 }

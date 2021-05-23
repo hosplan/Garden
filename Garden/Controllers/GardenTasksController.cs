@@ -47,6 +47,8 @@ namespace Garden.Controllers
 
             create_gardenUserTaskMap.GardenManagerId = gardenUserId;
             create_gardenUserTaskMap.GardenTaskId = gardenTaskId;
+            create_gardenUserTaskMap.RegDate = DateTime.Now;
+
             try
             {
                 _context.Add(create_gardenUserTaskMap);
@@ -67,6 +69,7 @@ namespace Garden.Controllers
 
             create_gardenUserTaskMap.GardenUserId = gardenUserId;
             create_gardenUserTaskMap.GardenTaskId = gardenTaskId;
+            create_gardenUserTaskMap.RegDate = DateTime.Now;
 
             try
             {
@@ -79,6 +82,36 @@ namespace Garden.Controllers
             }
 
             return new JsonResult(true);
+        }
+
+        /// <summary>
+        /// 참여된 사람이 있는지 확인
+        /// </summary>
+        /// <param name="gardenUser_list"></param>
+        /// <param name="gardenTaskId"></param>
+        /// <returns></returns>
+        private async Task<List<GardenUser>> CheckAttendingUser(List<GardenUser> gardenUser_list, int gardenTaskId)
+        {
+            List<GardenUserTaskMap> gardenTaskMap_list = await _context.GardenUserTaskMap
+                                                               .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                               .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                               .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == gardenTaskId)
+                                                               .ToListAsync();
+
+            foreach (GardenUserTaskMap gardenTaskMap in gardenTaskMap_list)
+            {
+
+                if (gardenUser_list.Contains(gardenTaskMap.GardenManager))
+                {
+                    gardenUser_list.Remove(gardenTaskMap.GardenManager);
+                }
+                else if (gardenUser_list.Contains(gardenTaskMap.GardenUser))
+                {
+                    gardenUser_list.Remove(gardenTaskMap.GardenUser);
+                }
+            }
+
+            return gardenUser_list;
         }
 
         /// <summary>
@@ -97,38 +130,17 @@ namespace Garden.Controllers
             }
 
             List<GardenUser> gardenUser_list = await _context.GardenUser
-                                                             .Include(gUser => gUser.GardenRole)
-                                                                .ThenInclude(gRole => gRole.BaseSubType)
                                                              .Include(gUser => gUser.User)                                                            
-                                                             .AsNoTracking()
-                                                             .Where(gUser => gUser.GardenSpaceId == gardenSpaceId)
+                                                             .Where(gUser => gUser.GardenSpaceId == gardenSpaceId && gUser.GardenRole.SubTypeId != "GARDEN_MANAGER_ROLE_TYPE_1")
                                                              .ToListAsync();
-
-            List<GardenUserTaskMap> gardenTaskMap_list = await _context.GardenUserTaskMap
-                                                                .Include(gUserTaskMap => gUserTaskMap.GardenUser)
-                                                                .Include(gUserTaskMap => gUserTaskMap.GardenManager)
-                                                                .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == gardenTaskId)
-                                                                .ToListAsync();
-
-            foreach(GardenUserTaskMap gardenTaskMap in gardenTaskMap_list)
-            {
-               
-                if(gardenUser_list.Contains(gardenTaskMap.GardenManager))
-                {
-                    gardenUser_list.Remove(gardenTaskMap.GardenManager);    
-                }
-                else if(gardenUser_list.Contains(gardenTaskMap.GardenUser))
-                {
-                    gardenUser_list.Remove(gardenTaskMap.GardenUser);
-                }                
-            }
-
-
+            //이미 참여된 사람이 있는지 확인
+            gardenUser_list = await CheckAttendingUser(gardenUser_list, gardenTaskId);
+ 
             foreach (GardenUser gardenUser in gardenUser_list)
             {
                 object_list.Add(new
                 {
-                    roleType = gardenUser.GardenRole.BaseSubType.Name,
+                    //roleType = gardenUser.GardenRole.BaseSubType.Name,
                     userName = gardenUser.User.UserName,
                     name = gardenUser.User.Name,
                     regDate = gardenUser.CreateDate.ToShortDateString(),
