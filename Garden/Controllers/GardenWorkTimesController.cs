@@ -69,16 +69,18 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,GardenSpaceId")] GardenWorkTime gardenWorkTime)
+        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,GardenSpaceId,TaskDate,TaskWeek")] GardenWorkTime gardenWorkTime, int GardenTaskId, int GardenUserId)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gardenWorkTime);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                //_context.Add(gardenWorkTime);
+                //await _context.SaveChangesAsync();
+
+                return RedirectToAction("Details","GardenTasks", new { id = GardenTaskId });
             }
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenWorkTime.GardenSpaceId);
-            return View(gardenWorkTime);
+            //ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenWorkTime.GardenSpaceId);
+            return RedirectToAction("Details", "GardenTasks", new { id = GardenTaskId });
         }
 
         // GET: GardenWorkTimes/Edit/5

@@ -9,11 +9,12 @@
 
 <div class="col-xl-12 mb-3">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">
-            <span class="text-info font-weight-bold mr-2">정원 업무시간 생성</span>
+        <h1 class="h3 mb-0">
+            <span class="text-primary font-weight-bold mr-2">
+                <i class="fas fa-plus-circle fa-fw"></i>
+                @Html.Raw("정원 업무시간 생성")
+            </span>
         </h1>
-        <input type="hidden" id="GardenTaskId" value="@gardenTaskId" />
-        <input type="hidden" id="GardenUserId" value="@gardenUserId" />
         <div class="btn-group" role="group" aria-label="Basic example">
             <a class="btn btn-info" asp-controller="GardenTasks" asp-action="Details" asp-route-id="@gardenTaskId">
                 <i class="fas fa-arrow-left fa-sm text-white-50"></i>
@@ -26,64 +27,87 @@
 <div class="col-xl-7">
     <div class="card shadow mb-3">
         <div class="card-header">
-            <span class="text-info font-weight-bold">
+            <span class="text-primary font-weight-bold">
                 <i class="fas fa-feather fa-fw mr-2"></i>
                 @gardenUserName
             </span>
         </div>
         <div class="card-body">
-             <table class="table table-hover">
-                 <tbody>
-                     <tr>
-                         <td>@Html.Raw("시작 날짜")</td>
-                         <td>
-                             <input type="text" class="form-control" asp-for="TaskDate"/>
-                         </td>
-                     </tr>
-                     <tr>
-                         <td>@Html.Raw("업무 요일")</td>
-                         <td>
-                             <table class="table table-bordered">
-                                 <thead>
-                                     <tr class="text-center">
-                                         <td>@Html.Raw("일")</td>
-                                         <td>@Html.Raw("월")</td>
-                                         <td>@Html.Raw("화")</td>
-                                         <td>@Html.Raw("수")</td>
-                                         <td>@Html.Raw("목")</td>
-                                         <td>@Html.Raw("금")</td>
-                                         <td>@Html.Raw("토")</td>
-                                     </tr>
-                                 </thead>
-                                 <tbody>
-                                     <tr class="text-center">
-                                         <td><input type="checkbox" style="width:25px; height:25px;"/></td>
-                                         <td><input type="checkbox" style="width:25px; height:25px;" /></td>
-                                         <td><input type="checkbox" style="width:25px; height:25px;" /></td>
-                                         <td><input type="checkbox" style="width:25px; height:25px;" /></td>
-                                         <td><input type="checkbox" style="width:25px; height:25px;" /></td>
-                                         <td><input type="checkbox" style="width:25px; height:25px;" /></td>
-                                         <td><input type="checkbox" style="width:25px; height:25px;" /></td>
-                                     </tr>
-                                 </tbody>
-                             </table>
-                         </td>
-                     </tr>
-                 </tbody>
-             </table>
-        </div>
-    </div>
-</div>
-<div class="col-xl-5">
-    <div class="card shadow mb-3">
-        <div class="card-header">
-            <span class="text-info font-weight-bold">
-                <i class="fas fa-calendar fa-fw mr-2"></i>
-                @Html.Raw("시작날짜 선정")
-            </span>
-        </div>
-        <div class="card-body">
+            <form asp-action="Create">
+                <input type="hidden" name="GardenTaskId" value="@gardenTaskId" />
+                <input type="hidden" name="GardenUserId" value="@gardenUserId" />
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td class="text-primary font-weight-bold">
+                                <i class="fas fa-caret-square-right fa-fw"></i>
+                                @Html.Raw("시작 날짜")
+                            </td>
+                            <td>
+                                <input type="date" class="form-control w-50" asp-for="TaskDate" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-primary font-weight-bold">
+                                <i class="fas fa-calendar-check fa-fw"></i>
+                                @Html.Raw("업무 요일")
+                            </td>
+                            <td>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <td>@Html.Raw("일")</td>
+                                            <td>@Html.Raw("월")</td>
+                                            <td>@Html.Raw("화")</td>
+                                            <td>@Html.Raw("수")</td>
+                                            <td>@Html.Raw("목")</td>
+                                            <td>@Html.Raw("금")</td>
+                                            <td>@Html.Raw("토")</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center">
+                                            <td><input type="checkbox" name="weekend.IsMon" value="true" style="width:25px; height:25px;"/></td>
+                                            <td><input  name="weekend"  style="width:25px; height:25px;" /></td>
+                                            <td><input  name="weekend" style="width:25px; height:25px;" /></td>
+                                            <td><input  name="weekend" style="width:25px; height:25px;" /></td>
+                                            <td><input  name="weekend" style="width:25px; height:25px;" /></td>
+                                            <td><input  name="weekend" style="width:25px; height:25px;" /></td>
+                                            <td><input  name="weekend" style="width:25px; height:25px;" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-primary font-weight-bold">
+                                <i class="fas fa-clock fa-fw"></i>
+                                @Html.Raw("업무 시작 시간")
+                            </td>
+                            <td><input type="time" class="form-control w-50" asp-for="StartTime" /></td>
+                        </tr>
+                        <tr>
+                            <td class="text-primary font-weight-bold">
+                                <i class="fas fa-clock fa-fw"></i>
+                                @Html.Raw("업무 종료 시간")
+                            </td>
+                            <td><input type="time" class="form-control w-50" asp-for="EndTime" /></td>
+                        </tr>
+                        <tr>
+                            <td class="text-primary font-weight-bold">
+                                <i class="fas fa-calendar-day fa-fw"></i>
+                                @Html.Raw("주 단위")
+                            </td>
+                            <td>
+                                <input type="text" class="form-control w-50" asp-for="TaskWeek" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
+                <input type="submit" class="btn btn-primary btn-md mt-3 float-right" value="만들기" />
+            </form>
+             
         </div>
     </div>
 </div>

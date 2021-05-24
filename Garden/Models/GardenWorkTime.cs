@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -35,5 +36,16 @@ namespace Garden.Models
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
+    }
+
+    public class Weekend
+    {
+        public bool IsMon { get; set; }
+        public bool IsTue { get; set; }
+        public bool IsWed { get; set; }
+        public bool IsThr { get; set; }
+        public bool IsFri { get; set; }
+        public bool IsSat { get; set; }
+        public bool IsSun { get; set; }
     }
 }
