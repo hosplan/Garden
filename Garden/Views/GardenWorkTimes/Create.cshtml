@@ -4,6 +4,7 @@
     ViewData["Title"] = "Create";
     int gardenTaskId = (int)ViewData["GardenTaskId"];
     int gardenUserId = (int)ViewData["GardenUserId"];
+    int gardenSpaceId = (int)ViewData["GardenSpaceId"];
     string gardenUserName = (string)ViewData["GardenUserName"];
 }
 
@@ -34,8 +35,9 @@
         </div>
         <div class="card-body">
             <form asp-action="Create">
-                <input type="hidden" name="GardenTaskId" value="@gardenTaskId" />
-                <input type="hidden" name="GardenUserId" value="@gardenUserId" />
+                <input type="hidden" name="GardenTaskId" value=@gardenTaskId />
+                <input type="hidden" name="GardenUserId" value=@gardenUserId />
+                <input type="hidden" name="GardenSpaceId" value=@gardenSpaceId />
                 <table class="table table-hover">
                     <tbody>
                         <tr>

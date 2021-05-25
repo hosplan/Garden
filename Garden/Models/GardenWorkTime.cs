@@ -40,6 +40,9 @@ namespace Garden.Models
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
 
+        public Nullable<int> GardenUserId { get; set; }
+        [ForeignKey("GardenUserId")]
+        public virtual GardenUser GardenUser { get; set; }
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
 
         public Weekend weekend { get; set; }

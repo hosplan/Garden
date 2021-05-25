@@ -80,9 +80,10 @@ function getAttendUserWorkTime(gardenUserTaskMapId) {
 }
 
 function showEmptyInfo(gardenUserTaskMapId) {
+    let gardenSpaceId = document.getElementById('gardenSpaceId').value;
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'block';
     document.getElementById('user_gardenWorkTime').style.display = 'none';
-    document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '';
+    document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId+'';
 }
 
 function createGardenUser() {
