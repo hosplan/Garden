@@ -58,7 +58,7 @@ namespace Garden.Controllers
                 return NotFound();
 
             ViewData["GardenTaskId"] = gardenUserTaskMap.GardenTaskId;
-            ViewData["GardenUserId"] = gardenUserTaskMap.GardenUserId;
+            ViewData["GardenUserId"] = gardenUserTaskMap.GardenUserId; 
             ViewData["GardenUserName"] = gardenUserTaskMap.GardenUser.User.Name;
 
             return View();
@@ -69,7 +69,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,GardenSpaceId,TaskDate,TaskWeek")] GardenWorkTime gardenWorkTime, int GardenTaskId, int GardenUserId)
+        public async Task<IActionResult> Create([Bind("Id,StartTime,EndTime,GardenSpaceId,TaskDate,TaskWeek,weekend")] GardenWorkTime gardenWorkTime, int GardenTaskId, int GardenUserId)
         {
             if (ModelState.IsValid)
             {

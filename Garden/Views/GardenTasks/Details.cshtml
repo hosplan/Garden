@@ -7,11 +7,11 @@
         </h1>
         <input type="hidden" id="GardenTaskId" value="@Model.Id"/>
         <div class="btn-group" role="group" aria-label="Basic example">
-            <button class="btn btn-success" onclick="openModal('GardenTasks','Edit', @Model.Id)">
+            <button class="btn btn-success" data-permission="update" onclick="openModal('GardenTasks','Edit', @Model.Id)">
                 <i class="fas fa-brush fa-sm text-white-50"></i>
                 @Html.Raw("수정")
             </button>
-            <button class="btn btn-danger" onclick="openModal('GardenTasks','Delete', @Model.Id)">
+            <button class="btn btn-danger" data-permission="delete" onclick="openModal('GardenTasks','Delete', @Model.Id)">
                 <i class="fas fa-trash fa-sm text-white-50"></i>
                 @Html.Raw("삭제")
             </button>

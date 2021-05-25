@@ -27,29 +27,36 @@ namespace Garden.Controllers
                 return new JsonResult(false);
             }
 
-            GardenUserTaskMap gardenUserTaskMap = await _context.GardenUserTaskMap
-                                                                .Include(gUserTaskMap => gUserTaskMap.GardenTask)
-                                                                    .ThenInclude(gTask => gTask.GardenWorkTimes)
-                                                                .FirstOrDefaultAsync(gUserTaskMap => gUserTaskMap.Id == gardenUserTaskMapId);
-            
-            if(gardenUserTaskMap == null)
+            try
             {
+                GardenUserTaskMap gardenUserTaskMap = await _context.GardenUserTaskMap
+                                                               .Include(gUserTaskMap => gUserTaskMap.GardenTask)
+                                                                   .ThenInclude(gTask => gTask.GardenWorkTimes)
+                                                               .FirstOrDefaultAsync(gUserTaskMap => gUserTaskMap.Id == gardenUserTaskMapId);
+                if (gardenUserTaskMap == null)
+                {
+                    return new JsonResult(false);
+                }
+                else if (gardenUserTaskMap.GardenTask.GardenWorkTimes.Count() == 0)
+                {
+                    string isEmpty = "empty";
+                    return new JsonResult(isEmpty);
+                }
+
+                List<object> object_list = new List<object>();
+
+                foreach (GardenWorkTime gardenWorkTime in gardenUserTaskMap.GardenTask.GardenWorkTimes)
+                {
+
+                }
+
+                return new JsonResult(object_list);
+            }
+            catch (Exception ex)
+            {
+                string value = Convert.ToString(ex);
                 return new JsonResult(false);
-            }
-            else if(gardenUserTaskMap.GardenTask.GardenWorkTimes.Count() == 0)
-            {
-                string isEmpty = "empty";
-                return new JsonResult(isEmpty);
-            }
-
-            List<object> object_list = new List<object>();
-
-            foreach(GardenWorkTime gardenWorkTime in gardenUserTaskMap.GardenTask.GardenWorkTimes)
-            {
-
-            }
-            
-            return new JsonResult(object_list);
+            }          
         }
 
         /// <summary>

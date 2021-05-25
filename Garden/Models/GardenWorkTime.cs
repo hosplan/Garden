@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,11 +11,13 @@ namespace Garden.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Display(Name = "시작 시간")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Time)]
         public DateTime StartTime { get; set; }
+        
         [Display(Name = "종료 시간")]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Time)]
         public DateTime EndTime { get; set; }
 
         [Display(Name = "수행날짜")]
@@ -29,15 +30,22 @@ namespace Garden.Models
         public int TaskWeek { get; set; }
 
         [Display(Name = "업무")]
-        public int? GardenTaskId { get; set; }
+        public Nullable<int> GardenTaskId { get; set; }
+
         [ForeignKey("GardenTaskId")]
         public virtual GardenTask GardenTask { get; set; }
-        public int? GardenSpaceId { get; set; }
+
+        public Nullable<int> GardenSpaceId { get; set; }
+
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
+
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
+
+        public Weekend weekend { get; set; }
     }
 
+    [NotMapped]
     public class Weekend
     {
         public bool IsMon { get; set; }
