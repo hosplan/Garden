@@ -56,24 +56,24 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr class="text-center">
-                                            <td>@Html.Raw("일")</td>
                                             <td>@Html.Raw("월")</td>
                                             <td>@Html.Raw("화")</td>
                                             <td>@Html.Raw("수")</td>
                                             <td>@Html.Raw("목")</td>
                                             <td>@Html.Raw("금")</td>
                                             <td>@Html.Raw("토")</td>
+                                            <td>@Html.Raw("일")</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="text-center">
-                                            <td><input asp-for="weekend.IsMon" style="width:25px; height:25px;"/></td>
-                                            <td><input asp-for="weekend.IsTue" style="width:25px; height:25px;" /></td>
-                                            <td><input asp-for="weekend.IsWed" style="width:25px; height:25px;" /></td>
-                                            <td><input asp-for="weekend.IsThr" style="width:25px; height:25px;" /></td>
-                                            <td><input asp-for="weekend.IsFri" style="width:25px; height:25px;" /></td>
-                                            <td><input asp-for="weekend.IsSat" style="width:25px; height:25px;" /></td>
-                                            <td><input asp-for="weekend.IsSun" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsMon" id="IsMon" style="width:25px; height:25px;"/></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsTue" id="IsTue" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsWed" id="IsWed" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsThr" id="IsThr" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsFri" id="IsFri" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsSat" id="IsSat" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsSun" id="IsSun" style="width:25px; height:25px;" /></td>
                                         </tr>
                                     </tbody>
                                 </table>

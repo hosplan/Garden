@@ -1,8 +1,21 @@
 ﻿
 //선택한 날짜의 요일 가져오기
 function getDay() {
-    let temp = document.getElementById('TaskDate').value;
-    console.log(temp);
+    let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+
+    const WEEKDAY = ['IsSun', 'IsMon', 'IsTue', 'IsWed', 'IsThr', 'IsFri', 'IsSat'];
+    let dateValue = new Date(document.getElementById('TaskDate').value);
+    document.getElementById(WEEKDAY[dateValue.getDay()]).checked =  true;
+    document.getElementById(WEEKDAY[dateValue.getDay()]).onclick = function () {
+        return false;
+    };
+
+    //document.getElementById(WEEKDAY[dateValue.getDay()]).checked = true;
+    //document.getElementById(WEEKDAY[dateValue.getDay()]).setAttribute('onclick="return(false)"');
 }
 
 
