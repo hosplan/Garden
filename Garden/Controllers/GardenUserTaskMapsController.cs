@@ -56,7 +56,8 @@ namespace Garden.Controllers
                         taskDate = gardenWorkTime.TaskDate.ToShortDateString(),
                         startTime = gardenWorkTime.StartTime.ToShortTimeString(),
                         endTime = gardenWorkTime.EndTime.ToShortTimeString(),
-                        isComplete = gardenWorkTime.IsComplete
+                        isComplete = gardenWorkTime.IsComplete,
+                        taskWeek = gardenWorkTime.TaskWeek
                     });
                 }
                 return new JsonResult(object_list);

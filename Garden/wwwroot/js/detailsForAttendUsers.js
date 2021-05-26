@@ -81,33 +81,66 @@ function getAttendUserWorkTime(gardenUserTaskMapId, gardenUserName) {
     httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
 }
 
-//업무시간 정보 나타내기
-function showWorkTimeInfo(gardenWorkTime_list) {
-    document.getElementById('alert_empty_gardenWorkTime').style.display = 'none';
-    document.getElementById('user_gardenWorkTime').style.display = 'block';
+//업무시간정보에 관한 동적테이블 생성
+function makeWorkTimeTable(jsonArray) {
 
     let tbody = document.querySelector('#gardenWorktime_tb_tbody');
     while (tbody.hasChildNodes()) {
         tbody.removeChild(tbody.firstChild);
     }
-
-    //let table = document.querySelector('#gardenWorktime_tb');
-    JSON.parse(gardenWorkTime_list).forEach(json => {
+    //전체 레슨 수
+    let totalCount = 0;
+    //완료한 레슨 수
+    let completeCount = 0;
+   
+    jsonArray.forEach(json => {
 
         let newRow = tbody.insertRow(0);
+        newRow.insertCell(0).innerText = json.taskDate;
+        newRow.insertCell(1).innerText = json.startTime;
+        newRow.insertCell(2).innerText = json.endTime;
 
-        newRow.insertCell(0).innerText = json.id;
-        newRow.insertCell(1).innerText = json.taskDate;
-        newRow.insertCell(2).innerText = json.startTime;
-        newRow.insertCell(3).innerText = json.endTime;
 
         let isCheck = '';
         if (json.isComplete == true) {
             isCheck = 'checked';
+            completeCount++;
         }
 
-        newRow.insertCell(4).innerHTML = '<input type="checkbox" style="width:25px; height:25px;" '+isCheck+' />';
+        newRow.insertCell(3).innerHTML = '<input type="checkbox" style="width:25px; height:25px;" ' + isCheck + ' />';
+        newRow.insertCell(4).innerHTML = '<button type="button" data-value=' + json.id + '; class="p-0 btn btn-link btn-md float-right ml-3"><i class="fas fa-brush text-success"></i></button>' +
+            '<button type="button" data-value=' + json.id + '; class="p-0 btn btn-link btn-md float-right"><i class="fas fa-trash text-danger"></button>';
+
+        tbody.rows[0].cells[0].className = 'text-center m-2';
+        tbody.rows[0].cells[1].className = 'text-center m-2';
+        tbody.rows[0].cells[2].className = 'text-center m-2';
+        tbody.rows[0].cells[3].className = 'text-center m-2';
+
+        totalCount++;
     });
+
+
+    updateWorktimeDashBoard(jsonArray[0].taskWeek, totalCount, completeCount);
+}
+
+//업무시간 대시보드정보 업데이트
+function updateWorktimeDashBoard(taskWeek, totalCount, completeCount) {
+    //완료한 횟수 정보
+    document.getElementById('completeAndTotalCountInfo').innerHTML = '<span class="text-success">' + completeCount + '</span>' + ' / ' + totalCount;
+    //달성률 정보
+    let fullmentRate = (completeCount / totalCount) * 100;    
+    document.getElementById('fullmentRateInfo').innerText = fullmentRate + "%";
+    document.getElementById('fullmentRateInfo_progress').style.width = fullmentRate + "%";
+    //등록주 정보
+    document.getElementById('taskWeekInfo').innerText = taskWeek + " 주";
+}
+
+//업무시간 정보 나타내기
+async function showWorkTimeInfo(gardenWorkTime_list) {
+    document.getElementById('alert_empty_gardenWorkTime').style.display = 'none';
+    document.getElementById('user_gardenWorkTime').style.display = 'block';
+
+    await makeWorkTimeTable(JSON.parse(gardenWorkTime_list));             
 }
 
 // 생성된 업무 시간이 없을때 보여짐.

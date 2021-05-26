@@ -85,6 +85,14 @@ namespace Garden.Controllers
             return 7;
         }
 
+        /// <summary>
+        /// (몇)주차에 따른 수강 날짜 생성
+        /// </summary>
+        /// <param name="startDayofWeek">시작요일</param>
+        /// <param name="weekend">주중의 선택한 요일</param>
+        /// <param name="taskDate">시작 날짜</param>
+        /// <param name="taskWeek">(몇)주차</param>
+        /// <returns></returns>
         private List<DateTime> MakeTaskDateList(int startDayofWeek, Weekend weekend, DateTime taskDate, int taskWeek)
         {
 
@@ -169,7 +177,6 @@ namespace Garden.Controllers
 
                     _context.AddRange(gardenWorkTime_list);
                     await _context.SaveChangesAsync();
-
                 }
                 catch
                 {

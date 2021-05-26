@@ -75,9 +75,9 @@
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
                                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        @Html.Raw("다음 업무 시간")
+                                                        @Html.Raw("등록 주")
                                                     </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="taskWeekInfo">
 
                                                     </div>
                                                 </div>
@@ -97,7 +97,7 @@
                                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                         @Html.Raw("완료한 횟수")
                                                     </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="completeAndTotalCountInfo">
 
                                                     </div>
                                                 </div>
@@ -116,20 +116,20 @@
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
                                                     <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                        @Html.Raw("전체 업무 기간(주 단위)")
+                                                        @Html.Raw("달성률")
                                                     </div>
                                                     <div class="row no-gutters align-items-center">
                                                         <div class="h5 mb-0 font-weight-bold text-gray-800">
 
                                                         </div>
                                                         <div class="col-auto">
-                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="fullmentRateInfo"></div>
                                                         </div>
                                                         <div class="col">
                                                             <div class="progress progress-sm mr-2">
                                                                 <div class="progress-bar bg-info" role="progressbar"
-                                                                     style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                                     aria-valuemax="100">
+                                                                     style="width: 50%" aria-valuemin="0"
+                                                                     aria-valuemax="100" id="fullmentRateInfo_progress">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -149,11 +149,11 @@
                             <table class="table table-hover" id="gardenWorktime_tb">
                                 <thead>
                                     <tr>
-                                        <th>@Html.Raw("이름")</th>
-                                        <th>@Html.Raw("업무 날짜")</th>
-                                        <th>@Html.Raw("시작 시간")</th>
-                                        <th>@Html.Raw("종료 시간")</th>
-                                        <th>@Html.Raw("완료 여부")</th>
+                                        <th class="text-center text-info font-weight-bold">@Html.Raw("업무 날짜")</th>
+                                        <th class="text-center text-info font-weight-bold">@Html.Raw("시작 시간")</th>
+                                        <th class="text-center text-info font-weight-bold">@Html.Raw("종료 시간")</th>
+                                        <th class="text-center text-info font-weight-bold">@Html.Raw("완료 여부")</th>
+                                        <th><i class="fas fa-cog float-right"></i></th>
                                     </tr>
                                 </thead>
                                 <tbody id="gardenWorktime_tb_tbody">
