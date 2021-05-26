@@ -1,6 +1,15 @@
-﻿$('.select2').select2();
+﻿$('.gardenSpace_select2').select2();
 let gardenSpace_option = document.getElementById('Garden_list');
 gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
+
+//다른 정원 정보 불러오기
+function GetOtherGarden() {
+    let change_gardenSpace_option = document.getElementById('Garden_list');
+    change_gardenSpace_option = change_gardenSpace_option.options[change_gardenSpace_option.selectedIndex].value;
+
+    let url = '/GardenTasks/GetGardenTaskList?id=' + change_gardenSpace_option + '';
+    baseSubType_dataTable.ajax.url(url).load();
+}
 
 //baseSubType - datatable
 var baseSubType_dataTable = $('#gardenTask_dt').DataTable({

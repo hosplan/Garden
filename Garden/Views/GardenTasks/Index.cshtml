@@ -11,10 +11,10 @@
                 <span class="text-info font-weight-bold mr-2">
                     <i class="fas fa-archive fa-fw"></i>
                     @Html.Raw("나의 정원")
-                </span>               
-                @Html.DropDownList("Garden_list", null, htmlAttributes: new { @class = "select2 form-control w-25" })
+                </span>
+                <select class="gardenSpace_select2 form-control w-25" onchange="GetOtherGarden()" id="Garden_list" asp-items="@ViewBag.Garden_list"></select>
             </div>
-        </div>       
+        </div>
     </div>
 </div>
 

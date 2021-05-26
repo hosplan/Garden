@@ -31,25 +31,34 @@ namespace Garden.Controllers
             {
                 GardenUserTaskMap gardenUserTaskMap = await _context.GardenUserTaskMap
                                                                .Include(gUserTaskMap => gUserTaskMap.GardenTask)
-                                                                   .ThenInclude(gTask => gTask.GardenWorkTimes)
                                                                .FirstOrDefaultAsync(gUserTaskMap => gUserTaskMap.Id == gardenUserTaskMapId);
                 if (gardenUserTaskMap == null)
                 {
                     return new JsonResult(false);
                 }
-                else if (gardenUserTaskMap.GardenTask.GardenWorkTimes.Count() == 0)
-                {
-                    string isEmpty = "empty";
-                    return new JsonResult(isEmpty);
-                }
+
+                List<GardenWorkTime> gardenWorkTime_list = await _context.GardenWorkTime
+                                                                         .AsNoTracking()
+                                                                         .Where(gardenWorkTime => gardenWorkTime.GardenUserId == gardenUserTaskMap.GardenUserId
+                                                                                               && gardenWorkTime.GardenTaskId == gardenUserTaskMap.GardenTaskId)
+                                                                         .OrderBy(gardenWorkTime => gardenWorkTime.TaskDate)
+                                                                         .ToListAsync();
+
+                if (gardenWorkTime_list.Count() == 0)                    
+                    return new JsonResult("empty");
 
                 List<object> object_list = new List<object>();
-
-                foreach (GardenWorkTime gardenWorkTime in gardenUserTaskMap.GardenTask.GardenWorkTimes)
+                foreach (GardenWorkTime gardenWorkTime in gardenWorkTime_list)
                 {
-
+                    object_list.Add(new
+                    {
+                        id = gardenWorkTime.Id,
+                        taskDate = gardenWorkTime.TaskDate.ToShortDateString(),
+                        startTime = gardenWorkTime.StartTime.ToShortTimeString(),
+                        endTime = gardenWorkTime.EndTime.ToShortTimeString(),
+                        isComplete = gardenWorkTime.IsComplete
+                    });
                 }
-
                 return new JsonResult(object_list);
             }
             catch (Exception ex)

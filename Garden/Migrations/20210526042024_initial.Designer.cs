@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210523033318_initial")]
+    [Migration("20210526042024_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -416,6 +416,9 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenTaskId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GardenUserId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
@@ -433,6 +436,8 @@ namespace Garden.Migrations
                     b.HasIndex("GardenSpaceId");
 
                     b.HasIndex("GardenTaskId");
+
+                    b.HasIndex("GardenUserId");
 
                     b.ToTable("GardenWorkTime");
                 });
@@ -726,9 +731,15 @@ namespace Garden.Migrations
                         .WithMany("GardenWorkTimes")
                         .HasForeignKey("GardenTaskId");
 
+                    b.HasOne("Garden.Models.GardenUser", "GardenUser")
+                        .WithMany()
+                        .HasForeignKey("GardenUserId");
+
                     b.Navigation("GardenSpace");
 
                     b.Navigation("GardenTask");
+
+                    b.Navigation("GardenUser");
                 });
 
             modelBuilder.Entity("Garden.Models.Permission", b =>

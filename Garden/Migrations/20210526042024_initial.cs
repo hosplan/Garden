@@ -417,7 +417,8 @@ namespace Garden.Migrations
                     IsComplete = table.Column<bool>(type: "bit", nullable: false),
                     TaskWeek = table.Column<int>(type: "int", nullable: false),
                     GardenTaskId = table.Column<int>(type: "int", nullable: true),
-                    GardenSpaceId = table.Column<int>(type: "int", nullable: true)
+                    GardenSpaceId = table.Column<int>(type: "int", nullable: true),
+                    GardenUserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -432,6 +433,12 @@ namespace Garden.Migrations
                         name: "FK_GardenWorkTime_GardenTask_GardenTaskId",
                         column: x => x.GardenTaskId,
                         principalTable: "GardenTask",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GardenWorkTime_GardenUser_GardenUserId",
+                        column: x => x.GardenUserId,
+                        principalTable: "GardenUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -617,6 +624,11 @@ namespace Garden.Migrations
                 column: "GardenTaskId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GardenWorkTime_GardenUserId",
+                table: "GardenWorkTime",
+                column: "GardenUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Permission_RoleId",
                 table: "Permission",
                 column: "RoleId");
@@ -655,22 +667,22 @@ namespace Garden.Migrations
                 name: "Attachment");
 
             migrationBuilder.DropTable(
-                name: "GardenUser");
-
-            migrationBuilder.DropTable(
                 name: "GardenWorkTime");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "GardenRole");
-
-            migrationBuilder.DropTable(
                 name: "GardenTask");
 
             migrationBuilder.DropTable(
+                name: "GardenUser");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "GardenRole");
 
             migrationBuilder.DropTable(
                 name: "GardenSpace");

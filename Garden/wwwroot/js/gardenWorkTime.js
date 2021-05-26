@@ -9,6 +9,8 @@ function getDay() {
 
     const WEEKDAY = ['IsSun', 'IsMon', 'IsTue', 'IsWed', 'IsThr', 'IsFri', 'IsSat'];
     let dateValue = new Date(document.getElementById('TaskDate').value);
+    let dayText = document.getElementById(WEEKDAY[dateValue.getDay()] + "_thead").innerText;
+    document.getElementById(WEEKDAY[dateValue.getDay()] + "_thead").innerHTML = '<span class="text-success font-weight-bold">' + dayText + '</span>';
     document.getElementById(WEEKDAY[dateValue.getDay()]).checked =  true;
     document.getElementById(WEEKDAY[dateValue.getDay()]).onclick = function () {
         return false;

@@ -26,13 +26,13 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
         {
             'data': 'userName', 'className': 'text-center m-2',
             'render': function (data, type, row, meta) {
-                return '<button type="button" onclick="getAttendUserWorkTime('+row.id+')" class="btn btn-link p-0">'+data+'</button>';
+                return '<button type="button" onclick="getAttendUserWorkTime('+row.id+',\''+row.name+'\')" class="btn btn-link p-0">'+data+'</button>';
             }
         },
         {
             'data': 'name', 'className': 'text-center m-2',
             'render': function (data, type, row, meta) {
-                return '<button type="button" onclick="getAttendUserWorkTime('+row.id+')" class="btn btn-link p-0">' + data + '</button>';
+                return '<button type="button" onclick="getAttendUserWorkTime('+row.id+',\''+row.name+'\')" class="btn btn-link p-0">' + data + '</button>';
             }
         },
         { 'data': 'regDate', 'className': 'text-center m-2' },   
@@ -54,7 +54,9 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
 });
 
 //정원 업무 참여자의 업무시간 정보 가져오기
-function getAttendUserWorkTime(gardenUserTaskMapId) {
+function getAttendUserWorkTime(gardenUserTaskMapId, gardenUserName) {
+    document.getElementById('attendUserName').innerText = "- ["+ gardenUserName+"]";
+
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
         errorMessage();
@@ -71,14 +73,44 @@ function getAttendUserWorkTime(gardenUserTaskMapId) {
         
         if (this.response == "\"empty\"") {
             showEmptyInfo(gardenUserTaskMapId);
+        } else {
+            showWorkTimeInfo(this.response);
         }
-        else {
-            errorMessage()
-        }
+        
     };
     httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
 }
 
+//업무시간 정보 나타내기
+function showWorkTimeInfo(gardenWorkTime_list) {
+    document.getElementById('alert_empty_gardenWorkTime').style.display = 'none';
+    document.getElementById('user_gardenWorkTime').style.display = 'block';
+
+    let tbody = document.querySelector('#gardenWorktime_tb_tbody');
+    while (tbody.hasChildNodes()) {
+        tbody.removeChild(tbody.firstChild);
+    }
+
+    //let table = document.querySelector('#gardenWorktime_tb');
+    JSON.parse(gardenWorkTime_list).forEach(json => {
+
+        let newRow = tbody.insertRow(0);
+
+        newRow.insertCell(0).innerText = json.id;
+        newRow.insertCell(1).innerText = json.taskDate;
+        newRow.insertCell(2).innerText = json.startTime;
+        newRow.insertCell(3).innerText = json.endTime;
+
+        let isCheck = '';
+        if (json.isComplete == true) {
+            isCheck = 'checked';
+        }
+
+        newRow.insertCell(4).innerHTML = '<input type="checkbox" style="width:25px; height:25px;" '+isCheck+' />';
+    });
+}
+
+// 생성된 업무 시간이 없을때 보여짐.
 function showEmptyInfo(gardenUserTaskMapId) {
     let gardenSpaceId = document.getElementById('gardenSpaceId').value;
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'block';

@@ -4,99 +4,117 @@
     ViewData["Title"] = "나의 정원";
 }
 
-<div class="col-xl-12 mb-3">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">@Html.Raw("정원 목록")</h1>
-        <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="openModal('GardenSpaces','Create')">
-            <i class="fas fa-plus-circle fa-sm text-white-50"></i> 
-            @Html.Raw("정원 생성")
-        </button>
-    </div>
-</div>
 
-@foreach(GardenSpace gardenSpace in Model)
+@if (Model.Count() == 0)
 {
-    <div class="col-xl-4 p-3">
-        <div class="card shadow border-left-primary">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <a class="m-0 font-weight-bold text-primary" asp-action="Details" asp-route-id="@gardenSpace.Id">
-                    @gardenSpace.Name
-                </a>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                        <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit', '@gardenSpace.Id')" value="">
-                            <i class="fas fa-brush text-success mr-3"></i>
-                            @Html.Raw("수정")
-                        </button>
-                        <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Delete', '@gardenSpace.Id')" value="">
-                            <i class="fas fa-trash text-danger mr-3"></i>
-                            @Html.Raw("삭제")
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-xl-7 border-right">
-                        <div class="form-row">
-                            <label class="col-xl-5 text-left">
-                                <i class="fas fa-tag fa-fw text-primary"></i>
-                                @Html.Raw("타입 :")
-                            </label>
-                            <label class="col-xl-7 text-left text-info">@gardenSpace.BaseSubType.Name</label>
-                        </div>
-                        <div class="form-row">
-                            <label class="col-xl-5 text-left">
-                                <i class="fas fa-users fa-fw text-primary"></i>
-                                @Html.Raw("참여인원 :")
-                            </label>
-                            <div class="col-xl-7 text-left text-info">
-                                <button type="button" class="btn btn-xs btn-link p-0 text-info text-decoration-none">
-                                    @gardenSpace.GardenUsers.Count() @Html.Raw("명")
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <label class="col-xl-5 text-left">
-                                <i class="fas fa-archive fa-fw text-primary"></i>
-                                @Html.Raw("총 업무 :")
-                            </label>
-                            <div class="col-xl-7 text-left text-info">
-                                <button type="button" class="btn btn-xs btn-link p-0 text-info text-decoration-none">
-                                    @gardenSpace.GardenTasks.Count() @Html.Raw("건")
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5">
-                        <label class="text-xs font-weight-bold text-uppercase text-info">@Html.Raw("진행상황")</label>
-                        <div class="form-row">
-                            <div class="col-xl-4 border">
+    <div class="col-xl-6 m-auto pt-lg-5">
+        <div class="text-center">
 
-                            </div>
-                            <div class="col-xl-4 border">
-
-                            </div>
-                            <div class="col-xl-4 border">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="card-footer">
-                <label class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                    <i class="fas fa-calendar fa-fw"></i>
-                    @Html.Raw("생성 일자 :")
-                    @gardenSpace.CreatedDate.ToShortDateString()
-                </label>
-            </div>
+            <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width:25rem;" src="~/img/undraw_Content.svg" />
+            <h3 class="text-warning font-weight-bold">@Html.Raw("생성된 정원이 없어요.")</h3>
+            <button class="btn btn-lg btn-primary shadow-sm mt-4" onclick="openModal('GardenSpaces','Create')">
+                <i class="fas fa-plus-circle fa-sm text-white-50"></i>
+                @Html.Raw("정원 생성하기")
+            </button>
         </div>
     </div>
 }
+else
+{
+    <div class="col-xl-12 mb-3">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">@Html.Raw("정원 목록")</h1>
+            <button class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="openModal('GardenSpaces','Create')">
+                <i class="fas fa-plus-circle fa-sm text-white-50"></i>
+                @Html.Raw("정원 생성")
+            </button>
+        </div>
+    </div>
+    @foreach (GardenSpace gardenSpace in Model)
+    {
+        <div class="col-xl-4 p-3">
+            <div class="card shadow border-left-primary">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <a class="m-0 font-weight-bold text-primary" asp-action="Details" asp-route-id="@gardenSpace.Id">
+                        @gardenSpace.Name
+                    </a>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                            <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit', '@gardenSpace.Id')" value="">
+                                <i class="fas fa-brush text-success mr-3"></i>
+                                @Html.Raw("수정")
+                            </button>
+                            <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Delete', '@gardenSpace.Id')" value="">
+                                <i class="fas fa-trash text-danger mr-3"></i>
+                                @Html.Raw("삭제")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-7 border-right">
+                            <div class="form-row">
+                                <label class="col-xl-5 text-left">
+                                    <i class="fas fa-tag fa-fw text-primary"></i>
+                                    @Html.Raw("타입 :")
+                                </label>
+                                <label class="col-xl-7 text-left text-info">@gardenSpace.BaseSubType.Name</label>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-xl-5 text-left">
+                                    <i class="fas fa-users fa-fw text-primary"></i>
+                                    @Html.Raw("참여인원 :")
+                                </label>
+                                <div class="col-xl-7 text-left text-info">
+                                    <button type="button" class="btn btn-xs btn-link p-0 text-info text-decoration-none">
+                                        @gardenSpace.GardenUsers.Count() @Html.Raw("명")
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-xl-5 text-left">
+                                    <i class="fas fa-archive fa-fw text-primary"></i>
+                                    @Html.Raw("총 업무 :")
+                                </label>
+                                <div class="col-xl-7 text-left text-info">
+                                    <button type="button" class="btn btn-xs btn-link p-0 text-info text-decoration-none">
+                                        @gardenSpace.GardenTasks.Count() @Html.Raw("건")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                            <label class="text-xs font-weight-bold text-uppercase text-info">@Html.Raw("진행상황")</label>
+                            <div class="form-row">
+                                <div class="col-xl-4 border">
 
+                                </div>
+                                <div class="col-xl-4 border">
+
+                                </div>
+                                <div class="col-xl-4 border">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <label class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                        <i class="fas fa-calendar fa-fw"></i>
+                        @Html.Raw("생성 일자 :")
+                        @gardenSpace.CreatedDate.ToShortDateString()
+                    </label>
+                </div>
+            </div>
+        </div>
+    }
+
+
+}
