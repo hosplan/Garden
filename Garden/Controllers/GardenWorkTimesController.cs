@@ -85,37 +85,6 @@ namespace Garden.Controllers
             return 7;
         }
 
-        private List<int> SortingList(List<int> taskDate_dayOfWeek_list, int startDayofWeek)
-        {
-            List<int> temp_sort_list = new List<int>();
-
-            temp_sort_list.Add(startDayofWeek);
-            taskDate_dayOfWeek_list.Remove(startDayofWeek);
-
-            List<int> temp_after_dayOfWeek_list = new List<int>();
-            List<int> temp_dayOfWeek_list = new List<int>();
-
-            foreach(int taskDate_dayOfWeek in taskDate_dayOfWeek_list)
-            {
-                int temp_value = startDayofWeek - taskDate_dayOfWeek;
-
-                //시작일 보다 다음주
-                if(temp_value > 0)
-                {
-                    temp_after_dayOfWeek_list.Add(taskDate_dayOfWeek);
-                }
-                else
-                {
-                    temp_dayOfWeek_list.Add(taskDate_dayOfWeek);
-                }
-            }
-   
-            temp_sort_list.AddRange(temp_dayOfWeek_list.OrderBy(z => z).ToList());
-            temp_sort_list.AddRange(temp_after_dayOfWeek_list.OrderBy(z => z).ToList());
-
-            return temp_sort_list;
-        }
-
         /// <summary>
         /// (몇)주차에 따른 수강 날짜 생성
         /// </summary>
@@ -146,71 +115,28 @@ namespace Garden.Controllers
             if(weekend.IsSun == true)
                 taskDate_dayOfWeek_list.Add(0);
 
-          
-            //taskDate_dayOfWeek_list = SortingList(taskDate_dayOfWeek_list, startDayofWeek);
-
             for (int i = 0; i < taskDate_dayOfWeek_list.Count(); i++)
             {
-                if(taskDate_dayOfWeek_list[i] == startDayofWeek)
-                {
-                    DateTime temp_date = taskDate;
-                    for (int j = 0; j < taskWeek; j++)
-                    {                        
-                        dateTime_list.Add(temp_date);
-                        temp_date = temp_date.AddDays(7);
-                    }
-                }
+                int SubtractValue = 0;
+
+                //시작날짜의 요일보다 앞의 요일을 골랐을때 (즉 다음주)
+                // ex ) 시작요일 - 목요일 / 다음 선택 요일 - 수요일
+                if (taskDate_dayOfWeek_list[i] < startDayofWeek)
+                    SubtractValue = (7 - startDayofWeek) + taskDate_dayOfWeek_list[i];
+                else if (taskDate_dayOfWeek_list[i] == startDayofWeek)
+                    SubtractValue = 0;
                 else
+                    SubtractValue = taskDate_dayOfWeek_list[i] - startDayofWeek;
+
+                DateTime tempDate = taskDate.AddDays(SubtractValue);
+
+                for (int j = 0; j < taskWeek; j++)
                 {
-                    int SubtractValue = 0;
-
-                    //시작날짜의 요일보다 앞의 요일을 골랐을때 (즉 다음주)
-                    // ex ) 시작요일 - 목요일 / 다음 선택 요일 - 수요일
-                    if (taskDate_dayOfWeek_list[i] < startDayofWeek)
-                    {
-                        SubtractValue = (7 - startDayofWeek) + taskDate_dayOfWeek_list[i];
-                    }
-                    else
-                    {
-                        SubtractValue = taskDate_dayOfWeek_list[i] - startDayofWeek;
-                    }
-
-                    DateTime tempDate = taskDate.AddDays(SubtractValue);
-
-                    for (int j = 0; j < taskWeek; j++)
-                    {
-                        dateTime_list.Add(tempDate);
-                        tempDate = tempDate.AddDays(7);                       
-                    }
+                    dateTime_list.Add(tempDate);
+                    tempDate = tempDate.AddDays(7);
                 }
             }
-
-            ////선택된 값을 기준으로해서 계산한다.
-            //foreach(int taskDate_dayOfWeek in taskDate_dayOfWeek_list)
-            //{
-                
-
-
-            //    //시작날짜의 요일보다 앞의 요일을 골랐을때 (즉 다음주)
-            //    // ex ) 시작요일 - 목요일 / 다음 선택 요일 - 수요일
-            //    if(taskDate_dayOfWeek < startDayofWeek)
-            //    {
-            //        SubtractValue = (7 - startDayofWeek) + taskDate_dayOfWeek;
-            //    }                                                             
-            //    else
-            //    {
-            //        SubtractValue = taskDate_dayOfWeek - startDayofWeek;
-            //    }
-                                              
-            //    DateTime tempDate = taskDate.AddDays(SubtractValue);
-              
-            //    for(int i = 0; i < taskWeek; i++)
-            //    {
-            //        tempDate = tempDate.AddDays(7);
-            //        dateTime_list.Add(tempDate);                  
-            //    }
-            //}
-
+           
             return dateTime_list;
         }
 
