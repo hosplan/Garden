@@ -54,8 +54,8 @@ namespace Garden.Controllers
                     {
                         id = gardenWorkTime.Id,
                         taskDate = gardenWorkTime.TaskDate.ToShortDateString(),
-                        startTime = gardenWorkTime.StartTime.ToShortTimeString(),
-                        endTime = gardenWorkTime.EndTime.ToShortTimeString(),
+                        startTime = gardenWorkTime.StartTime.Hours + ":" + gardenWorkTime.StartTime.Minutes,
+                        endTime = gardenWorkTime.EndTime.Hours + ":" + gardenWorkTime.EndTime.Minutes,
                         isComplete = gardenWorkTime.IsComplete,
                         taskWeek = gardenWorkTime.TaskWeek
                     });

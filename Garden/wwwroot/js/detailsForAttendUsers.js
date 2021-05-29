@@ -9,7 +9,6 @@ if (document.getElementById('permission_delete').value == 'false') {
     deletePermission = 'disabled';
 }
 
-//baseSubType - datatable
 var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
     'ajax': {
         'url': "/GardenUserTaskMaps/GetAttendUserList?id=" + document.getElementById('GardenTaskId').value + "",
@@ -26,13 +25,13 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
         {
             'data': 'userName', 'className': 'text-center m-2',
             'render': function (data, type, row, meta) {
-                return '<button type="button" onclick="getAttendUserWorkTime('+row.id+',\''+row.name+'\')" class="btn btn-link p-0">'+data+'</button>';
+                return '<button type="button" id='+data+' onclick="getAttendUserWorkTime('+row.id+',\''+row.name+'\', \''+data+'\')" class="btn btn-link p-0">'+data+'</button>';
             }
         },
         {
             'data': 'name', 'className': 'text-center m-2',
             'render': function (data, type, row, meta) {
-                return '<button type="button" onclick="getAttendUserWorkTime('+row.id+',\''+row.name+'\')" class="btn btn-link p-0">' + data + '</button>';
+                return '<button type="button" onclick="getAttendUserWorkTime(' + row.id + ',\'' + row.name + '\',\'' + row.userName +'\')" class="btn btn-link p-0">' + data + '</button>';
             }
         },
         { 'data': 'regDate', 'className': 'text-center m-2' },   
@@ -54,8 +53,9 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
 });
 
 //정원 업무 참여자의 업무시간 정보 가져오기
-function getAttendUserWorkTime(gardenUserTaskMapId, gardenUserName) {
-    document.getElementById('attendUserName').innerText = "- ["+ gardenUserName+"]";
+function getAttendUserWorkTime(gardenUserTaskMapId, name, userName) {
+    document.getElementById('attendUserName').innerText = name;
+    document.getElementById('attend_userName').value = userName;
 
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
@@ -85,6 +85,7 @@ function getAttendUserWorkTime(gardenUserTaskMapId, gardenUserName) {
 function makeWorkTimeTable(jsonArray) {
 
     let tbody = document.querySelector('#gardenWorktime_tb_tbody');
+   
     while (tbody.hasChildNodes()) {
         tbody.removeChild(tbody.firstChild);
     }
@@ -94,23 +95,26 @@ function makeWorkTimeTable(jsonArray) {
     let completeCount = 0;
    
     jsonArray.forEach(json => {
-
         let newRow = tbody.insertRow(0);
+        //업무날짜
         newRow.insertCell(0).innerText = json.taskDate;
+        //시작시간
         newRow.insertCell(1).innerText = json.startTime;
+        //종료 시간
         newRow.insertCell(2).innerText = json.endTime;
-
 
         let isCheck = '';
         if (json.isComplete == true) {
             isCheck = 'checked';
             completeCount++;
         }
+        //완료여부
+        newRow.insertCell(3).innerHTML = '<input type="checkbox" onclick="completeWorkTime('+json.id+',this);" style="width:25px; height:25px;" ' + isCheck + ' />';
+        //관리버튼(수정,삭제)
+        newRow.insertCell(4).innerHTML = '<button type="button" class="p-0 btn btn-link btn-md float-right ml-3" onclick="updateWorkTime('+json.id+',this)"><i class="fas fa-brush text-success"></i></button>' +
+            '<button type="button" class="p-0 btn btn-link btn-md float-right" onclick="removeWorkTime('+json.id+')"><i class="fas fa-trash text-danger"></button>';
 
-        newRow.insertCell(3).innerHTML = '<input type="checkbox" style="width:25px; height:25px;" ' + isCheck + ' />';
-        newRow.insertCell(4).innerHTML = '<button type="button" data-value=' + json.id + '; class="p-0 btn btn-link btn-md float-right ml-3"><i class="fas fa-brush text-success"></i></button>' +
-            '<button type="button" data-value=' + json.id + '; class="p-0 btn btn-link btn-md float-right"><i class="fas fa-trash text-danger"></button>';
-
+        //클래스 주입
         tbody.rows[0].cells[0].className = 'text-center m-2';
         tbody.rows[0].cells[1].className = 'text-center m-2';
         tbody.rows[0].cells[2].className = 'text-center m-2';
@@ -118,13 +122,112 @@ function makeWorkTimeTable(jsonArray) {
 
         totalCount++;
     });
+    updateWorktimeDashBoard(totalCount, completeCount);
+}
 
+//업무시간 수정창 열기
+function updateWorkTime(gardenWorkTimeId, obj) {
+    //제이쿼리 사용
+    let tr = $(obj).parent().parent();
+    $(obj).parent().empty();
+    tr.children().eq(0).html('<input type="date" class="form-control" />');
+    tr.children().eq(1).html('<input type="time" class="form-control" />');
+    tr.children().eq(2).html('<input type="time" class="form-control" />');
+    tr.children().eq(3).empty();
+    tr.children().eq(4).html('<button type="button" class="btn btn-secondary btn-md ml-3 float-right" onclick="cancleWorkTimeUpdate()">취소</button>' +
+                             '<button type="button" class="btn btn-primary btn-md float-right" onclick="saveWorkTimeUpdate(' + gardenWorkTimeId + ', this)">저장</button>');
+    //openModal('GardenWorkTimes','Edit',gardenWorkTimeId);
+}
+//업무시간 수정 완료
+function saveWorkTimeUpdate(gardenWorkTimeId, obj) {
+    let tr = $(obj).parent().parent();
+    let update_taskDate = tr.children().eq(0).children().val();
+    let update_startDate = tr.children().eq(1).children().val();
+    let update_endDate = tr.children().eq(2).children().val();
 
-    updateWorktimeDashBoard(jsonArray[0].taskWeek, totalCount, completeCount);
+    let httpRequest = new XMLHttpRequest();
+    if (!httpRequest) {
+        errorMessage();
+        return false;
+    }
+
+    httpRequest.open('POST', '/GardenWorkTimes/UpdateWorkTime', true);
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.onload = function () {
+        if (this.status === 200 || this.response == "true") {
+            let userName = document.getElementById('attend_userName').value;
+            //제이쿼리 강제로 버튼 클릭 이벤트주입
+            $('#' + userName).trigger('click');
+        } else {
+            errorMessage();
+        }
+    };
+    httpRequest.send('gardenWorkTimeId=' + gardenWorkTimeId + '&taskDate=' + update_taskDate+'&startTime='+update_startDate+'&endTime='+update_endDate);
+
+}
+//업무시간 수정 취소
+function cancleWorkTimeUpdate() {
+    let userName = document.getElementById('attend_userName').value;
+    //제이쿼리 강제로 버튼 클릭 이벤트주입
+    $('#' + userName).trigger('click');
+}
+
+//업무시간 삭제
+function removeWorkTime(gardenWorkTimeId) {
+    Swal.fire({
+        title: '해당 업무를 삭제 하시겠어요?',
+        icon: 'warning',
+        confirmButtonText: '삭제',
+        showCancelButton: true,
+        cancelButtonText: '취소',
+    }).then(function (result) {
+        if (result.value) {
+            let httpRequest = new XMLHttpRequest();
+            if (!httpRequest) {
+                errorMessage();
+                return false;
+            }
+
+            httpRequest.open('POST', '/GardenWorkTimes/DeleteWorkTime', true);
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            httpRequest.onload = function () {
+                if (this.status === 200 || this.response == "true") {
+                    let userName = document.getElementById('attend_userName').value;
+                    //제이쿼리 강제로 버튼 클릭 이벤트주입
+                    $('#' + userName).trigger('click');
+                } else {
+                    errorMessage();
+                }
+            };
+            httpRequest.send('gardenWorkTimeId=' + gardenWorkTimeId);
+        }
+    });
+}
+
+//업무시간 완료처리
+function completeWorkTime(gardenWorkTimeId, obj) {
+    let httpRequest = new XMLHttpRequest();
+    if (!httpRequest) {
+        errorMessage();
+        return false;
+    }
+
+    httpRequest.open('POST', '/GardenWorkTimes/CompleteWorkTime', true);
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.onload = function () {
+        if (this.status === 200) {
+            let userName = document.getElementById('attend_userName').value;
+            //제이쿼리 강제로 버튼 클릭 이벤트주입
+            $('#' + userName).trigger('click');
+        } else {
+            errorMessage();
+        }
+    };
+    httpRequest.send('gardenWorkTimeId=' + gardenWorkTimeId + '&isComplete=' + obj.checked);
 }
 
 //업무시간 대시보드정보 업데이트
-function updateWorktimeDashBoard(taskWeek, totalCount, completeCount) {
+function updateWorktimeDashBoard(totalCount, completeCount) {
     //완료한 횟수 정보
     document.getElementById('completeAndTotalCountInfo').innerHTML = '<span class="text-success">' + completeCount + '</span>' + ' / ' + totalCount;
     //달성률 정보
@@ -132,7 +235,7 @@ function updateWorktimeDashBoard(taskWeek, totalCount, completeCount) {
     document.getElementById('fullmentRateInfo').innerText = fullmentRate + "%";
     document.getElementById('fullmentRateInfo_progress').style.width = fullmentRate + "%";
     //등록주 정보
-    document.getElementById('taskWeekInfo').innerText = taskWeek + " 주";
+    //document.getElementById('taskWeekInfo').innerText = taskWeek + " 주";
 }
 
 //업무시간 정보 나타내기
@@ -151,12 +254,14 @@ function showEmptyInfo(gardenUserTaskMapId) {
     document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId+'';
 }
 
+//업무참여자 추가
 function createGardenUser() {
     let gardenSpace_option = document.getElementById('Garden_list');
     gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
     openModal('GardenUsers', 'Create', gardenSpace_option); 
 }
 
+//업무 참여자 삭제
 function removeValue(gardenUserTaskMapId) {
     Swal.fire({
         title: '해당 업무참여자를 삭제 하시겠어요?',

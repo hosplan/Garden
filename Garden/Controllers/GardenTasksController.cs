@@ -229,6 +229,8 @@ namespace Garden.Controllers
                                             .Include(gTask => gTask.BaseSubType)
                                             .Include(gTask => gTask.GardenSpace)
                                             .Include(gTask => gTask.GardenUserTaskMaps)
+                                                .ThenInclude(gUserTaskMaps => gUserTaskMaps.GardenUser)
+                                                    .ThenInclude(gUser => gUser.User)
                                             .AsNoTracking()
                                             .FirstOrDefaultAsync(gTask => gTask.Id == id);
             if (gardenTask == null)

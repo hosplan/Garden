@@ -13,12 +13,10 @@ namespace Garden.Models
         public int Id { get; set; }
 
         [Display(Name = "시작 시간")]
-        [DataType(DataType.Time)]
-        public DateTime StartTime { get; set; }
+        public TimeSpan StartTime { get; set; }
         
         [Display(Name = "종료 시간")]
-        [DataType(DataType.Time)]
-        public DateTime EndTime { get; set; }
+        public TimeSpan EndTime { get; set; }
 
         [Display(Name = "수행날짜")]
         [DataType(DataType.Date)]

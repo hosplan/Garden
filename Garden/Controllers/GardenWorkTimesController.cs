@@ -45,6 +45,66 @@ namespace Garden.Controllers
             return View(gardenWorkTime);
         }      
 
+        /// <summary>
+        /// 업무시간 업데이트
+        /// </summary>
+        /// <param name="gardenWorkTimeId"></param>
+        /// <param name="taskDate"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> UpdateWorkTime(int gardenWorkTimeId, DateTime taskDate, TimeSpan startTime, TimeSpan endTime)
+        {
+            GardenWorkTime gardenWorkTime = _context.GardenWorkTime.Find(gardenWorkTimeId);
+
+            gardenWorkTime.TaskDate = taskDate;
+            gardenWorkTime.StartTime = startTime;
+            gardenWorkTime.EndTime = endTime;
+
+            _context.Update(gardenWorkTime);
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(true);
+        }
+
+
+        public async Task<JsonResult> DeleteWorkTime(int gardenWorkTimeId)
+        {
+            GardenWorkTime gardenWorkTime = _context.GardenWorkTime.Find(gardenWorkTimeId);
+
+            try
+            {
+                _context.Remove(gardenWorkTime);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+          
+            return new JsonResult(true);
+        }
+
+        public async Task<JsonResult> CompleteWorkTime(int gardenWorkTimeId, bool isComplete)
+        {
+            try
+            {
+                GardenWorkTime gardenWorkTime = await _context.GardenWorkTime.FindAsync(gardenWorkTimeId);
+
+                if (gardenWorkTime == null)
+                    return new JsonResult(false);
+
+                gardenWorkTime.IsComplete = isComplete;
+                _context.Update(gardenWorkTime);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+            return new JsonResult(true);
+        }
+
         // GET: GardenWorkTimes/Create
         public IActionResult Create(int gardenUserTaskMapId, int gardenSpaceId)
         {

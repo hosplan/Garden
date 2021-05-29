@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210526042024_initial")]
+    [Migration("20210529054644_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,9 +381,6 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenUserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GardenWorkTimeId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 
@@ -395,8 +392,6 @@ namespace Garden.Migrations
 
                     b.HasIndex("GardenUserId");
 
-                    b.HasIndex("GardenWorkTimeId");
-
                     b.ToTable("GardenUserTaskMap");
                 });
 
@@ -407,8 +402,8 @@ namespace Garden.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
 
                     b.Property<int?>("GardenSpaceId")
                         .HasColumnType("int");
@@ -422,8 +417,8 @@ namespace Garden.Migrations
                     b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
 
                     b.Property<DateTime>("TaskDate")
                         .HasColumnType("datetime2");
@@ -710,10 +705,6 @@ namespace Garden.Migrations
                         .WithMany("GardenUserTasks")
                         .HasForeignKey("GardenUserId");
 
-                    b.HasOne("Garden.Models.GardenWorkTime", null)
-                        .WithMany("GardenUserTaskMaps")
-                        .HasForeignKey("GardenWorkTimeId");
-
                     b.Navigation("GardenManager");
 
                     b.Navigation("GardenTask");
@@ -835,11 +826,6 @@ namespace Garden.Migrations
                     b.Navigation("GardenManagerTasks");
 
                     b.Navigation("GardenUserTasks");
-                });
-
-            modelBuilder.Entity("Garden.Models.GardenWorkTime", b =>
-                {
-                    b.Navigation("GardenUserTaskMaps");
                 });
 #pragma warning restore 612, 618
         }

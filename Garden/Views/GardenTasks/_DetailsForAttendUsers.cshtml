@@ -41,12 +41,20 @@
 
         <div class="col-xl-7">
             <div class="card shadow">
-                <div class="card-header">
-                    <span class="text-info font-weight-bold">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="text-info font-weight-bold">
                         <i class="fas fa-users fa-fw mr-2"></i>
                         @Html.Raw("참여자 상세 정보")
-                        <span id="attendUserName"></span>
-                    </span>
+                       
+                        <input type="hidden" id="attend_userName" />
+                    </h6>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                        <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                        <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="openModal('GardenTasks','AttendGardenUser','@Model.Id')">
+                            <i class="fas fa-plus-circle text-primary mr-3"></i>
+                            @Html.Raw("업무 참여자 추가")
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row" id="alert_empty_gardenWorkTime" style="display:none">
@@ -75,14 +83,14 @@
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col mr-2">
                                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        @Html.Raw("등록 주")
+                                                        @Html.Raw("이름")
                                                     </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="taskWeekInfo">
+                                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="attendUserName">
 
                                                     </div>
                                                 </div>
                                                 <div class="col-auto">
-                                                    <i class="fas fa-clipboard fa-2x text-gray-300"></i>
+                                                    <i class="fas fa-user fa-2x text-gray-300"></i>
                                                 </div>
                                             </div>
                                         </div>
