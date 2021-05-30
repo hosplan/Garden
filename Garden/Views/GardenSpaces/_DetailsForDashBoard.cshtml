@@ -29,8 +29,8 @@
                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                         @Html.Raw("이달의 업무 갯수")
                     </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        @Model.GardenTasks.Count() / @Model.GardenTasks.Count()
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="gardenSpace_task">
+
                     </div>
                 </div>
                 <div class="col-auto">
@@ -51,20 +51,9 @@
                         @Html.Raw("공지사항")
                     </div>
                     <div class="row no-gutters align-items-center">
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="gardenSpace_board">
                             @Model.GardenUsers.Count()
-                        </div>
-                        @*<div class="col-auto">
-                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                        </div>
-                        <div class="col">
-                            <div class="progress progress-sm mr-2">
-                                <div class="progress-bar bg-info" role="progressbar"
-                                     style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                     aria-valuemax="100">
-                                </div>
-                            </div>
-                        </div>*@
+                        </div>                       
                     </div>
                 </div>
                 <div class="col-auto">
@@ -84,7 +73,7 @@
                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                         @Html.Raw("이벤트")
                     </div>
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="gardenSpace_event">18</div>
                 </div>
                 <div class="col-auto">
                     <i class="fas fa-bell fa-2x text-gray-300"></i>

@@ -58,24 +58,25 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr class="text-center">
+                                            <td id="IsSun_thead">@Html.Raw("일")</td>
                                             <td id="IsMon_thead">@Html.Raw("월")</td>
                                             <td id="IsTue_thead">@Html.Raw("화")</td>
                                             <td id="IsWed_thead">@Html.Raw("수")</td>
                                             <td id="IsThr_thead">@Html.Raw("목")</td>
                                             <td id="IsFri_thead">@Html.Raw("금")</td>
-                                            <td id="isSat_thead">@Html.Raw("토")</td>
-                                            <td id="isSun_thead">@Html.Raw("일")</td>
+                                            <td id="IsSat_thead">@Html.Raw("토")</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="text-center">
-                                            <td><input class="dayChkBox" asp-for="weekend.IsMon" id="IsMon" style="width:25px; height:25px;"/></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsSun" id="IsSun" style="width:25px; height:25px;" /></td>
+                                            <td><input class="dayChkBox" asp-for="weekend.IsMon" id="IsMon" style="width:25px; height:25px;" /></td>
                                             <td><input class="dayChkBox" asp-for="weekend.IsTue" id="IsTue" style="width:25px; height:25px;" /></td>
                                             <td><input class="dayChkBox" asp-for="weekend.IsWed" id="IsWed" style="width:25px; height:25px;" /></td>
                                             <td><input class="dayChkBox" asp-for="weekend.IsThr" id="IsThr" style="width:25px; height:25px;" /></td>
                                             <td><input class="dayChkBox" asp-for="weekend.IsFri" id="IsFri" style="width:25px; height:25px;" /></td>
                                             <td><input class="dayChkBox" asp-for="weekend.IsSat" id="IsSat" style="width:25px; height:25px;" /></td>
-                                            <td><input class="dayChkBox" asp-for="weekend.IsSun" id="IsSun" style="width:25px; height:25px;" /></td>
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -101,7 +102,7 @@
                                 @Html.Raw("주 단위")
                             </td>
                             <td>
-                                <input type="text" class="form-control w-50" asp-for="TaskWeek" />
+                                <input type="text" class="form-control w-50" onkeypress="onlyNumber();" asp-for="TaskWeek" />
                             </td>
                         </tr>
                     </tbody>

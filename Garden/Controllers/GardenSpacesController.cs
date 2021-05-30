@@ -74,6 +74,52 @@ namespace Garden.Controllers
             return View(gardenSpace);
         }
 
+        /// <summary>
+        /// 이달의 업무 시간정보 가져오기
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="gardenTask_list"></param>
+        /// <returns></returns>
+        private async Task<List<GardenWorkTime>> GetCurrentMonthWorkTimeList(int month, List<GardenTask> gardenTask_list)
+        {
+            List<GardenWorkTime> gardenWorkTime_list = new List<GardenWorkTime>();
+
+            foreach(GardenTask gardenTask in gardenTask_list)
+            {
+                List<GardenWorkTime> temp_gardenWorkTime = await _context.GardenWorkTime
+                                                                         .AsNoTracking()
+                                                                         .Where(gWorkTime => gWorkTime.GardenTaskId == gardenTask.Id
+                                                                                && gWorkTime.TaskDate.Month == month)
+                                                                         .ToListAsync();
+
+                gardenWorkTime_list.AddRange(temp_gardenWorkTime);
+            }
+            return gardenWorkTime_list;
+        }
+
+        public async Task<JsonResult> GetGardenSpaceOtherInfo(int gardenSpaceId)
+        {
+            try
+            {
+                //이달 정보 가져오기
+                int month = DateTime.Now.Month;
+
+                List<GardenTask> gardenTask_list = _context.GardenTask
+                                                          .AsNoTracking()
+                                                          .Where(gTask => gTask.GardenSpaceId == gardenSpaceId).ToList();
+
+                List<GardenWorkTime> currentMonth_gardenWorkTime_list = await GetCurrentMonthWorkTimeList(month, gardenTask_list);
+
+                return new JsonResult(currentMonth_gardenWorkTime_list.Where(z => z.IsComplete == true).Count() +
+                                                          " / " +
+                                                          currentMonth_gardenWorkTime_list.Count());
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
         // GET: GardenSpaces/Create
         public IActionResult Create()
         {

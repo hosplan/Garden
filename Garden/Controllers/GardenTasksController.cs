@@ -356,6 +356,43 @@ namespace Garden.Controllers
             return View(gardenTask);
         }
 
+        /// <summary>
+        /// GardenTask 삭제
+        /// </summary>
+        /// <param name="gardenTaskId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> DeleteGardenTask(int gardenTaskId)
+        {
+            GardenTask remove_gardenTask = _context.GardenTask
+                                            .Include(gTask => gTask.GardenUserTaskMaps)
+                                            .Include(gTask => gTask.GardenWorkTimes)
+                                            .FirstOrDefault(gTask => gTask.Id == gardenTaskId);
+
+            try
+            {
+                
+                List<GardenWorkTime> remove_gardenWorkTime_list = new List<GardenWorkTime>(remove_gardenTask.GardenWorkTimes);                
+                List<GardenUserTaskMap> remove_gardenUserTaskMap_list = new List<GardenUserTaskMap>(remove_gardenTask.GardenUserTaskMaps);
+
+                //GardenWorkTime 삭제
+                _context.RemoveRange(remove_gardenWorkTime_list);
+                await _context.SaveChangesAsync();
+                //GardenUserTaskMap 삭제
+                _context.RemoveRange(remove_gardenUserTaskMap_list);
+                await _context.SaveChangesAsync();
+
+                _context.Remove(remove_gardenTask);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+
+            return new JsonResult(true);
+        }
+
         // POST: GardenTasks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

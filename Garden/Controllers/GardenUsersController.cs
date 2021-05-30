@@ -362,9 +362,6 @@ namespace Garden.Controllers
         private async Task<List<GardenUserTaskMap>> LoadGardenUserTaskMapList(int gardenUserId)
         {
             List<GardenUserTaskMap> gardenUserTaskMap_list = await _context.GardenUserTaskMap
-                                                                        .Include(gUserTaskMap => gUserTaskMap.GardenUser)
-                                                                        .Include(gUserTaskMap => gUserTaskMap.GardenManager)
-                                                                        .Include(gUserTaskMap => gUserTaskMap.GardenTask)
                                                                         .Where(gUserTaskMap => gUserTaskMap.GardenManagerId == gardenUserId
                                                                                || gUserTaskMap.GardenUserId == gardenUserId)
                                                                         .ToListAsync();
@@ -381,15 +378,17 @@ namespace Garden.Controllers
             GardenUser gardenUser = await _context.GardenUser.FirstOrDefaultAsync(gUser => gUser.Id == gardenUserId);
             List<GardenUserTaskMap> gardenUserTaskMap_list = await LoadGardenUserTaskMapList(gardenUserId.Value);
             
-            List<GardenTask> remove_gardenTask_list = new List<GardenTask>();
-            foreach(GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
-            {
-                remove_gardenTask_list.Add(gardenUserTaskMap.GardenTask);
-            }
-
+            //관련 정원업무 시간
+            List<GardenWorkTime> remove_gardenWorkTime_list = await _context.GardenWorkTime
+                                                               .Where(gWorkTime => gWorkTime.GardenUserId == gardenUserId)
+                                                               .ToListAsync();
+            
             try
             {
-                _context.RemoveRange(remove_gardenTask_list);
+                _context.RemoveRange(remove_gardenWorkTime_list);
+                await _context.SaveChangesAsync();
+
+                _context.RemoveRange(gardenUserTaskMap_list);
                 await _context.SaveChangesAsync();
 
                 _context.Remove(gardenUser);

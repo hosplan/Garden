@@ -9,20 +9,17 @@ function openModal(controllerName, actionName, id) {
     click_common_btn(url);
 }
 
-function openModalForDataTable(obj, id) {
-    let tt = obj.querySelector("[data-url]");
-    console.log(tt);
-}
-
 //데이터 테이블에서 모달창 열기
 function datatable_openModal(obj) {
     click_common_btn(obj.value);
 }
 
+//페이지 리로드
 function reloadPage() {
     location.reload();
 }
 
+//에러 메세지 출력
 function errorMessage() {
     Swal.fire({
         title: '문제가 발생하였습니다!',
@@ -38,7 +35,11 @@ function SelectingIdOpenModal(controllerName, actionName) {
     openModal(controllerName, actionName, gardenSpace_option);
 }
 
-
+//숫자만 입력
+function onlyNumber() {
+    if ((event.keyCode < 48) || (event.keyCode > 57))
+        event.returnValue = false;
+}
 
 //url 클릭
 function click_common_btn(url) {

@@ -11,6 +11,38 @@ function GetOtherGarden() {
     baseSubType_dataTable.ajax.url(url).load();
 }
 
+//정원 업무삭제하기
+function removeGardenTask(gardenTaskId) {
+    Swal.fire({
+        title: '해당 정원 업무를 삭제 하시겠어요?',
+        text : '관련된 모든 정보가 삭제 됩니다.',
+        icon: 'warning',
+        confirmButtonText: '삭제',
+        showCancelButton: true,
+        cancelButtonText: '취소',
+    }).then(function (result) {
+        if (result.value) {
+            let httpRequest = new XMLHttpRequest();
+            if (!httpRequest) {
+                errorMessage();
+                return false;
+            }
+
+            httpRequest.open('POST', '/GardenTasks/DeleteGardenTask', true);
+            httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            httpRequest.onload = function () {
+                if (this.status === 200 || this.response == "true") {
+                    location.href = "/GardenTasks/Index";
+                } else {
+                    errorMessage();
+                }
+            };
+            httpRequest.send('gardenTaskId=' + gardenTaskId);
+        }
+    });
+}
+
+
 //baseSubType - datatable
 var baseSubType_dataTable = $('#gardenTask_dt').DataTable({
     'ajax': {
@@ -48,7 +80,7 @@ var baseSubType_dataTable = $('#gardenTask_dt').DataTable({
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {
-                return '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" value="/GardenTasks/Delete?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-trash"></i></button>' +
+                return '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" onclick="removeGardenTask('+data+')"><i class="fas fa-trash"></i></button>' +
                     '<button type="button" class="btn btn-link text-success p-0 float-right" value="/GardenTasks/Edit?id='+data+'" onclick="datatable_openModal(this)"><i class="fas fa-brush"></i></button>';
             }
         }
