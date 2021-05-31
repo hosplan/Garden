@@ -96,7 +96,30 @@ namespace Garden.Controllers
             }
             return gardenWorkTime_list;
         }
+        public async Task<JsonResult> GetGardenTaskList(int gardenSpaceId)
+        {
+            List<GardenWorkTime> gardenWorkTime_list = await _context.GardenWorkTime
+                                                                 .Include(gWorkTime => gWorkTime.GardenUser)
+                                                                    .ThenInclude(gUser => gUser.User)
+                                                                 .AsNoTracking()
+                                                                 .Where(gWorkTime => gWorkTime.GardenSpaceId == gardenSpaceId)
+                                                                 .ToListAsync();
 
+            List<object> object_list = new List<object>();
+            // clasName = "bg-info border-info",
+            //url = "/ZWorkItems/Details/" + item.ZWorkItemId
+            foreach (GardenWorkTime gardenWorkTime in gardenWorkTime_list)
+            {
+                object_list.Add(new
+                {
+                    title = gardenWorkTime.GardenUser.User.Name,
+                    start = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd"),
+                    end = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd")
+                });
+            }
+            var jsonValue = object_list;
+            return Json(jsonValue);
+        }
         public async Task<JsonResult> GetGardenSpaceOtherInfo(int gardenSpaceId)
         {
             try
