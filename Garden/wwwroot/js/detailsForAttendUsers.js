@@ -52,11 +52,7 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
     'processing': true,
 });
 
-//정원 업무 참여자의 업무시간 정보 가져오기
-function getAttendUserWorkTime(gardenUserTaskMapId, name, userName) {
-    document.getElementById('attendUserName').innerText = name;
-    document.getElementById('attend_userName').value = userName;
-
+function createWorkTimeTable(gardenUserTaskMapId, startMonth, endMonth) {
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
         errorMessage();
@@ -66,20 +62,37 @@ function getAttendUserWorkTime(gardenUserTaskMapId, name, userName) {
     httpRequest.open('POST', '/GardenUserTaskMaps/GetGardenUserWorkTime', true);
     httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     httpRequest.onload = function () {
-        //if (this.status === 200 || this.response == "true") {
-        //    location.reload();
-             
-        //}
-        
         if (this.response == "\"empty\"") {
             showEmptyInfo(gardenUserTaskMapId);
         } else {
             showWorkTimeInfo(this.response);
         }
-        
     };
-    httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
+    if (startMonth == 0 && endMonth == 0) {
+        httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
+    } else {
+        httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId+'&startMonth='+startMonth+'&endMonth='+endMonth);
+    }
+    
 }
+
+//정원 업무 참여자의 업무시간 정보 가져오기
+function getAttendUserWorkTime(gardenUserTaskMapId, name, userName, startMonth, endMonth) {
+    document.getElementById('attendUserName').innerText = name;
+    document.getElementById('attend_userName').value = userName;
+    document.getElementById('gardenUserTaskMapId').value = gardenUserTaskMapId;
+    createWorkTimeTable(gardenUserTaskMapId, 0, 0);
+}
+
+function searchWorkTime() {
+    let startMonth_value = document.getElementById('startMonth').value;
+    let endMonth_value = document.getElementById('endMonth').value;
+    let gardenUserTaskMapId = document.getElementById('gardenUserTaskMapId').value;
+
+    createWorkTimeTable(gardenUserTaskMapId, startMonth_value, endMonth_value);
+}
+
+
 
 //업무시간정보에 관한 동적테이블 생성
 function makeWorkTimeTable(jsonArray) {
@@ -246,7 +259,7 @@ async function showWorkTimeInfo(gardenWorkTime_list) {
     await makeWorkTimeTable(JSON.parse(gardenWorkTime_list));             
 }
 
-// 생성된 업무 시간이 없을때 보여짐.
+//생성된 업무 시간이 없을때 보여짐.
 function showEmptyInfo(gardenUserTaskMapId) {
     let gardenSpaceId = document.getElementById('gardenSpaceId').value;
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'block';
@@ -290,4 +303,30 @@ function removeValue(gardenUserTaskMapId) {
             httpRequest.send('gardenUserTaskMapId=' + gardenUserTaskMapId);
         }
     });
+}
+
+//찾아보기 열기
+function openSearchWorkTime() {
+    document.getElementById('attend_search_workTime').style.display = 'block';
+}
+
+//찾아보기 닫기
+function closeSearchWorkTime() {
+    document.getElementById('attend_search_workTime').style.display = 'none';
+}
+
+//월 까지 부분의 option 값 생성
+function makeEndMonthOption(obj) {
+    let startMonth_value = obj.value;
+    let endMonth_selectbox = document.getElementById('endMonth');
+    //이전 endMonth option 값 지우기
+    for (i = endMonth_selectbox.options.length -1 ; i >= 0; i--) {
+        endMonth_selectbox.options[i] = null;
+    }
+    //endMonth option 값 넣기
+    for (startMonth_value; startMonth_value < 13; startMonth_value++) {
+        let option = document.createElement('option');
+        option.innerText = startMonth_value;
+        endMonth_selectbox.append(option);
+    }
 }

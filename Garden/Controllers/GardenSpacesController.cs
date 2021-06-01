@@ -10,6 +10,7 @@ using Garden.Models;
 using Garden.Helper;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace Garden.Controllers
 {
@@ -101,10 +102,16 @@ namespace Garden.Controllers
             List<GardenWorkTime> gardenWorkTime_list = await _context.GardenWorkTime
                                                                  .Include(gWorkTime => gWorkTime.GardenUser)
                                                                     .ThenInclude(gUser => gUser.User)
+                                                                 .Include(gWorkTime => gWorkTime.GardenTask)
+                                                                    .ThenInclude(gTask => gTask.GardenUserTaskMaps)
+                                                                        .ThenInclude(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                                            .ThenInclude(gManger => gManger.User)
                                                                  .AsNoTracking()
                                                                  .Where(gWorkTime => gWorkTime.GardenSpaceId == gardenSpaceId)
                                                                  .ToListAsync();
 
+            
+                
             List<object> object_list = new List<object>();
             // clasName = "bg-info border-info",
             //url = "/ZWorkItems/Details/" + item.ZWorkItemId
@@ -114,7 +121,9 @@ namespace Garden.Controllers
                 {
                     title = gardenWorkTime.GardenUser.User.Name,
                     start = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd"),
-                    end = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd")
+                    end = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd"),
+                    className = gardenWorkTime.IsComplete == true ? "bg-info text-white" : "bg-primary text-white",
+                    url = "/GardenWorkTimes/Details/" + gardenWorkTime.Id
                 });
             }
             var jsonValue = object_list;

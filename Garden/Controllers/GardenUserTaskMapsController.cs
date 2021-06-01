@@ -20,7 +20,8 @@ namespace Garden.Controllers
             _context = context;
         }
 
-        public async Task<JsonResult> GetGardenUserWorkTime(int gardenUserTaskMapId)
+        //참여자의 업무시간 목록 가져오기
+        public async Task<JsonResult> GetGardenUserWorkTime(int gardenUserTaskMapId, int startMonth, int endMonth)
         {
             if(gardenUserTaskMapId == 0)
             {
@@ -29,6 +30,7 @@ namespace Garden.Controllers
 
             try
             {
+                //업무참여자 정보
                 GardenUserTaskMap gardenUserTaskMap = await _context.GardenUserTaskMap
                                                                .Include(gUserTaskMap => gUserTaskMap.GardenTask)
                                                                .FirstOrDefaultAsync(gUserTaskMap => gUserTaskMap.Id == gardenUserTaskMapId);
@@ -37,12 +39,34 @@ namespace Garden.Controllers
                     return new JsonResult(false);
                 }
 
-                List<GardenWorkTime> gardenWorkTime_list = await _context.GardenWorkTime
-                                                                         .AsNoTracking()
-                                                                         .Where(gardenWorkTime => gardenWorkTime.GardenUserId == gardenUserTaskMap.GardenUserId
-                                                                                               && gardenWorkTime.GardenTaskId == gardenUserTaskMap.GardenTaskId)
-                                                                         .OrderBy(gardenWorkTime => gardenWorkTime.TaskDate)
-                                                                         .ToListAsync();
+                List<GardenWorkTime> gardenWorkTime_list = new List<GardenWorkTime>();
+                //업무참여자의 이달의 업무시간 목록
+                if(startMonth != 0 && endMonth != 0)
+                {
+                    gardenWorkTime_list = await _context.GardenWorkTime
+                                                      .AsNoTracking()
+                                                      .Where(gardenWorkTime => gardenWorkTime.GardenUserId == gardenUserTaskMap.GardenUserId
+                                                                          && gardenWorkTime.GardenTaskId == gardenUserTaskMap.GardenTaskId
+                                                                          && gardenWorkTime.TaskDate.Month >= startMonth 
+                                                                          && gardenWorkTime.TaskDate.Month <= endMonth)
+                                                      .OrderBy(gardenWorkTime => gardenWorkTime.TaskDate)
+                                                      .ToListAsync();
+                }
+                else
+                {
+                    int currentMonth = DateTime.Now.Month;
+                    gardenWorkTime_list = await _context.GardenWorkTime
+                                                        .AsNoTracking()
+                                                        .Where(gardenWorkTime => gardenWorkTime.GardenUserId == gardenUserTaskMap.GardenUserId
+                                                                            && gardenWorkTime.GardenTaskId == gardenUserTaskMap.GardenTaskId
+                                                                            && gardenWorkTime.TaskDate.Month == currentMonth)
+                                                        .OrderBy(gardenWorkTime => gardenWorkTime.TaskDate)
+                                                        .ToListAsync();
+                }
+               
+
+
+
 
                 if (gardenWorkTime_list.Count() == 0)                    
                     return new JsonResult("empty");

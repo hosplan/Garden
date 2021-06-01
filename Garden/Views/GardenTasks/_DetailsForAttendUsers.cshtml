@@ -42,21 +42,31 @@
         <div class="col-xl-7">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="text-info font-weight-bold">
+                    <h6 class="m-0 font-weight-bold text-info">
                         <i class="fas fa-users fa-fw mr-2"></i>
                         @Html.Raw("참여자 상세 정보")
-                       
                         <input type="hidden" id="attend_userName" />
+                        <input type="hidden" id="gardenUserTaskMapId"/>
                     </h6>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                        <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="openModal('GardenTasks','AttendGardenUser','@Model.Id')">
-                            <i class="fas fa-plus-circle text-primary mr-3"></i>
-                            @Html.Raw("업무 참여자 추가")
-                        </button>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                            <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="openModal('GardenTasks','AttendGardenUser','@Model.Id')">
+                                <i class="fas fa-plus-circle text-primary mr-3"></i>
+                                @Html.Raw("업무 참여자 추가")
+                            </button>
+                            <button type="button" class="dropdown-item font-weight-bold" onclick="openSearchWorkTime();">
+                                <i class="fas fa-search text-primary mr-3"></i>
+                                @Html.Raw("찾아보기")
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
+                    @*만들어진 업무시간이 없을때*@
                     <div class="row" id="alert_empty_gardenWorkTime" style="display:none">
                         <div class="col-xl-12">
                             <div class="text-center">
@@ -74,6 +84,42 @@
                         </div>
                     </div>
 
+                    @*찾아보기*@
+                    <div class="row mb-3" id="attend_search_workTime" style="display:none">
+                        <div class="col-11 shadow p-3 m-auto">                    
+                            <div class="row">
+                                <div class="col-xl-4 float-left">                                   
+                                    <select id="startMonth" onchange="makeEndMonthOption(this)" class="form-control w-50 float-left">
+                                        <option selected>@Html.Raw("선택하세요")</option>
+                                        @for (int i = 1; i < 13; i++)
+                                        {
+                                            <option>@i</option>
+                                        }
+                                    </select>
+                                    <label class="float-left font-weight-bold ml-3 p-2">@Html.Raw("월 부터")</label>
+                                </div>
+
+                                <div class="col-xl-4 float-left">
+                                    <select id="endMonth" class="form-control w-50 float-left">
+                                    </select>
+                                    <label class="float-left font-weight-bold ml-3 p-2">@Html.Raw("월 까지")</label>
+                                </div>
+
+                                <div class="col-xl-4 float-left">
+                                    <button type="button" onclick="searchWorkTime()" class="btn btn-primary btn-md">
+                                        <i class="fas fa-search fa-fw"></i>
+                                        @Html.Raw("찾아보기")
+                                    </button>
+                                    <button type="button" onclick="closeSearchWorkTime()" class="btn btn-secondary btn-md ml-3">
+                                        <i class="fas fa-minus-circle fa-fw"></i>
+                                        @Html.Raw("닫기")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>                  
+                    </div>
+
+                    @*참여자 상세정보 대시보드*@
                     <div class="row" id="user_gardenWorkTime" style="display:none">
                         <div class="col-xl-12">
                             <div class="row">
@@ -157,11 +203,11 @@
                             <table class="table table-hover" id="gardenWorktime_tb">
                                 <thead>
                                     <tr>
-                                        <th class="text-center text-info font-weight-bold">@Html.Raw("업무 날짜")</th>
-                                        <th class="text-center text-info font-weight-bold">@Html.Raw("시작 시간")</th>
-                                        <th class="text-center text-info font-weight-bold">@Html.Raw("종료 시간")</th>
-                                        <th class="text-center text-info font-weight-bold">@Html.Raw("완료 여부")</th>
-                                        <th><i class="fas fa-cog float-right"></i></th>
+                                        <th class="text-center text-info font-weight-bold m-2">@Html.Raw("업무 날짜")</th>
+                                        <th class="text-center text-info font-weight-bold m-2">@Html.Raw("시작 시간")</th>
+                                        <th class="text-center text-info font-weight-bold m-2">@Html.Raw("종료 시간")</th>
+                                        <th class="text-center text-info font-weight-bold m-2">@Html.Raw("완료 여부")</th>
+                                        <th class="text-right"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="gardenWorktime_tb_tbody">
