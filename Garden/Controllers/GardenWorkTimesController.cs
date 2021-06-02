@@ -26,6 +26,33 @@ namespace Garden.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        /// <summary>
+        /// 완료처리
+        /// </summary>
+        /// <param name="id">gardenWorkTimeId</param>
+        /// <returns></returns>
+        public async Task<IActionResult> CompleteForWorkItem(int id, int spaceId)
+        {
+            GardenWorkTime gardenWorkTime = _context.GardenWorkTime.Find(id);
+
+            if(gardenWorkTime == null)
+                return RedirectToAction("Details", "GardenSpaces", new { id = spaceId });
+
+            gardenWorkTime.IsComplete = gardenWorkTime.IsComplete == true ? false : true;
+
+            try
+            {
+                _context.Update(gardenWorkTime);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return RedirectToAction("Details", "GardenSpaces", new { id = spaceId });
+            }
+           
+            return RedirectToAction("Details", "GardenSpaces", new { id = spaceId });
+        }
+
         // GET: GardenWorkTimes/Details/5
         public async Task<IActionResult> Details(int? id)
         {

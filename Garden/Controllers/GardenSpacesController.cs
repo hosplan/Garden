@@ -103,15 +103,10 @@ namespace Garden.Controllers
                                                                  .Include(gWorkTime => gWorkTime.GardenUser)
                                                                     .ThenInclude(gUser => gUser.User)
                                                                  .Include(gWorkTime => gWorkTime.GardenTask)
-                                                                    .ThenInclude(gTask => gTask.GardenUserTaskMaps)
-                                                                        .ThenInclude(gUserTaskMap => gUserTaskMap.GardenManager)
-                                                                            .ThenInclude(gManger => gManger.User)
                                                                  .AsNoTracking()
                                                                  .Where(gWorkTime => gWorkTime.GardenSpaceId == gardenSpaceId)
                                                                  .ToListAsync();
-
-            
-                
+        
             List<object> object_list = new List<object>();
             // clasName = "bg-info border-info",
             //url = "/ZWorkItems/Details/" + item.ZWorkItemId
@@ -120,10 +115,10 @@ namespace Garden.Controllers
                 object_list.Add(new
                 {
                     title = gardenWorkTime.GardenUser.User.Name,
-                    start = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd"),
-                    end = gardenWorkTime.TaskDate.ToString("yyyy-MM-dd"),
-                    className = gardenWorkTime.IsComplete == true ? "bg-info text-white" : "bg-primary text-white",
-                    url = "/GardenWorkTimes/Details/" + gardenWorkTime.Id
+                    start = (gardenWorkTime.TaskDate + gardenWorkTime.StartTime).ToString("s"),
+                    end = (gardenWorkTime.TaskDate + gardenWorkTime.EndTime).ToString("s"),
+                    className = gardenWorkTime.IsComplete == true ? "bg-info text-white worktimeInfo" : "bg-primary text-white worktimeInfo",
+                    url = "/GardenWorkTimes/CompleteForWorkItem?id="+ gardenWorkTime.Id + "&spaceId="+gardenSpaceId+"",                   
                 });
             }
             var jsonValue = object_list;
