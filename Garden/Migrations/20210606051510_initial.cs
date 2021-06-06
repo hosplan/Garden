@@ -32,6 +32,7 @@ namespace Garden.Migrations
                     Tel = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Birth = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -81,6 +82,25 @@ namespace Garden.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BaseType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GardenSystem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SysName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    License = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    SysLogo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TempString = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TempInt = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GardenSystem", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -379,6 +399,10 @@ namespace Garden.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsActivate = table.Column<bool>(type: "bit", nullable: false),
                     GardenSpaceId = table.Column<int>(type: "int", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Tel = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GardenRoleId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -401,6 +425,43 @@ namespace Garden.Migrations
                         name: "FK_GardenUser_GardenSpace_GardenSpaceId",
                         column: x => x.GardenSpaceId,
                         principalTable: "GardenSpace",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GardenFee",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GardenUserId = table.Column<int>(type: "int", nullable: true),
+                    GardenSpaceId = table.Column<int>(type: "int", nullable: true),
+                    TempString = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TempInt = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GardenFee", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GardenFee_BaseSubType_SubTypeId",
+                        column: x => x.SubTypeId,
+                        principalTable: "BaseSubType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GardenFee_GardenSpace_GardenSpaceId",
+                        column: x => x.GardenSpaceId,
+                        principalTable: "GardenSpace",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GardenFee_GardenUser_GardenUserId",
+                        column: x => x.GardenUserId,
+                        principalTable: "GardenUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -532,6 +593,21 @@ namespace Garden.Migrations
                 column: "GardenId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GardenFee_GardenSpaceId",
+                table: "GardenFee",
+                column: "GardenSpaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GardenFee_GardenUserId",
+                table: "GardenFee",
+                column: "GardenUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GardenFee_SubTypeId",
+                table: "GardenFee",
+                column: "SubTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GardenRole_GardenId",
                 table: "GardenRole",
                 column: "GardenId");
@@ -641,6 +717,12 @@ namespace Garden.Migrations
 
             migrationBuilder.DropTable(
                 name: "GardenAttachMap");
+
+            migrationBuilder.DropTable(
+                name: "GardenFee");
+
+            migrationBuilder.DropTable(
+                name: "GardenSystem");
 
             migrationBuilder.DropTable(
                 name: "GardenTaskAttachMap");

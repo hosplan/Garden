@@ -65,7 +65,7 @@ function createWorkTimeTable(gardenUserTaskMapId, startMonth, endMonth) {
         if (this.response == "\"empty\"") {
             showEmptyInfo(gardenUserTaskMapId);
         } else {
-            showWorkTimeInfo(this.response);
+            showWorkTimeInfo(this.response, gardenUserTaskMapId);
         }
     };
     if (startMonth == 0 && endMonth == 0) {
@@ -252,10 +252,11 @@ function updateWorktimeDashBoard(totalCount, completeCount) {
 }
 
 //업무시간 정보 나타내기
-async function showWorkTimeInfo(gardenWorkTime_list) {
+async function showWorkTimeInfo(gardenWorkTime_list, gardenUserTaskMapId) {
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'none';
     document.getElementById('user_gardenWorkTime').style.display = 'block';
-
+    let gardenSpaceId = document.getElementById('gardenSpaceId').value;
+    document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId + '';
     await makeWorkTimeTable(JSON.parse(gardenWorkTime_list));             
 }
 

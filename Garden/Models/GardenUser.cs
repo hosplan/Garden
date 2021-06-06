@@ -15,6 +15,16 @@ namespace Garden.Models
         public bool IsActivate { get; set; }
         public Nullable<int> GardenSpaceId { get; set; }
 
+        //해당 부분은 회원가입 기능을 false 했을경우 
+        public string UserName { get; set; }
+        public string Name { get; set; }
+        public string Tel { get; set; }
+
+        [Display(Name = "생일")]
+        [DataType(DataType.Date)]
+        public Nullable<DateTime> BirthDay { get; set; }
+        //끝
+
         [Display(Name ="등록날짜")]
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }

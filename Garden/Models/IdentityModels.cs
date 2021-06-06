@@ -11,13 +11,11 @@ namespace Garden.Models
     public class ApplicationUser : IdentityUser
     {
         public ApplicationUser() : base() { }
-
         public string Name { get; set; }
         public string Tel { get; set; }
         public string Address { get; set; }    
         public bool IsActive { get; set; }
-
-        //public ICollection<ApplicationRole> Roles { get; set; }
+        public string Birth { get; set; }
     }
 
     public class ApplicationRole : IdentityRole

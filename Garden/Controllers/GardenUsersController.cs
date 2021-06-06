@@ -236,6 +236,24 @@ namespace Garden.Controllers
             return PartialView();
         }
 
+        [HttpGet]
+        public IActionResult CreateForUserAndGardenUser(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            ViewData["roleType_list"] = new SelectList(_context.BaseSubType.Where(subType => subType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE" && subType.Id != "GARDEN_MANAGER_ROLE_TYPE_1").ToList(), "Id", "Name");
+            ViewData["gardenSpace_id"] = id;
+
+            return PartialView();
+        }
+
+        [HttpPost]
+        public IActionResult CreateForUserAndGardenUser(int spaceId, string name)
+        {
+            return PartialView();
+        }
+
         // POST: GardenUsers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

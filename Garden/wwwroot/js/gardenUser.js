@@ -66,6 +66,14 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
     'processing': true,
 });
 
+//유저 및 정원 관리사 동시 생성
+function createUserAndGardenUser() {
+    let gardenSpace_option = document.getElementById('Garden_list');
+    gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
+    openModal('GardenUsers', 'CreateForUserAndGardenUser', gardenSpace_option);
+}
+
+
 function createGardenUser() {
     let gardenSpace_option = document.getElementById('Garden_list');
     gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;

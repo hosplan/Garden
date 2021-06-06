@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210529054644_initial")]
+    [Migration("20210606051510_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace Garden.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Garden.Models.ApplicationRole", b =>
@@ -64,6 +64,9 @@ namespace Garden.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Birth")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -223,6 +226,45 @@ namespace Garden.Migrations
                     b.ToTable("GardenAttachMap");
                 });
 
+            modelBuilder.Entity("Garden.Models.GardenFee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("GardenSpaceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GardenUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubTypeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("TempInt")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TempString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GardenSpaceId");
+
+                    b.HasIndex("GardenUserId");
+
+                    b.HasIndex("SubTypeId");
+
+                    b.ToTable("GardenFee");
+                });
+
             modelBuilder.Entity("Garden.Models.GardenRole", b =>
                 {
                     b.Property<int>("Id")
@@ -269,6 +311,39 @@ namespace Garden.Migrations
                     b.HasIndex("SubTypeId");
 
                     b.ToTable("GardenSpace");
+                });
+
+            modelBuilder.Entity("Garden.Models.GardenSystem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("License")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SysLogo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SysName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TempInt")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TempString")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GardenSystem");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenTask", b =>
@@ -339,6 +414,9 @@ namespace Garden.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime?>("BirthDay")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -351,8 +429,17 @@ namespace Garden.Migrations
                     b.Property<bool>("IsActivate")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tel")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -604,6 +691,27 @@ namespace Garden.Migrations
                     b.Navigation("Attachment");
 
                     b.Navigation("Garden");
+                });
+
+            modelBuilder.Entity("Garden.Models.GardenFee", b =>
+                {
+                    b.HasOne("Garden.Models.GardenSpace", "GardenSpace")
+                        .WithMany()
+                        .HasForeignKey("GardenSpaceId");
+
+                    b.HasOne("Garden.Models.GardenUser", "GardenUser")
+                        .WithMany()
+                        .HasForeignKey("GardenUserId");
+
+                    b.HasOne("Garden.Models.BaseSubType", "BaseSubType")
+                        .WithMany()
+                        .HasForeignKey("SubTypeId");
+
+                    b.Navigation("BaseSubType");
+
+                    b.Navigation("GardenSpace");
+
+                    b.Navigation("GardenUser");
                 });
 
             modelBuilder.Entity("Garden.Models.GardenRole", b =>
