@@ -14,6 +14,7 @@ namespace Garden.Models
         public string SysName { get; set; }
         public string License { get; set; }
         public bool IsActive { get; set; }
+        public bool ActiveMembership { get; set; }
         public string SysLogo { get; set; }
         public string TempString { get; set; }
         public int TempInt { get; set; }
