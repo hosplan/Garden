@@ -93,6 +93,7 @@ namespace Garden.Migrations
                     SysName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     License = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    ActiveMembership = table.Column<bool>(type: "bit", nullable: false),
                     SysLogo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TempString = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TempInt = table.Column<int>(type: "int", nullable: false),

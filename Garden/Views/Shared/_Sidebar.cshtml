@@ -53,13 +53,17 @@
             <i class="fas fa-fw fa-tag"></i>
             <span class="font-weight-bold">@Html.Raw("기본 타입 관리")</span>
         </a>
-        @*<a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-cogs"></i>
-            <span class="font-weight-bold">@Html.Raw("시스템 로그")</span>
-        </a>*@
         <a class="nav-link" asp-controller="Home" asp-action="IndexForUser">
             <i class="fas fa-fw fa-user-tag"></i>
             <span class="font-weight-bold">@Html.Raw("사용자 관리")</span>
+        </a>
+        <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-cogs"></i>
+            <span class="font-weight-bold">@Html.Raw("시스템 로그")</span>
+        </a>
+        <a class="nav-link" asp-controller="GardenSystems" asp-action="Index">
+            <i class="fas fa-fw fa-cog"></i>
+            <span class="font-weight-bold">@Html.Raw("시스템 관리")</span>
         </a>
     </li>
     <li>
