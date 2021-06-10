@@ -35,8 +35,13 @@ namespace Garden.Controllers
                                                             this.ControllerContext.RouteData.Values["action"].ToString());
             if (!isRead)
                 return RedirectToAction("NotAccess", "Home");
-       
-            return View(await _context.GardenSystem.ToListAsync());
+
+            List<GardenSystem> system_list = await _context.GardenSystem.ToListAsync();
+
+            if (system_list.Count() == 0)
+                return RedirectToAction("Create", "GardenSystems");
+
+            return View(await _context.GardenSystem.FirstAsync());
         }
 
         // GET: GardenSystems/Details/5
@@ -68,13 +73,24 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SysName,License,IsActive,SysLogo,CreateDate")] GardenSystem gardenSystem)
+        public async Task<IActionResult> Create([Bind("Id,SysName,License,IsActive,SysLogo,CreateDate,ActiveMembership")] GardenSystem gardenSystem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(gardenSystem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                gardenSystem.CreateDate = DateTime.Now;
+
+                List<GardenSystem> exist_garden_system = _context.GardenSystem.ToList();
+
+                if(exist_garden_system.Count() > 0)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    _context.Add(gardenSystem);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(gardenSystem);
         }
@@ -100,7 +116,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SysName,License,IsActive,SysLogo,CreateDate")] GardenSystem gardenSystem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,SysName,License,IsActive,SysLogo,CreateDate,ActiveMembership")] GardenSystem gardenSystem)
         {
             if (id != gardenSystem.Id)
             {

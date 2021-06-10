@@ -14,7 +14,6 @@ namespace Garden.Helper
     {
         int CreateGardenRole(int gardenSpace_id, string baseSubType_id);
         bool CreateGardenUser(int gardenSpace_id, string user_id, int? gardenRole_id);
-
         bool CheckReadPermission(string loginUserId, string controllerName, string actionName);
     }
     public class GardenHelper : IGardenHelper
@@ -137,5 +136,7 @@ namespace Garden.Helper
             return true;
         }
         #endregion
+
+      
     }
 }

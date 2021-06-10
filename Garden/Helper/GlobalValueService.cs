@@ -94,6 +94,39 @@ namespace Garden.Helper
 
             }
         }
+        public bool IsActiveSystem
+        {
+            get
+            {
+                try
+                {
+                    List<GardenSystem> gardenSystems = _context.GardenSystem.ToList();
+
+                    if (gardenSystems.Count() == 0)
+                        return false;
+
+                    GardenSystem gardenSystem = _context.GardenSystem.First();
+
+                    if (gardenSystem.IsActive == false)
+                        return false;
+                    else if (gardenSystem.License != "dmsalsxogh")
+                        return false;
+                    else
+                        return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+        public bool IsActiveMembership
+        {
+            get
+            {                
+                return _context.GardenSystem.First().ActiveMembership;
+            }
+        }
         public string loginUserName
         {
             get

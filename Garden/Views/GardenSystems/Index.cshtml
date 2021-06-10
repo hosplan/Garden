@@ -1,59 +1,69 @@
-﻿@model IEnumerable<Garden.Models.GardenSystem>
+﻿@model Garden.Models.GardenSystem
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "시스템 관리";
 }
 
-<h1>Index</h1>
+<div class="col-xl-12 mb-3">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SysName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.License)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SysLogo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SysName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.License)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SysLogo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="col-xl-12">
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-cogs fa-fw mr-2"></i>
+                        @Html.Raw("시스템 정보")
+                    </h6>                   
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <input asp-for="Id" type="hidden"/>
+                        <input asp-for="CreateDate" type="hidden" />
+                        <table class="table table-borderless table-hover">
+                            <tbody>
+                                <tr class="p-1">
+                                    <td class="text-primary">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        @Html.Raw("시스템 명")
+                                    </td>
+                                    <td><input asp-for="SysName" class="form-control" /></td>
+                                </tr>
+                                <tr class="p-1">
+                                    <td class="text-primary">
+                                        <i class="fas fa-cube mr-2"></i>
+                                        @Html.Raw("라이선스")
+                                    </td>
+                                    <td><input type="password" name="License" value="@Model.License" class="form-control" readonly /></td>
+                                </tr>
+                                <tr class="p-1">
+                                    <td class="text-primary">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        @Html.Raw("활성화")
+                                    </td>
+                                    <td><input asp-for="IsActive" style="width:25px; height:25px;" /></td>
+                                </tr>
+                                <tr class="p-1">
+                                    <td class="text-primary">
+                                        <i class="fas fa-user-check mr-2"></i>
+                                        @Html.Raw("회원가입 활성화")
+                                    </td>
+                                    <td><input asp-for="ActiveMembership" style="width:25px; height:25px;" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-success btn-md float-right">
+                            @Html.Raw("저장")
+                        </button>
+                    </form>
+                  
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
