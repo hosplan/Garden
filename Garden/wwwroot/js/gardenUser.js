@@ -67,19 +67,20 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
 });
 
 //유저 및 정원 관리사 동시 생성
-function createUserAndGardenUser() {
+function createOnlyGardenUser() {
     let gardenSpace_option = document.getElementById('Garden_list');
     gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
-    openModal('GardenUsers', 'CreateForUserAndGardenUser', gardenSpace_option);
+    window.location.href = "/GardenUsers/CreateForOnlyGardenUser?gardenSpaceId=" + gardenSpace_option + "";
 }
 
-
+//정원 유저 생성
 function createGardenUser() {
     let gardenSpace_option = document.getElementById('Garden_list');
     gardenSpace_option = gardenSpace_option.options[gardenSpace_option.selectedIndex].value;
     openModal('GardenUsers', 'Create', gardenSpace_option); 
 }
 
+//정원 유저 
 function removeValue(gardenUserId) {
     Swal.fire({
         title: '해당 정원관리사를 삭제 하시겠어요?',

@@ -19,10 +19,23 @@ namespace Garden.Models
         public string UserName { get; set; }
         public string Name { get; set; }
         public string Tel { get; set; }
+        public string Address { get; set; }
+        public int Age { get; set; }
+        public string ParentUserName { get; set; }
+        public string ParentUserTel { get; set; }
+        public string Description { get; set; }
+        public string TempString { get; set; }
+        public int TempInt { get; set; }
 
+        public bool TempBool { get; set; }
         [Display(Name = "생일")]
         [DataType(DataType.Date)]
         public Nullable<DateTime> BirthDay { get; set; }
+
+        [Display(Name = "활성화 날짜")]
+        [DataType(DataType.Date)]
+        public Nullable<DateTime> IsActiveDate { get; set; }
+
         //끝
 
         [Display(Name ="등록날짜")]

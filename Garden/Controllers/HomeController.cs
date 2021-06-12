@@ -41,6 +41,9 @@ namespace Garden.Controllers
             }
             return View();
         }
+
+        
+
         [HttpPost]
         public async Task<JsonResult> GetControllerAndActionName(string pathName)
         {
@@ -86,6 +89,10 @@ namespace Garden.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult NoLicense()
+        {
+            return View();
         }
 
         public IActionResult NotAccess()

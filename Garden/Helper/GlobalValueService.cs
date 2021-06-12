@@ -94,25 +94,18 @@ namespace Garden.Helper
 
             }
         }
-        public bool IsActiveSystem
+        public bool SystemStatus
         {
             get
             {
                 try
                 {
-                    List<GardenSystem> gardenSystems = _context.GardenSystem.ToList();
+                    GardenSystem gardenSystems = _context.GardenSystem.FirstOrDefault();
 
-                    if (gardenSystems.Count() == 0)
-                        return false;
-
-                    GardenSystem gardenSystem = _context.GardenSystem.First();
-
-                    if (gardenSystem.IsActive == false)
-                        return false;
-                    else if (gardenSystem.License != "dmsalsxogh")
-                        return false;
-                    else
+                    if (gardenSystems != null && gardenSystems.License == "dmsalsxogh" && gardenSystems.IsActive == true)
                         return true;
+                    else
+                        return false;
                 }
                 catch
                 {
@@ -120,18 +113,40 @@ namespace Garden.Helper
                 }
             }
         }
+
+        //회원가입 기능 활성화
         public bool IsActiveMembership
         {
             get
-            {                
-                return _context.GardenSystem.First().ActiveMembership;
+            {
+                try
+                {
+                    return _context.GardenSystem.First().ActiveMembership;
+                }
+                catch
+                {
+                    return true;
+                }                
             }
         }
         public string loginUserName
         {
             get
             {
-                return _context.Users.FirstOrDefault(user => user.Id == loginUserId).UserName;
+                try
+                {
+                    ApplicationUser user = _context.Users.FirstOrDefault();
+
+                    if (user != null)
+                        return user.UserName;
+                    else
+                        return "Empty";          
+                }
+                catch
+                {
+                    return "Error";
+                }
+             
             }
         }
 

@@ -1,0 +1,113 @@
+﻿@model Garden.Models.GardenUser
+
+@{
+    int gardenSpaceId = (int)ViewData["GardenSpaceId"];
+    ViewData["Title"] = "수강생 등록";
+}
+
+<div class="col-xl-12 mb-3">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+    </div>
+</div>
+
+<div class="col-xl-12">
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-cogs fa-fw mr-2"></i>
+                        @Html.Raw("수강생 정보")
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <input type="hidden" asp-for="GardenSpaceId" value="@gardenSpaceId"/>
+                        <div class="p-2">
+                            <button>19세 이상</button>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1 text-danger">
+                                    <i class="fas fa-genderless mr-2"></i>
+                                    @Html.Raw("이름")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="Name" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1 text-danger">
+                                    <i class="fas fa-genderless mr-2"></i>
+                                    @Html.Raw("생일")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="date" class="form-control" asp-for="BirthDay" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1 text-danger">
+                                    <i class="fas fa-genderless mr-2"></i>
+                                    @Html.Raw("나이")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="Age" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1">
+                                    @Html.Raw("전화번호")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="Tel" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1">
+                                    @Html.Raw("주소")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="Address" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1">
+                                    @Html.Raw("부모님 성함")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="ParentUserName" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1">
+                                    @Html.Raw("부모님 전화번호")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="ParentUserTel" />
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1">
+                                    @Html.Raw("메모")
+                                </label>
+                                <div class="col-xl-8">
+                                    <textarea class="form-control" asp-for="Description"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row p-2">
+                                <label class="col-xl-4 mt-1">
+                                    @Html.Raw("원생 등록여부")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input asp-for="IsActivate" style="width:25px; height:25px;" />
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-md float-right mt-3">@Html.Raw("생성")</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

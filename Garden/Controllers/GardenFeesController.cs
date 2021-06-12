@@ -7,21 +7,41 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
+using Microsoft.AspNetCore.Http;
+using Garden.Helper;
+using System.Security.Claims;
 
 namespace Garden.Controllers
 {
     public class GardenFeesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public GardenFeesController(ApplicationDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IGardenHelper _gardenHelper;
+        private readonly GlobalValueService _globalValueService;
+        public GardenFeesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper, GlobalValueService globalValueService)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _gardenHelper = gardenHelper;
+            _globalValueService = globalValueService;
         }
 
         // GET: GardenFees
         public async Task<IActionResult> Index()
         {
+            //check lisense
+            bool isActiveSystem = _globalValueService.SystemStatus;
+
+            if (!isActiveSystem)
+                return RedirectToAction("NoLicense", "Home");
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             var applicationDbContext = _context.GardenFee.Include(g => g.BaseSubType).Include(g => g.GardenSpace).Include(g => g.GardenUser);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -29,6 +49,18 @@ namespace Garden.Controllers
         // GET: GardenFees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            //check lisense
+            bool isActiveSystem = _globalValueService.SystemStatus;
+
+            if (!isActiveSystem)
+                return RedirectToAction("NoLicense", "Home");
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             if (id == null)
             {
                 return NotFound();
@@ -50,6 +82,18 @@ namespace Garden.Controllers
         // GET: GardenFees/Create
         public IActionResult Create()
         {
+            //check lisense
+            bool isActiveSystem = _globalValueService.SystemStatus;
+
+            if (!isActiveSystem)
+                return RedirectToAction("NoLicense", "Home");
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id");
             ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id");
             ViewData["GardenUserId"] = new SelectList(_context.GardenUser, "Id", "Id");
@@ -78,6 +122,18 @@ namespace Garden.Controllers
         // GET: GardenFees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            //check lisense
+            bool isActiveSystem = _globalValueService.SystemStatus;
+
+            if (!isActiveSystem)
+                return RedirectToAction("NoLicense", "Home");
+            //check read permission
+            bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                                            this.ControllerContext.RouteData.Values["controller"].ToString(),
+                                                            this.ControllerContext.RouteData.Values["action"].ToString());
+            if (!isRead)
+                return RedirectToAction("NotAccess", "Home");
+
             if (id == null)
             {
                 return NotFound();

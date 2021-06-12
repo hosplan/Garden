@@ -19,17 +19,24 @@ namespace Garden.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IGardenHelper _gardenHelper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public GardenSpacesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper)
+        private readonly GlobalValueService _globalValueService;
+        public GardenSpacesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper, GlobalValueService globalValueService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _gardenHelper = gardenHelper;
+            _globalValueService = globalValueService;
         }
 
         // GET: GardenSpaces
         public async Task<IActionResult> Index()
         {
+            //check lisense
+            bool isActiveSystem = _globalValueService.SystemStatus;
+
+            if (!isActiveSystem)
+                return RedirectToAction("NoLicense", "Home");
+
             //check read permission
             bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
                                                             this.ControllerContext.RouteData.Values["controller"].ToString(),
@@ -50,6 +57,11 @@ namespace Garden.Controllers
         // GET: GardenSpaces/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            //check lisense
+            bool isActiveSystem = _globalValueService.SystemStatus;
+
+            if (!isActiveSystem)
+                return RedirectToAction("NoLicense", "Home");
             //check read permission
             bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
                                                             this.ControllerContext.RouteData.Values["controller"].ToString(),

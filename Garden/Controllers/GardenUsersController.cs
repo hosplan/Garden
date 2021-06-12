@@ -19,12 +19,24 @@ namespace Garden.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IGardenHelper _gardenHelper;
-
-        public GardenUsersController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper)
+        private readonly GlobalValueService _globalValueService;
+        public GardenUsersController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper, GlobalValueService globalValueService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _gardenHelper = gardenHelper;
+            _globalValueService = globalValueService;
+        }
+
+        /// <summary>
+        /// 정원 유저 생성(회원가입 기능 false)
+        /// </summary>
+        /// <param name="gardenSpaceId"></param>
+        /// <returns></returns>
+        public IActionResult CreateForOnlyGardenUser(int gardenSpaceId)
+        {
+            ViewData["GardenSpaceId"] = gardenSpaceId;
+            return View();
         }
 
         // GET: GardenUsers
@@ -32,6 +44,12 @@ namespace Garden.Controllers
         {
             try
             {
+                //check lisense
+                bool isActiveSystem = _globalValueService.SystemStatus;
+
+                if (!isActiveSystem)
+                    return RedirectToAction("NoLicense", "Home");
+
                 //check read permission
                 bool isRead = _gardenHelper.CheckReadPermission(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier),
                                                                 this.ControllerContext.RouteData.Values["controller"].ToString(),

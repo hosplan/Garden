@@ -415,11 +415,20 @@ namespace Garden.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("BirthDay")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("GardenRoleId")
                         .HasColumnType("int");
@@ -430,10 +439,28 @@ namespace Garden.Migrations
                     b.Property<bool>("IsActivate")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("IsActiveDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ParentUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ParentUserTel")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Tel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TempBool")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TempInt")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TempString")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")

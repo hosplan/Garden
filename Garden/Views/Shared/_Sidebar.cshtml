@@ -1,10 +1,15 @@
-﻿<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+﻿@using Garden.Helper
+@inject GlobalValueService globalValueService
+@{
+    int grade = globalValueService.GetGrade;
+}
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <li>
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/Home/index">
-           
-            <div class="sidebar-brand-icon border-white" >
-                <img src="~/img/logo1.png" style="width:30px; height:30px"/>
+
+            <div class="sidebar-brand-icon border-white">
+                <img src="~/img/logo1.png" style="width:30px; height:30px" />
             </div>
             <div class="sidebar-brand-text mx-3">Garden <sup>.net5</sup></div>
         </a>
@@ -37,37 +42,41 @@
             <span class="font-weight-bold">@Html.Raw("정원 회비")</span>
         </a>
     </li>
-    <li>
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-    </li>
 
     <li>
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            @Html.Raw("System")
-        </div>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" asp-controller="BaseTypes" asp-action="Index">
-            <i class="fas fa-fw fa-tag"></i>
-            <span class="font-weight-bold">@Html.Raw("기본 타입 관리")</span>
-        </a>
-        <a class="nav-link" asp-controller="Home" asp-action="IndexForUser">
-            <i class="fas fa-fw fa-user-tag"></i>
-            <span class="font-weight-bold">@Html.Raw("사용자 관리")</span>
-        </a>
-        <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-cogs"></i>
-            <span class="font-weight-bold">@Html.Raw("시스템 로그")</span>
-        </a>
-        <a class="nav-link" asp-controller="GardenSystems" asp-action="Index">
-            <i class="fas fa-fw fa-cog"></i>
-            <span class="font-weight-bold">@Html.Raw("시스템 관리")</span>
-        </a>
-    </li>
-    <li>
         <!-- Divider -->
         <hr class="sidebar-divider">
     </li>
+    @if (grade == 0)
+    {
+        <li>
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                @Html.Raw("System")
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="BaseTypes" asp-action="Index">
+                <i class="fas fa-fw fa-tag"></i>
+                <span class="font-weight-bold">@Html.Raw("기본 타입 관리")</span>
+            </a>
+            <a class="nav-link" asp-controller="Home" asp-action="IndexForUser">
+                <i class="fas fa-fw fa-user-tag"></i>
+                <span class="font-weight-bold">@Html.Raw("사용자 관리")</span>
+            </a>
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-cogs"></i>
+                <span class="font-weight-bold">@Html.Raw("시스템 로그")</span>
+            </a>
+            <a class="nav-link" asp-controller="GardenSystems" asp-action="Index">
+                <i class="fas fa-fw fa-cog"></i>
+                <span class="font-weight-bold">@Html.Raw("시스템 관리")</span>
+            </a>
+        </li>
+        <li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+        </li>
+    }
+
 </ul>

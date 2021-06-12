@@ -31,13 +31,19 @@
                     <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                    @*<div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                        <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="createGardenUser()">
-                            <i class="fas fa-plus-circle text-primary mr-3"></i>
-                            @Html.Raw("정원 관리사 추가")
-                        </button>*@
                     <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                    <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" onclick="createUserAndGardenUser()">
+                    @{ 
+                        string onclick_value = "";
+                    }
+                    @if (GlobalValue.IsActiveMembership == true)
+                    {
+                        onclick_value = "onclick=createGardenUser()";
+                    }
+                    else
+                    {
+                        onclick_value = "onclick=createOnlyGardenUser()";
+                    }
+                    <button type="button" class="dropdown-item font-weight-bold" data-permission="create" id="baseSubType_create_btn" @onclick_value>
                         <i class="fas fa-plus-circle text-primary mr-3"></i>
                         @Html.Raw("정원 관리사 추가")
                     </button>
