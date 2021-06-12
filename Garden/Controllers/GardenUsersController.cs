@@ -35,7 +35,37 @@ namespace Garden.Controllers
         /// <returns></returns>
         public IActionResult CreateForOnlyGardenUser(int gardenSpaceId)
         {
+            ViewData["GardenRoleId"] = new SelectList(_context.BaseSubType.Where(bType => bType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE").ToList(), "Id", "Name");
             ViewData["GardenSpaceId"] = gardenSpaceId;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateForOnlyGardenUser([Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate,Name,BirthDay,Age,Tel,Address,ParentUserName,ParentUserTel,Description,IsActiveDate")] GardenUser gardenUser, string GardenRoleId)
+        {
+            ViewData["GardenSpaceId"] = gardenUser.GardenSpaceId;
+            ViewData["GardenRoleId"] = new SelectList(_context.BaseSubType.Where(bType => bType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE").ToList(), "Id", "Name");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //등록날짜                    
+                    gardenUser.CreateDate = DateTime.Now;
+                    gardenUser.GardenRoleId = _gardenHelper.GetGardenRole(gardenUser.GardenSpaceId.Value, GardenRoleId);
+
+                    if (gardenUser.IsActivate)
+                        gardenUser.IsActiveDate = DateTime.Now;
+
+                    _context.Add(gardenUser);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", new { search_gardenSpace_id = gardenUser.GardenSpaceId });
+                }
+                catch
+                {
+                    return View();
+                }
+            }
+            
             return View();
         }
 
@@ -196,26 +226,54 @@ namespace Garden.Controllers
                 return Json(jsonNullValue);
             }
 
-            List<GardenUser> gardenUser_list = await _context.GardenUser
-                                                             .Include(gUser => gUser.GardenRole)
-                                                                .ThenInclude(gRole => gRole.BaseSubType)
-                                                             .Include(gUser => gUser.User)
-                                                             .AsNoTracking()
-                                                             .Where(gUser => gUser.GardenSpaceId == id)
-                                                             .ToListAsync();
-
-            foreach(GardenUser gardenUser in gardenUser_list)
+            if(_globalValueService.IsActiveMembership == true)
             {
-                object_list.Add(new
+                List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                            .Include(gUser => gUser.GardenRole)
+                                                               .ThenInclude(gRole => gRole.BaseSubType)
+                                                            .Include(gUser => gUser.User)
+                                                            .AsNoTracking()
+                                                            .Where(gUser => gUser.GardenSpaceId == id)
+                                                            .ToListAsync();
+
+                foreach (GardenUser gardenUser in gardenUser_list)
                 {
-                    roleType = gardenUser.GardenRole.BaseSubType.Name,
-                    userName = gardenUser.User.UserName,
-                    name = gardenUser.User.Name,
-                    regDate = gardenUser.CreateDate.ToShortDateString(),
-                    isActive = gardenUser.IsActivate,
-                    id = gardenUser.Id,
-                });
+                    object_list.Add(new
+                    {
+                        roleType = gardenUser.GardenRole.BaseSubType.Name,
+                        userName = gardenUser.User.UserName,
+                        name = gardenUser.User.Name,
+                        activeDate = gardenUser.IsActiveDate != null? gardenUser.IsActiveDate.Value.ToShortDateString() : "-",
+                        regDate = gardenUser.CreateDate.ToShortDateString(),
+                        isActive = gardenUser.IsActivate,
+                        id = gardenUser.Id,
+                    });
+                }
             }
+            else
+            {
+                List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                                 .Include(gUser => gUser.GardenRole)
+                                                                    .ThenInclude(gRole => gRole.BaseSubType)
+                                                                 .AsNoTracking()
+                                                                 .Where(gUser => gUser.GardenSpaceId == id)
+                                                                 .ToListAsync();
+
+                foreach (GardenUser gardenUser in gardenUser_list)
+                {
+                    object_list.Add(new
+                    {
+                        roleType = gardenUser.GardenRole.BaseSubType.Name,
+                        userName = gardenUser.Name,
+                        name = gardenUser.Name,
+                        activeDate = gardenUser.IsActiveDate != null ? gardenUser.IsActiveDate.Value.ToShortDateString() : "-",
+                        regDate = gardenUser.CreateDate.ToShortDateString(),
+                        isActive = gardenUser.IsActivate,
+                        id = gardenUser.Id,
+                    });
+                }
+            }
+           
 
             var jsonValue = new { data = object_list };
             return Json(jsonValue);
@@ -239,7 +297,7 @@ namespace Garden.Controllers
                 return NotFound();
             }
 
-            return View(gardenUser);
+            return PartialView(gardenUser);
         }
 
         // GET: GardenUsers/Create
@@ -306,6 +364,45 @@ namespace Garden.Controllers
 
             return PartialView(gardenUser);
         }
+
+        /// <summary>
+        /// 정원 유저 활성화/비활성화
+        /// </summary>
+        /// <param name="isActive"></param>
+        /// <param name="gardenUserId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<JsonResult> ChangeIsActive(bool isActive, int gardenUserId)
+        {
+            try
+            {
+                GardenUser gardenUser = _context.GardenUser.Find(gardenUserId);
+
+                if (gardenUser == null)
+                    return new JsonResult(false);
+
+                if(isActive == true)
+                {
+                    gardenUser.IsActivate = true;
+                    gardenUser.IsActiveDate = DateTime.Now;
+                }
+                else
+                {
+                    gardenUser.IsActivate = false;
+                }
+
+                _context.Update(gardenUser);
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+            
+        }
+
         /// <summary>
         /// 정원 관리자 역할 변경
         /// </summary>

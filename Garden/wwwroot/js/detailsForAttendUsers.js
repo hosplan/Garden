@@ -256,7 +256,7 @@ async function showWorkTimeInfo(gardenWorkTime_list, gardenUserTaskMapId) {
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'none';
     document.getElementById('user_gardenWorkTime').style.display = 'block';
     let gardenSpaceId = document.getElementById('gardenSpaceId').value;
-    document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId + '';
+    document.getElementById("moveWorkTimeCreatePage").href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId + '';
     await makeWorkTimeTable(JSON.parse(gardenWorkTime_list));             
 }
 
@@ -265,7 +265,7 @@ function showEmptyInfo(gardenUserTaskMapId) {
     let gardenSpaceId = document.getElementById('gardenSpaceId').value;
     document.getElementById('alert_empty_gardenWorkTime').style.display = 'block';
     document.getElementById('user_gardenWorkTime').style.display = 'none';
-    document.getElementById('moveWorkTimeCreatePage').href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId+'';
+    document.getElementById("moveWorkTimeCreatePage_btn").href = '/GardenWorkTimes/Create?gardenUserTaskMapId=' + gardenUserTaskMapId + '&gardenSpaceId=' + gardenSpaceId+'';
 }
 
 //업무참여자 추가

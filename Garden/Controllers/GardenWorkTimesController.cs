@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
+using Garden.Helper;
 
 namespace Garden.Controllers
 {
     public class GardenWorkTimesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public GardenWorkTimesController(ApplicationDbContext context)
+        private readonly GlobalValueService _globalValueService;
+        public GardenWorkTimesController(ApplicationDbContext context, GlobalValueService globalValueService)
         {
             _context = context;
+            _globalValueService = globalValueService;
         }
 
         // GET: GardenWorkTimes
@@ -147,7 +149,11 @@ namespace Garden.Controllers
             ViewData["GardenSpaceId"] = gardenSpaceId;
             ViewData["GardenTaskId"] = gardenUserTaskMap.GardenTaskId;
             ViewData["GardenUserId"] = gardenUserTaskMap.GardenUserId; 
-            ViewData["GardenUserName"] = gardenUserTaskMap.GardenUser.User.Name;
+            
+            if(_globalValueService.IsActiveMembership)
+                ViewData["GardenUserName"] = gardenUserTaskMap.GardenUser.User.Name;
+            else
+                ViewData["GardenUserName"] = gardenUserTaskMap.GardenUser.Name;
 
             return View();
         }

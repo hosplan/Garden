@@ -32,7 +32,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                     <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                    @{ 
+                    @{
                         string onclick_value = "";
                     }
                     @if (GlobalValue.IsActiveMembership == true)
@@ -59,7 +59,8 @@
                                 <th class="text-left"><i class="fas fa-tag fa-fw mr-1"></i>@Html.Raw("역할")</th>
                                 <th class="text-left"><i class="fas fa-asterisk fa-fw mr-1"></i>@Html.Raw("아이디")</th>
                                 <th class="text-center"><i class="fas fa-users fa-fw mr-1"></i>@Html.Raw("이름")</th>
-                                <th class="text-center"><i class="fas fa-calendar fa-fw mr-1"></i>@Html.Raw("등록날짜")</th>
+                                @*<th class="text-center"><i class="fas fa-users fa-fw mr-1"></i>@Html.Raw("등록날짜")</th>*@
+                                <th class="text-center"><i class="fas fa-calendar fa-fw mr-1"></i>@Html.Raw("컨설팅 날짜")</th>
                                 <th class="text-center"><i class="fas fa-flag fa-fw mr-1"></i>@Html.Raw("활성화 여부")</th>
                                 <th class="text-right"><i class="fas fa-tools"></i></th>
                             </tr>
@@ -72,5 +73,10 @@
         </div>
     </div>
 </div>
+
+
 <script src="~/js/select2/select2.js"></script>
 <script src="~/js/gardenUser.js"></script>
+<script type="text/javascript">
+    $('.gardenSpace_select2').select2();
+</script>

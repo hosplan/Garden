@@ -137,18 +137,38 @@ namespace Garden.Controllers
                                                              .ToListAsync();
             //이미 참여된 사람이 있는지 확인
             gardenUser_list = await CheckAttendingUser(gardenUser_list, gardenTaskId);
- 
-            foreach (GardenUser gardenUser in gardenUser_list)
+            
+            if(_globalValueService.IsActiveMembership)
             {
-                object_list.Add(new
+                foreach (GardenUser gardenUser in gardenUser_list)
                 {
-                    //roleType = gardenUser.GardenRole.BaseSubType.Name,
-                    userName = gardenUser.User.UserName,
-                    name = gardenUser.User.Name,
-                    regDate = gardenUser.CreateDate.ToShortDateString(),
-                    id = gardenUser.Id,
-                });
+                    object_list.Add(new
+                    {
+                        //roleType = gardenUser.GardenRole.BaseSubType.Name,
+                        userName = gardenUser.User.UserName,
+                        name = gardenUser.User.Name,
+                        regDate = gardenUser.CreateDate.ToShortDateString(),
+                        id = gardenUser.Id,
+                    });
+                }
             }
+            else
+            {
+                foreach (GardenUser gardenUser in gardenUser_list)
+                {
+                    object_list.Add(new
+                    {
+                        //roleType = gardenUser.GardenRole.BaseSubType.Name,
+                        userName = gardenUser.UserName,
+                        name = gardenUser.Name,
+                        regDate = gardenUser.CreateDate.ToShortDateString(),
+                        id = gardenUser.Id,
+                    });
+                }
+            }
+           
+
+
 
             var jsonValue = new { data = object_list };
             return Json(jsonValue);

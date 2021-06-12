@@ -8,16 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using Garden.Data;
 using Garden.Models;
 using System.Text;
+using Garden.Helper;
 
 namespace Garden.Controllers
 {
     public class GardenUserTaskMapsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public GardenUserTaskMapsController(ApplicationDbContext context)
+        private readonly GlobalValueService _globalValueService;
+        public GardenUserTaskMapsController(ApplicationDbContext context, GlobalValueService globalValueService)
         {
             _context = context;
+            _globalValueService = globalValueService;
         }
 
         //참여자의 업무시간 목록 가져오기
@@ -117,35 +119,68 @@ namespace Garden.Controllers
                                                                            .AsNoTracking()
                                                                            .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == id)
                                                                            .ToListAsync();
-
             StringBuilder temp_roleTypeName = new StringBuilder();
-            foreach(GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
+            if (_globalValueService.IsActiveMembership)
             {
-                GardenUser temp_gardenUserInfo = new GardenUser();
+                foreach (GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
+                {
+                    GardenUser temp_gardenUserInfo = new GardenUser();
 
-                if(gardenUserTaskMap.GardenManagerId == null)
-                {
-                    temp_gardenUserInfo = gardenUserTaskMap.GardenUser;
-                    temp_roleTypeName.Append("참여자");
-                }                    
-                else
-                {
-                    temp_gardenUserInfo = gardenUserTaskMap.GardenManager;
-                    temp_roleTypeName.Append("담당자");
+                    if (gardenUserTaskMap.GardenManagerId == null)
+                    {
+                        temp_gardenUserInfo = gardenUserTaskMap.GardenUser;
+                        temp_roleTypeName.Append("참여자");
+                    }
+                    else
+                    {
+                        temp_gardenUserInfo = gardenUserTaskMap.GardenManager;
+                        temp_roleTypeName.Append("담당자");
+                    }
+
+
+                    //수정해야됨
+                    object_list.Add(new
+                    {
+                        roleType = temp_roleTypeName.ToString(),
+                        userName = temp_gardenUserInfo.User.UserName,
+                        name = temp_gardenUserInfo.User.Name,
+                        regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
+                        id = gardenUserTaskMap.Id
+                    });
+
+                    temp_roleTypeName.Clear();
                 }
-                    
-                
-
-                object_list.Add(new
+            }
+            else
+            {
+                foreach (GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
                 {
-                    roleType = temp_roleTypeName.ToString(),
-                    userName = temp_gardenUserInfo.User.UserName,
-                    name = temp_gardenUserInfo.User.Name,
-                    regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
-                    id = gardenUserTaskMap.Id
-                });
+                    GardenUser temp_gardenUserInfo = new GardenUser();
 
-                temp_roleTypeName.Clear();
+                    if (gardenUserTaskMap.GardenManagerId == null)
+                    {
+                        temp_gardenUserInfo = gardenUserTaskMap.GardenUser;
+                        temp_roleTypeName.Append("참여자");
+                    }
+                    else
+                    {
+                        temp_gardenUserInfo = gardenUserTaskMap.GardenManager;
+                        temp_roleTypeName.Append("담당자");
+                    }
+
+
+                    //수정해야됨
+                    object_list.Add(new
+                    {
+                        roleType = temp_roleTypeName.ToString(),
+                        userName = temp_gardenUserInfo.Name,
+                        name = temp_gardenUserInfo.Name,
+                        regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
+                        id = gardenUserTaskMap.Id
+                    });
+
+                    temp_roleTypeName.Clear();
+                }
             }
 
             var jsonValue = new { data = object_list };

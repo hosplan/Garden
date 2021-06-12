@@ -13,6 +13,9 @@ namespace Garden.Helper
     public interface IGardenHelper
     {
         int CreateGardenRole(int gardenSpace_id, string baseSubType_id);
+
+        int GetGardenRole(int gardenSpace_id, string baseSubType_id);
+        void CreateAllGardenRole(int gardenSpace_id);
         bool CreateGardenUser(int gardenSpace_id, string user_id, int? gardenRole_id);
         bool CheckReadPermission(string loginUserId, string controllerName, string actionName);
     }
@@ -109,7 +112,44 @@ namespace Garden.Helper
             }
             return gardenRole_id;
         }
+
+        public void CreateAllGardenRole(int gardenSpace_id)
+        {
+            List<GardenRole> gardenRole_list = new List<GardenRole>();
+
+            List<BaseSubType> gardenRoleType_list = _context.BaseSubType.Where(bType => bType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE").ToList();
+        
+            foreach(BaseSubType gardenRoleType in gardenRoleType_list)
+            {
+                GardenRole gardenRole = new GardenRole();
+
+                gardenRole.GardenId = gardenSpace_id;
+                gardenRole.SubTypeId = gardenRoleType.Id;
+
+                gardenRole_list.Add(gardenRole);
+            }
+
+            _context.AddRange(gardenRole_list);
+            _context.SaveChanges();
+        }
         #endregion
+
+        public int GetGardenRole(int gardenSpace_id, string gardenRole_type)
+        {
+            try
+            {
+                GardenRole gardenRole = _context.GardenRole.FirstOrDefault(gRole => gRole.GardenId == gardenSpace_id && gRole.SubTypeId == gardenRole_type);
+
+                if (gardenRole == null)
+                    return 0;
+
+                return gardenRole.Id;
+            }
+            catch
+            {
+                return 0;
+            }           
+        }
 
         #region 정원 유저 생성
         public bool CreateGardenUser(int gardenSpace_id, string user_id, int? gardenRole_id)

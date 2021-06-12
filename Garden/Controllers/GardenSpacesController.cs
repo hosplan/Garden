@@ -122,17 +122,36 @@ namespace Garden.Controllers
             List<object> object_list = new List<object>();
             // clasName = "bg-info border-info",
             //url = "/ZWorkItems/Details/" + item.ZWorkItemId
-            foreach (GardenWorkTime gardenWorkTime in gardenWorkTime_list)
+
+            if(_globalValueService.IsActiveMembership)
             {
-                object_list.Add(new
+                foreach (GardenWorkTime gardenWorkTime in gardenWorkTime_list)
                 {
-                    title = gardenWorkTime.GardenUser.User.Name,
-                    start = (gardenWorkTime.TaskDate + gardenWorkTime.StartTime).ToString("s"),
-                    end = (gardenWorkTime.TaskDate + gardenWorkTime.EndTime).ToString("s"),
-                    className = gardenWorkTime.IsComplete == true ? "bg-info text-white worktimeInfo" : "bg-primary text-white worktimeInfo",
-                    url = "/GardenWorkTimes/CompleteForWorkItem?id="+ gardenWorkTime.Id + "&spaceId="+gardenSpaceId+"",                   
-                });
+                    object_list.Add(new
+                    {
+                        title = gardenWorkTime.GardenUser.User.Name,
+                        start = (gardenWorkTime.TaskDate + gardenWorkTime.StartTime).ToString("s"),
+                        end = (gardenWorkTime.TaskDate + gardenWorkTime.EndTime).ToString("s"),
+                        className = gardenWorkTime.IsComplete == true ? "bg-info text-white worktimeInfo" : "bg-primary text-white worktimeInfo",
+                        url = "/GardenWorkTimes/CompleteForWorkItem?id=" + gardenWorkTime.Id + "&spaceId=" + gardenSpaceId + "",
+                    });
+                }
             }
+            else
+            {
+                foreach (GardenWorkTime gardenWorkTime in gardenWorkTime_list)
+                {
+                    object_list.Add(new
+                    {
+                        title = gardenWorkTime.GardenUser.Name,
+                        start = (gardenWorkTime.TaskDate + gardenWorkTime.StartTime).ToString("s"),
+                        end = (gardenWorkTime.TaskDate + gardenWorkTime.EndTime).ToString("s"),
+                        className = gardenWorkTime.IsComplete == true ? "bg-info text-white worktimeInfo" : "bg-primary text-white worktimeInfo",
+                        url = "/GardenWorkTimes/CompleteForWorkItem?id=" + gardenWorkTime.Id + "&spaceId=" + gardenSpaceId + "",
+                    });
+                }
+            }
+           
             var jsonValue = object_list;
             return Json(jsonValue);
         }
@@ -183,8 +202,10 @@ namespace Garden.Controllers
                 await _context.SaveChangesAsync();
 
                 string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                
-                int gardenRole_id = _gardenHelper.CreateGardenRole(gardenSpace.Id, "GARDEN_MANAGER_ROLE_TYPE_1");
+
+                //정원의 역할 생성
+                _gardenHelper.CreateAllGardenRole(gardenSpace.Id);
+                int gardenRole_id = _gardenHelper.GetGardenRole(gardenSpace.Id, "GARDEN_MANAGER_ROLE_TYPE_1");
                 
                 if(gardenRole_id == 0)
                 {
