@@ -16,13 +16,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
-                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-                <form asp-action="Edit">
+            @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+            <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+            <form asp-action="Edit">
+                <div class="modal-body">
+
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="BaseTypeId"/>
+                    <input type="hidden" asp-for="BaseTypeId" />
                     <div class="form-row p-2">
                         <label class="col-xl-4 mt-1 text-danger">
                             <i class="fas fa-genderless mr-2"></i>
@@ -43,12 +44,12 @@
                     <div class="form-row p-2" style="display:none" id="warning_div">
                         <span class="text-danger font-weight-bold" id="warning_span"></span>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
-                <button type="button" class="btn btn-secondary btn-md" data-save="modal">@Html.Raw("확인")</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-md" data-dismiss="modal">@Html.Raw("취소")</button>
+                    <button class="btn btn-secondary btn-md" data-save="modal">@Html.Raw("확인")</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

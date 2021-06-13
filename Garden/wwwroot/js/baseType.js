@@ -33,10 +33,10 @@ var baseSubType_dataTable = $('#baseSubType_dt').DataTable({
                 let update_btn = '';
                 let delete_btn = '';
                 if (document.getElementById('permission_update').value == 'true') {
-                    update_btn = '<button type="button" class="btn btn-link text-success p-0 float-right" data-permission="update" value="/BaseSubTypes/Edit?id=' + data + '" onclick="datatable_openModal(this)"><i class="fas fa-brush"></i></button>';
+                    update_btn = '<button type="button" class="btn btn-link text-success p-0 float-right" data-permission="update" data-url="/BaseSubTypes/Edit" data-value='+data+' onclick="datatable_openModal_p_string(this)"><i class="fas fa-brush"></i></button>';
                 }
                 if (document.getElementById('permission_delete').value == 'true') {
-                    delete_btn = '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" data-permission="delete" value="/BaseSubTypes/Delete?id=' + data + '" onclick="datatable_openModal(this)"><i class="fas fa-trash"></i></button>';
+                    delete_btn = '<button type="button" class="btn btn-link text-danger p-0 ml-3 float-right" data-permission="delete"  data-url="/BaseSubTypes/Delete" data-value='+data+' onclick="datatable_openModal_p_string(this)"><i class="fas fa-trash"></i></button>';
                 }
                 return delete_btn + update_btn;
                     

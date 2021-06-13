@@ -34,7 +34,17 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
                 return '<button type="button" onclick="getAttendUserWorkTime(' + row.id + ',\'' + row.name + '\',\'' + row.userName +'\')" class="btn btn-link p-0">' + data + '</button>';
             }
         },
-        { 'data': 'regDate', 'className': 'text-center m-2' },   
+        {
+            'data': 'isRent', 'className': 'text-center m-2',
+            'render': function (data, type, row, meta) {
+                if (data == true) {
+                    return '<input type="checkbox" style="width:25px; height:25px;" onclick="changeRentStatus(' + row.id + ',this)" checked />'
+                } else {
+                    return '<input type="checkbox" style="width:25px; height:25px;" onclick="changeRentStatus(' + row.id + ',this)" />'
+                }
+                
+            }
+        },   
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {
@@ -51,6 +61,25 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
     'searching': true,
     'processing': true,
 });
+
+
+function changeRentStatus(id, obj) {
+    let httpRequest = new XMLHttpRequest();
+    let isRent = obj.checked;
+    if (!httpRequest) {
+        errorMessage();
+        return false;
+    }
+
+    httpRequest.open('POST', '/GardenUserTaskMaps/ChangeRentStatus', true);
+    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    httpRequest.onload = function () {
+        if (this.response == "false") {
+            errorMessage();
+        } 
+    };
+    httpRequest.send('gardenUserTaskMapId=' + id + '&isRent=' + isRent);
+}
 
 function createWorkTimeTable(gardenUserTaskMapId, startMonth, endMonth) {
     let httpRequest = new XMLHttpRequest();

@@ -22,6 +22,28 @@ namespace Garden.Controllers
             _globalValueService = globalValueService;
         }
 
+        public async Task<JsonResult> ChangeRentStatus(int gardenUserTaskMapId, bool isRent)
+        {
+            GardenUserTaskMap map = _context.GardenUserTaskMap.FirstOrDefault(map => map.Id == gardenUserTaskMapId);
+
+            if (map == null)
+                return new JsonResult(false);
+
+            map.IsRent = isRent;
+
+            try
+            {
+                _context.Update(map);
+                await _context.SaveChangesAsync();
+                return new JsonResult(true);
+
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }           
+        }
+
         //참여자의 업무시간 목록 가져오기
         public async Task<JsonResult> GetGardenUserWorkTime(int gardenUserTaskMapId, int startMonth, int endMonth)
         {
@@ -144,6 +166,7 @@ namespace Garden.Controllers
                         roleType = temp_roleTypeName.ToString(),
                         userName = temp_gardenUserInfo.User.UserName,
                         name = temp_gardenUserInfo.User.Name,
+                        isRent = gardenUserTaskMap.IsRent,
                         regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
                         id = gardenUserTaskMap.Id
                     });
@@ -175,6 +198,7 @@ namespace Garden.Controllers
                         roleType = temp_roleTypeName.ToString(),
                         userName = temp_gardenUserInfo.Name,
                         name = temp_gardenUserInfo.Name,
+                        isRent = gardenUserTaskMap.IsRent,
                         regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
                         id = gardenUserTaskMap.Id
                     });

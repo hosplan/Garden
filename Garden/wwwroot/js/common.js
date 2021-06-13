@@ -14,6 +14,15 @@ function datatable_openModal(obj) {
     click_common_btn(obj.value);
 }
 
+//데이터 테이블에서 모달창 열기 - param - string 추후 변경 예정
+function datatable_openModal_p_string(obj) {
+    let value = obj.getAttribute('data-value'); 
+    let href = obj.getAttribute('data-url');
+
+    href = href + "?id=" + value;
+    click_common_btn(href);
+}
+
 //페이지 리로드
 function reloadPage() {
     location.reload();
@@ -43,6 +52,7 @@ function onlyNumber() {
 
 //url 클릭
 function click_common_btn(url) {
+    console.log(url);
     document.getElementById('common_modal_btn').setAttribute('data-url', url);
     document.getElementById('common_modal_btn').click();
 }

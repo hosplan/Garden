@@ -111,7 +111,7 @@ namespace Garden.Controllers
         }
 
         // GET: BaseTypes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -158,7 +158,7 @@ namespace Garden.Controllers
                 }
                 
             }
-            return PartialView(baseType);
+            return RedirectToAction("Index");
         }
 
         // GET: BaseTypes/Delete/5

@@ -20,6 +20,9 @@ namespace Garden.Models
         [Display(Name ="업무")]
         public Nullable<int> GardenTaskId { get; set; }
 
+        [Display(Name="대여 유무")]
+        public bool IsRent { get; set; }
+
         [Display(Name = "등록날짜")]
         [DataType(DataType.Date)]
         public DateTime RegDate { get; set; }

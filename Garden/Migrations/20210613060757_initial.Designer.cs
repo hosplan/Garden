@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210612043131_initial")]
+    [Migration("20210613060757_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -497,6 +497,9 @@ namespace Garden.Migrations
 
                     b.Property<int?>("GardenUserId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsRent")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");

@@ -95,7 +95,7 @@ namespace Garden.Controllers
         }
 
         // GET: BaseSubTypes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -143,7 +143,8 @@ namespace Garden.Controllers
                 }
             }
             //ViewData["BaseTypeId"] = new SelectList(_context.Set<BaseType>(), "Id", "Id", baseSubType.BaseTypeId);
-            return PartialView(baseSubType);
+            return RedirectToAction("Index", "BaseTypes");
+            //return PartialView(baseSubType);
         }
 
         // GET: BaseSubTypes/Delete/5

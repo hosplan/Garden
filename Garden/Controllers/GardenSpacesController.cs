@@ -155,10 +155,86 @@ namespace Garden.Controllers
             var jsonValue = object_list;
             return Json(jsonValue);
         }
-        public async Task<JsonResult> GetGardenSpaceOtherInfo(int gardenSpaceId)
+
+        public async Task<JsonResult> GetGardenEventCount()
         {
             try
             {
+                GardenSpace garden = _context.GardenSpace.FirstOrDefault();
+
+                if (garden == null)
+                {
+                    return new JsonResult("-");
+                }
+                else
+                {
+                   
+                    List<GardenUser> anniversary_gardenUser_list = await _context.GardenUser
+                                                                                .AsNoTracking()
+                                                                                .Where(gUser => gUser.GardenSpaceId == garden.Id
+                                                                                    && gUser.IsActivate == true
+                                                                                    && gUser.IsActiveDate.Value.ToShortDateString() == DateTime.Now.ToShortDateString())
+                                                                                .ToListAsync();
+
+
+                    List<GardenUser> birthday_gardenUser_list = await _context.GardenUser
+                                                                            .AsNoTracking()
+                                                                            .Where(gUser => gUser.GardenSpaceId == garden.Id
+                                                                                    && gUser.IsActivate == true
+                                                                                    && gUser.BirthDay.Value.ToShortDateString() == DateTime.Now.ToShortDateString())
+                                                                            .ToListAsync();
+
+                    return new JsonResult(anniversary_gardenUser_list.Count() +
+                                                          " / " +
+                                                          birthday_gardenUser_list.Count());
+                }
+            }
+            catch
+            {
+                return new JsonResult("-");
+            }
+        }
+        public async Task<JsonResult> GetGardenPeopleCount()
+        {
+            try
+            {
+                GardenSpace garden = _context.GardenSpace.FirstOrDefault();
+
+                if (garden == null)
+                {
+                    return new JsonResult("-");
+                }
+                else
+                {
+                    List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                                    .AsNoTracking()
+                                                                    .Where(gUser => gUser.GardenSpaceId == garden.Id
+                                                                           && gUser.IsActivate == true)
+                                                                    .ToListAsync();
+
+
+                    return new JsonResult(gardenUser_list.Count());
+                }                                                        
+            }
+            catch
+            {
+                return new JsonResult("-");
+            }
+        }
+
+        public async Task<JsonResult> GetGardenSpaceOtherInfo(int? gardenSpaceId)
+        {
+            try
+            {
+                if(gardenSpaceId == null)
+                {
+                    GardenSpace garden = _context.GardenSpace.FirstOrDefault();
+
+                    if (garden == null)
+                        return new JsonResult("-");
+                    else
+                        gardenSpaceId = garden.Id;
+                }
                 //이달 정보 가져오기
                 int month = DateTime.Now.Month;
 

@@ -496,6 +496,9 @@ namespace Garden.Migrations
                     b.Property<int?>("GardenUserId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsRent")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 

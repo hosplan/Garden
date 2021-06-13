@@ -15,20 +15,26 @@ namespace Garden.Models
         public string Name { get; set; }
         [Display(Name="내용")]
         public string Description { get; set; }
+
         [Display(Name = "타입")]
         public string SubTypeId { get; set; }
+
         [Display(Name="활성화 여부")]
         public bool IsActivate { get; set; }
+        
         [Display(Name="생성 날짜")]
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }
 
         public string RegUserId { get; set; }
-        [ForeignKey("RegUserId")]
+
+        [ForeignKey("RegUserId")]        
         public virtual ApplicationUser RegUser { get; set; }
         public Nullable<int> GardenSpaceId { get; set; }
+
         [ForeignKey("SubTypeId")]
         public virtual BaseSubType BaseSubType { get; set; }
+
         [ForeignKey("GardenSpaceId")]
         public virtual GardenSpace GardenSpace { get; set; }
         public virtual ICollection<GardenUserTaskMap> GardenUserTaskMaps { get; set; }
