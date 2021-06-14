@@ -4,6 +4,7 @@ using Garden.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -30,9 +31,53 @@ namespace Garden.Controllers
             _gardenHelper = gardenHelper;
         }
 
+        //private void testMethod()
+        //{
+        //    try
+        //    {
+        //        string connection = "server = 192.168.0.128; uid=sa; pwd = emth022944w!; database = MPS;";
+
+        //        SqlConnection sqlConn = new SqlConnection(connection);
+        //        SqlCommand sql_cmd = new SqlCommand();
+        //        sql_cmd.Connection = sqlConn;
+        //        sql_cmd.CommandText = "select * from Teacher where IsActive = 1";
+        //        sqlConn.Open();
+
+        //        List<GardenUser> gardenUser_list = new List<GardenUser>();
+
+        //        using (SqlDataReader read_data = sql_cmd.ExecuteReader())
+        //        {
+        //            while (read_data.Read())
+        //            {
+                        
+        //                GardenUser gardenUser = new GardenUser();
+        //                gardenUser.Name = read_data[7].ToString();
+        //                gardenUser.Age = Convert.ToInt32(read_data[1].ToString());
+        //                gardenUser.TempString = read_data[2].ToString();
+        //                gardenUser.Tel = read_data[3].ToString();
+        //                gardenUser.Address = read_data[4].ToString();
+        //                gardenUser.Description = read_data[5].ToString();
+        //                gardenUser.IsActiveDate = Convert.ToDateTime(read_data[6].ToString());
+        //                gardenUser.BirthDay = Convert.ToDateTime(read_data[13].ToString());
+        //                gardenUser.GardenRoleId = 3;
+        //                gardenUser.GardenSpaceId = 1;
+        //                gardenUser_list.Add(gardenUser);
+                        
+        //            }
+        //        }
+        //        _context.AddRange(gardenUser_list);
+        //        _context.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string error = Convert.ToString(ex);
+        //    }
+        //}
+
         [HttpGet]
         public IActionResult Index()
         {
+            //testMethod();
             string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(loginedUserId))

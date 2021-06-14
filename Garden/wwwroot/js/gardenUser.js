@@ -49,7 +49,7 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
             }
         },
         //{ 'data': 'activeDate', 'className': 'text-center m-2' },
-        { 'data': 'regDate', 'className': 'text-center m-2' },
+        { 'data': 'activeDate', 'className': 'text-center m-2' },
         {
             'data': 'isActive', 'className': 'text-center m-2',
             'render': function (data, type, row, meta) {
