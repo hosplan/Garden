@@ -41,7 +41,7 @@ namespace Garden.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateForOnlyGardenUser([Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate,Name,BirthDay,Age,Tel,Address,ParentUserName,ParentUserTel,Description,IsActiveDate")] GardenUser gardenUser, string GardenRoleId)
+        public async Task<IActionResult> CreateForOnlyGardenUser([Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate,Name,BirthDay,Tel,Address,ParentUserName,ParentUserTel,Description,IsActiveDate")] GardenUser gardenUser, string GardenRoleId)
         {
             ViewData["GardenSpaceId"] = gardenUser.GardenSpaceId;
             ViewData["GardenRoleId"] = new SelectList(_context.BaseSubType.Where(bType => bType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE").ToList(), "Id", "Name");
@@ -49,6 +49,7 @@ namespace Garden.Controllers
             {
                 try
                 {
+                    gardenUser.Age = (DateTime.Now.Year - gardenUser.BirthDay.Value.Year) + 1;
                     //등록날짜                    
                     gardenUser.CreateDate = DateTime.Now;
                     gardenUser.GardenRoleId = _gardenHelper.GetGardenRole(gardenUser.GardenSpaceId.Value, GardenRoleId);
@@ -445,14 +446,13 @@ namespace Garden.Controllers
             {
                 return NotFound();
             }
-
+            
             var gardenUser = await _context.GardenUser.FindAsync(id);
             if (gardenUser == null)
             {
                 return NotFound();
             }
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenUser.GardenSpaceId);
-            ViewData["UserId"] = new SelectList(_context.Set<ApplicationUser>(), "Id", "Id", gardenUser.UserId);
+            ViewData["GardenRoleId"] = new SelectList(_context.BaseSubType.Where(bType => bType.BaseTypeId == "GARDEN_MANAGER_ROLE_TYPE").ToList(), "Id", "Name", _gardenHelper.GetGardenRoleTypeId(gardenUser.GardenSpaceId.Value, gardenUser.GardenRoleId.Value));
             return View(gardenUser);
         }
 
@@ -461,7 +461,7 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate")] GardenUser gardenUser)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,IsActivate,GardenSpaceId,CreateDate,Name,BirthDay,Tel,Address,ParentUserName,ParentUserTel,Description,IsActiveDate")] GardenUser gardenUser, string GardenRoleId)
         {
             if (id != gardenUser.Id)
             {
@@ -472,6 +472,7 @@ namespace Garden.Controllers
             {
                 try
                 {
+                    gardenUser.GardenRoleId = _gardenHelper.GetGardenRole(gardenUser.GardenSpaceId.Value, GardenRoleId);
                     _context.Update(gardenUser);
                     await _context.SaveChangesAsync();
                 }

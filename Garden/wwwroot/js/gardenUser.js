@@ -64,7 +64,7 @@ var gardenUser_dataTable = $('#gardenUser_dt').DataTable({
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {
                 return '<button type="button" data-permission="delete" class="btn btn-link text-danger p-0 ml-3 float-right" ' + deletePermission + ' onclick="removeValue(' + data + ')"><i class="fas fa-trash"></i></button>' +
-                       '<button type="button" data-permission="update" class="btn btn-link text-success p-0 ml-3 float-right" onclick="removeValue(' + data + ')"><i class="fas fa-brush"></i></button>';                  
+                       '<a data-permission="update" href="GardenUsers/Edit/?id='+data+'"; class="btn btn-link text-success p-0 ml-3 float-right"><i class="fas fa-brush"></i></a>';                  
             }
         }
     ],

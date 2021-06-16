@@ -38,6 +38,16 @@
 
                 <div class="form-row p-2 border-bottom">
                     <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                        <i class="fas fa-birthday-cake mr-2"></i>
+                        @Html.Raw("생년월일")
+                    </label>
+                    <div class="col-xl-8 mt-1">
+                        @Model.BirthDay.Value.ToShortDateString() / @Model.Age
+                    </div>
+                </div>
+
+                <div class="form-row p-2 border-bottom">
+                    <label class="col-xl-4 mt-1 text-primary font-weight-bold">
                         <i class="fas fa-address-book mr-2"></i>
                         @Html.Raw("주소")
                     </label>

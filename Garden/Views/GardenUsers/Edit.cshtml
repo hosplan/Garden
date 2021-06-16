@@ -4,46 +4,154 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<link href="~/lib/bootstrap/dist/css/bootstrap-toggle.css" rel="stylesheet" />
 
-<h4>GardenUser</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActivate" /> @Html.DisplayNameFor(model => model.IsActivate)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="GardenSpaceId" class="control-label"></label>
-                <select asp-for="GardenSpaceId" class="form-control" asp-items="ViewBag.GardenSpaceId"></select>
-                <span asp-validation-for="GardenSpaceId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="col-xl-12 mb-3">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="col-xl-12">
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-cogs fa-fw mr-2"></i>
+                        @Html.Raw("수강생 정보")
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <input type="hidden" asp-for="Age"/>
+                        <input type="hidden" asp-for="Id"/>
+                        <input type="hidden" asp-for="GardenSpaceId"/>
+                        <input type="hidden" asp-for="CreateDate" />
+                        <div class="p-2">
+                            <div class="form-row p-3 border-bottom">
+                                <lable class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-star fa-fw mr-2"></i>
+                                    @Html.Raw("작성 양식")
+                                </lable>
+                                <div class="col-xl-8">
+                                    <input type="checkbox" onchange="changeFormSortation(this)" checked data-toggle="toggle" data-on="성인" data-off="미성년">
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-user-tag mr-2"></i>
+                                    @Html.Raw("유형")
+                                </label>
+                                <div class="col-xl-8">                                     
+                                    @Html.DropDownList("GardenRoleId", null,"선택하세요",htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-user mr-2"></i>
+                                    @Html.Raw("이름")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="Name" />
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-birthday-cake mr-2"></i>
+                                    @Html.Raw("생일")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="date" class="form-control" asp-for="BirthDay" />
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-phone mr-2"></i>
+                                    @Html.Raw("전화번호")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" onkeypress="onlyNumber_form();" asp-for="Tel" />
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-address-book mr-2"></i>
+                                    @Html.Raw("주소")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="Address" />
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom underAgeInfo" style="display:none">
+                                <label class="col-xl-4 mt-1 text-info font-weight-bold">
+                                    <i class="fas fa-user fa-fw mr-2"></i>
+                                    @Html.Raw("부모님 성함")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="ParentUserName" />
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom underAgeInfo" style="display:none">
+                                <label class="col-xl-4 mt-1 text-info font-weight-bold">
+                                    <i class="fas fa-phone fa-fw mr-2"></i>
+                                    @Html.Raw("부모님 전화번호")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input type="text" class="form-control" asp-for="ParentUserTel" />
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-feather fa-fw mr-2"></i>
+                                    @Html.Raw("메모")
+                                </label>
+                                <div class="col-xl-8">
+                                    <textarea class="form-control" asp-for="Description"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-row p-3 border-bottom">
+                                <label class="col-xl-4 mt-1 text-primary font-weight-bold">
+                                    <i class="fas fa-check-circle fa-fw mr-2"></i>
+                                    @Html.Raw("원생 등록여부")
+                                </label>
+                                <div class="col-xl-8">
+                                    <input asp-for="IsActivate" style="width:25px; height:25px;" />
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-md float-right mt-3">@Html.Raw("생성")</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script src="~/lib/bootstrap/dist/js/bootstrap-toggle.js"></script>
+<script type="text/javascript">
+    //숫자만 입력
+    function onlyNumber_form() {
+        if ((event.keyCode < 48) || (event.keyCode > 57))
+            event.returnValue = false;
+    }
+
+    //작성양식 변경
+    function changeFormSortation(obj) {
+        let value = $(obj).prop('checked');
+
+        document.getElementById('ParentUserTel').value = '';
+        document.getElementById('ParentUserName').value = '';
+
+        if (value == false) {
+            $('.underAgeInfo').show();
+        } else {
+            $('.underAgeInfo').hide();
+        }
+    }
+
+</script>
