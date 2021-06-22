@@ -49,7 +49,7 @@ namespace Garden.Controllers
         //        {
         //            while (read_data.Read())
         //            {
-                        
+
         //                GardenUser gardenUser = new GardenUser();
         //                gardenUser.Name = read_data[7].ToString();
         //                gardenUser.Age = Convert.ToInt32(read_data[1].ToString());
@@ -62,7 +62,7 @@ namespace Garden.Controllers
         //                gardenUser.GardenRoleId = 3;
         //                gardenUser.GardenSpaceId = 1;
         //                gardenUser_list.Add(gardenUser);
-                        
+
         //            }
         //        }
         //        _context.AddRange(gardenUser_list);
@@ -73,6 +73,138 @@ namespace Garden.Controllers
         //        string error = Convert.ToString(ex);
         //    }
         //}
+
+        /// <summary>
+        /// 로그인된 정보로 소속되어 있는 정원 정보 가져오기
+        /// </summary>
+        /// <param name="loginUserId"></param>
+        /// <returns></returns>
+        private async Task<List<GardenSpace>> GetGardenSpaceListForLoginUser(string loginUserId)
+        {
+            List<GardenUser> gardenUser_list = await _context.GardenUser
+                                                                .Include(gUser => gUser.GardenSpace)
+                                                                .Where(gUser => gUser.UserId == loginUserId)
+                                                                .ToListAsync();
+
+            List<GardenSpace> gardenSpace_list = new List<GardenSpace>();
+
+            foreach (GardenUser gardenUser in gardenUser_list)
+                gardenSpace_list.Add(gardenUser.GardenSpace);
+
+            return gardenSpace_list;
+        }
+
+        /// <summary>
+        /// 이달의 생일 정보 가져오기
+        /// delegate 업데이트 예정
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<JsonResult> GetMonthBirthInfo()
+        {
+            try
+            {
+                string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                List<GardenSpace> gardenSpace_list = await GetGardenSpaceListForLoginUser(loginedUserId);
+
+
+                List<GardenUser> gardenUser_list = new List<GardenUser>();
+                foreach (GardenSpace gardenSpace in gardenSpace_list)
+                {
+                    List<GardenUser> temp_gardenUser_list = await _context.GardenUser
+                                                                          .Include(gUser => gUser.GardenRole)
+                                                                               .ThenInclude(gRole => gRole.BaseSubType)
+                                                                          .Where(z => z.GardenSpaceId == gardenSpace.Id
+                                                                                 && z.BirthDay.Value.Month == DateTime.Now.Month)
+                                                                          .ToListAsync();
+
+                    gardenUser_list.AddRange(temp_gardenUser_list);
+                }
+
+                List<object> jsonValue_list = new List<object>();
+                foreach (GardenUser gardenUser in gardenUser_list)
+                {
+                    jsonValue_list.Add(new
+                    {
+                        id = gardenUser.Id,
+                        name = gardenUser.Name,
+                        role = gardenUser.GardenRole.BaseSubType.Name,
+                        birthday = gardenUser.BirthDay.Value.ToShortDateString(),
+                    });
+                }
+                return new JsonResult(jsonValue_list);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+        /// <summary>
+        /// 오늘 생일 정보 가져오기
+        /// delegate 업데이트 예정
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<JsonResult> GetTodayBirthInfo()
+        {
+            try
+            {
+                string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                List<GardenSpace> gardenSpace_list = await GetGardenSpaceListForLoginUser(loginedUserId);
+
+
+                List<GardenUser> gardenUser_list = new List<GardenUser>();
+                foreach (GardenSpace gardenSpace in gardenSpace_list)
+                {
+                    List<GardenUser> temp_gardenUser_list = await _context.GardenUser
+                                                                          .Where(z => z.GardenSpaceId == gardenSpace.Id
+                                                                                 && z.BirthDay.Value.ToShortDateString() == DateTime.Now.ToShortDateString())
+                                                                          .ToListAsync();
+
+                    gardenUser_list.AddRange(temp_gardenUser_list);
+                }
+
+                List<object> jsonValue_list = new List<object>();
+                foreach(GardenUser gardenUser in gardenUser_list)
+                {
+                    jsonValue_list.Add(new
+                    {
+                        id = gardenUser.Id,
+                        name = gardenUser.Name,
+                        role = gardenUser.GardenRole.BaseSubType.Name,
+                        birthday = gardenUser.BirthDay.Value.ToShortDateString(),
+                    });
+                }
+
+                return new JsonResult(jsonValue_list);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+        /// <summary>
+        /// 1주년 유저 정보 가져오기
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<JsonResult> GetOneYearUserInfo()
+        {
+            try
+            {
+                string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
 
         [HttpGet]
         public IActionResult Index()

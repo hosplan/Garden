@@ -94,18 +94,83 @@
 
 
     <!-- Content Row -->
-
     <div class="row">
-
         <!-- Area Chart -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">이벤트</h6>
-                    
+        <div class="col-xl-7">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">@Html.Raw("이벤트")</h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="col-xl-12">
+                                <label class="font-weight-bold text-success">
+                                    <i class="fas fa-birthday-cake mr-2"></i>
+                                    @Html.Raw("오늘 생일")
+                                </label>
+                                <table class="table table-hover">
+                                    <thead class="text-info">
+                                        <tr>
+                                            <th>@Html.Raw("이름")</th>
+                                            <th>@Html.Raw("날짜")</th>
+                                            <th>@Html.Raw("등록 날짜")</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="today_birth_user_tb">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div class="col-xl-12">
+                                <label class="font-weight-bold text-success">
+                                    <i class="fas fa-calendar mr-2"></i>
+                                    @Html.Raw("이달의 생일")
+                                </label>
+                                <table class="table table-hover">
+                                    <thead class="text-info">
+                                        <tr>
+                                            <th>@Html.Raw("이름")</th>
+                                            <th>@Html.Raw("날짜")</th>
+                                            <th>@Html.Raw("등록 날짜")</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="month_birth_user_tb">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div class="col-xl-12">
+                                <label class="font-weight-bold text-success">
+                                    <i class="fas fa-star mr-2"></i>
+                                    @Html.Raw("등록 1주년 수강생")
+                                </label>
+                                <table class="table table-hover">
+                                    <thead class="text-info">
+                                        <tr>
+                                            <th>@Html.Raw("이름")</th>
+                                            <th>@Html.Raw("등록 날짜")</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="one_year_user_tb">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Card Body -->
+            </div>
+        </div>
+
+        <div class="col-xl-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">@Html.Raw("이달의 등록인원")</h6>
+                </div>
                 <div class="card-body">
                     <div class="text-center">
                         <h3 class="text-warning font-weight-bold">@Html.Raw("준비중 입니다.")</h3>
@@ -114,36 +179,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-4 col-lg-5">
-
-        </div>
     </div>
 
-    <div class="row">
-
-        <!-- Area Chart -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">공지사항</h6>
-                   
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="text-center">
-                        <h3 class="text-warning font-weight-bold">@Html.Raw("준비중 입니다.")</h3>
-                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width:25rem;" src="~/img/undraw_version_control.svg" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-5">
-
-        </div>
-    </div>
 </div>
 
 <script type="text/javascript">
@@ -152,7 +189,74 @@
         getCurrentMonthTask();
         getTotalCount();
         getEventCount();
+        
+        getTodayBirthInfo();
+        getMonthBirthInfo();
+        getOneYearUserInfo();
     });
+
+    //오늘 생일 정보 가져오기
+    function getTodayBirthInfo() {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('GET', '/Home/GetTodayBirthInfo', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200) {
+               console.log(this.responseText);
+               
+            } else {
+                errorMessage();
+            }
+        };
+        httpRequest.send();
+    }
+
+    //이달의 생일 정보 가져오기
+    function getMonthBirthInfo() {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('GET', '/Home/GetMonthBirthInfo', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200) {
+                JSON.parse(this.response).forEach(function (ele, index) {
+                    console.log(ele);
+                });
+            } else {
+                errorMessage();
+            }
+        };
+        httpRequest.send();
+    }
+
+    //등록 1주년 수강생 정보 가져오기
+    function getOneYearUserInfo() {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('GET', '/Home/GetOneYearUserInfo', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200) {
+                console.log(this.response);
+            } else {
+                errorMessage();
+            }
+        };
+        httpRequest.send();
+    }
 
     function getCurrentMonthTask() {
         //이달의 업무 갯수 가져오기

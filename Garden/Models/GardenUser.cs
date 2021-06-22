@@ -37,7 +37,6 @@ namespace Garden.Models
         public Nullable<DateTime> IsActiveDate { get; set; }
 
         //끝
-
         [Display(Name ="등록날짜")]
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }
