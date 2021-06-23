@@ -107,58 +107,48 @@
                         <!-- Card Body -->
                         <div class="card-body">
                             <div class="col-xl-12">
-                                <label class="font-weight-bold text-success">
+                                <label class="font-weight-bold text-success" id="today_birth_user_tb">
                                     <i class="fas fa-birthday-cake mr-2"></i>
                                     @Html.Raw("오늘 생일")
                                 </label>
-                                <table class="table table-hover">
-                                    <thead class="text-info">
-                                        <tr>
-                                            <th>@Html.Raw("이름")</th>
-                                            <th>@Html.Raw("날짜")</th>
-                                            <th>@Html.Raw("등록 날짜")</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="today_birth_user_tb">
-
-                                    </tbody>
-                                </table>
+                                <div class="w-100" style="overflow-y:auto; max-height:25vh;">
+                                    <table class="table table-hover">
+                                    </table>
+                                    <div id="today_birth_no" class="text-center">
+                                        <h3 class="text-success font-weight-bold"> 오늘의 생일 인원 이 없네요.</h3>
+                                    </div>
+                                </div>
+                                  
                             </div>
                             <br />
-                            <div class="col-xl-12">
-                                <label class="font-weight-bold text-success">
+                            <div class="col-xl-12 border-top">
+                                <label class="font-weight-bold text-success mt-3">
                                     <i class="fas fa-calendar mr-2"></i>
                                     @Html.Raw("이달의 생일")
                                 </label>
-                                <table class="table table-hover">
-                                    <thead class="text-info">
-                                        <tr>
-                                            <th>@Html.Raw("이름")</th>
-                                            <th>@Html.Raw("날짜")</th>
-                                            <th>@Html.Raw("등록 날짜")</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="month_birth_user_tb">
+                                <div class="w-100" style="overflow-y:auto; max-height:25vh;">
+                                    <table class="table table-hover" id="month_birth_user_tb">
+                                    </table>
+                                    <div id="month_birth_no" class="text-center">
+                                        <h3 class="text-success font-weight-bold"> 이달의 생일 인원 이 없네요.</h3>
+                                    </div>
+                                </div>
 
-                                    </tbody>
-                                </table>
                             </div>
                             <br />
-                            <div class="col-xl-12">
-                                <label class="font-weight-bold text-success">
+                            <div class="col-xl-12 border-top">
+                                <label class="font-weight-bold text-success mt-3">
                                     <i class="fas fa-star mr-2"></i>
                                     @Html.Raw("등록 1주년 수강생")
                                 </label>
-                                <table class="table table-hover">
-                                    <thead class="text-info">
-                                        <tr>
-                                            <th>@Html.Raw("이름")</th>
-                                            <th>@Html.Raw("등록 날짜")</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="one_year_user_tb">
-                                    </tbody>
-                                </table>
+
+                                <div class="w-100" style="overflow-y:auto; max-height:25vh;">
+                                    <table class="table table-hover" id="one_year_user_tb">
+                                    </table>
+                                    <div id="one_year_no"  class="text-center">
+                                        <h3 class="text-success font-weight-bold"> 오늘은 등록 1주년 인원 이 없네요.</h3>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -172,10 +162,15 @@
                     <h6 class="m-0 font-weight-bold text-primary">@Html.Raw("이달의 등록인원")</h6>
                 </div>
                 <div class="card-body">
-                    <div class="text-center">
-                        <h3 class="text-warning font-weight-bold">@Html.Raw("준비중 입니다.")</h3>
-                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width:25rem;" src="~/img/undraw_version_control.svg" />
-                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <table class="table table-hover" id="month_active_user_tb">
+                            </table>
+                            <div id="month_active_no" class="text-center">
+                                <h3 class="text-success font-weight-bold">이달의 등록인원이 없네요.</h3>
+                            </div>
+                        </div>
+                    </div>                  
                 </div>
             </div>
         </div>
@@ -184,6 +179,7 @@
 </div>
 
 <script type="text/javascript">
+
     document.addEventListener('DOMContentLoaded', function () {
         //이달의 업무 갯수 가져오기
         getCurrentMonthTask();
@@ -193,7 +189,45 @@
         getTodayBirthInfo();
         getMonthBirthInfo();
         getOneYearUserInfo();
+        getMonthActiveUserInfo();
     });
+
+    //이달 등록인원 정보 가져오기
+    function getMonthActiveUserInfo() {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('GET', '/Home/GetMonthActiveUserInfo', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && Array.isArray(JSON.parse(this.response))) {
+                JSON.parse(this.response).forEach(function (ele, index) {
+                    let table = document.getElementById('month_active_user_tb');
+                    let newRow = table.insertRow();
+
+                    let typeCell = newRow.insertCell(0);
+                    let nameCell = newRow.insertCell(1);
+                    let dateCell = newRow.insertCell(2);
+
+                    let badge = "badge badge-primary";
+
+                    if (ele.role == "강사") {
+                        badge = "badge badge-info";
+                    }
+
+                    typeCell.innerHTML = '<span class="' + badge + '">' + ele.role + '</span>';
+                    nameCell.innerText = ele.name;
+                    dateCell.innerText = ele.active_day;
+                });
+
+                document.getElementById('month_active_no').style.display = "none";
+            }
+        };
+        httpRequest.send();
+    }
 
     //오늘 생일 정보 가져오기
     function getTodayBirthInfo() {
@@ -206,11 +240,27 @@
         httpRequest.open('GET', '/Home/GetTodayBirthInfo', true);
         httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         httpRequest.onload = function () {
-            if (this.status === 200) {
-               console.log(this.responseText);
-               
-            } else {
-                errorMessage();
+            if (this.status === 200 && Array.isArray(JSON.parse(this.response))) {
+                JSON.parse(this.response).forEach(function (ele, index) {
+                    let table = document.getElementById('today_birth_user_tb');
+                    let newRow = table.insertRow();
+
+                    let typeCell = newRow.insertCell(0);
+                    let nameCell = newRow.insertCell(1);
+                    let dateCell = newRow.insertCell(2);
+
+                    let badge = "badge badge-primary";
+
+                    if (ele.role == "강사") {
+                        badge = "badge badge-info";
+                    }
+
+                    typeCell.innerHTML = '<span class="' + badge + '">' + ele.role + '</span>';
+                    nameCell.innerText = ele.name;
+                    dateCell.innerText = ele.birthday;
+                });
+
+                document.getElementById('today_birth_no').style.display = "none";
             }
         };
         httpRequest.send();
@@ -227,13 +277,29 @@
         httpRequest.open('GET', '/Home/GetMonthBirthInfo', true);
         httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         httpRequest.onload = function () {
-            if (this.status === 200) {
+            if (this.status === 200 && Array.isArray(JSON.parse(this.response))) {
+                              
                 JSON.parse(this.response).forEach(function (ele, index) {
-                    console.log(ele);
+                    let table = document.getElementById('month_birth_user_tb');
+                    let newRow = table.insertRow();
+
+                    let typeCell = newRow.insertCell(0);
+                    let nameCell = newRow.insertCell(1);
+                    let dateCell = newRow.insertCell(2);
+
+                    let badge = "badge badge-primary";
+
+                    if (ele.role == "강사") {
+                        badge = "badge badge-info";
+                    }
+
+                    typeCell.innerHTML = '<span class="' + badge + '">' + ele.role + '</span>';
+                    nameCell.innerText = ele.name;
+                    dateCell.innerText = ele.birthday;
                 });
-            } else {
-                errorMessage();
-            }
+
+                document.getElementById('month_birth_no').style.display = "none";
+            } 
         };
         httpRequest.send();
     }
@@ -249,11 +315,27 @@
         httpRequest.open('GET', '/Home/GetOneYearUserInfo', true);
         httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         httpRequest.onload = function () {
-            if (this.status === 200) {
-                console.log(this.response);
-            } else {
-                errorMessage();
-            }
+            if (this.status === 200 && Array.isArray(JSON.parse(this.response))) {
+
+                JSON.parse(this.response).forEach(function (ele, index) {
+                    let table = document.getElementById('one_year_user_tb');
+                    let newRow = table.insertRow();
+
+                    let typeCell = newRow.insertCell(0);
+                    let nameCell = newRow.insertCell(1);
+
+                    let badge = "badge badge-primary";
+
+                    if (ele.role == "강사") {
+                        badge = "badge badge-info";
+                    }
+
+                    typeCell.innerHTML = '<span class="' + badge + '">' + ele.role + '</span>';
+                    nameCell.innerText = ele.name;
+                });
+
+                document.getElementById('one_year_no').style.display = "none";
+            } 
         };
         httpRequest.send();
     }

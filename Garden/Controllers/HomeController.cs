@@ -117,8 +117,9 @@ namespace Garden.Controllers
                                                                                .ThenInclude(gRole => gRole.BaseSubType)
                                                                           .Where(z => z.GardenSpaceId == gardenSpace.Id
                                                                                  && z.BirthDay.Value.Month == DateTime.Now.Month)
+                                                                          .AsNoTracking()
                                                                           .ToListAsync();
-
+                                                                          
                     gardenUser_list.AddRange(temp_gardenUser_list);
                 }
 
@@ -129,8 +130,8 @@ namespace Garden.Controllers
                     {
                         id = gardenUser.Id,
                         name = gardenUser.Name,
-                        role = gardenUser.GardenRole.BaseSubType.Name,
-                        birthday = gardenUser.BirthDay.Value.ToShortDateString(),
+                        role = gardenUser.GardenRole != null ? gardenUser.GardenRole.BaseSubType.Name : "-",
+                        birthday = gardenUser.BirthDay.Value.Month + "월 " +gardenUser.BirthDay.Value.Day+"일",
                     });
                 }
                 return new JsonResult(jsonValue_list);
@@ -159,6 +160,8 @@ namespace Garden.Controllers
                 foreach (GardenSpace gardenSpace in gardenSpace_list)
                 {
                     List<GardenUser> temp_gardenUser_list = await _context.GardenUser
+                                                                          .Include(gUser => gUser.GardenRole)
+                                                                               .ThenInclude(gRole => gRole.BaseSubType)
                                                                           .Where(z => z.GardenSpaceId == gardenSpace.Id
                                                                                  && z.BirthDay.Value.ToShortDateString() == DateTime.Now.ToShortDateString())
                                                                           .ToListAsync();
@@ -173,8 +176,8 @@ namespace Garden.Controllers
                     {
                         id = gardenUser.Id,
                         name = gardenUser.Name,
-                        role = gardenUser.GardenRole.BaseSubType.Name,
-                        birthday = gardenUser.BirthDay.Value.ToShortDateString(),
+                        role = gardenUser.GardenRole != null ? gardenUser.GardenRole.BaseSubType.Name : "-",
+                        birthday = gardenUser.BirthDay.Value.Month + "월 " + gardenUser.BirthDay.Value.Day+"일",
                     });
                 }
 
@@ -195,9 +198,34 @@ namespace Garden.Controllers
             try
             {
                 string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                List<GardenSpace> gardenSpace_list = await GetGardenSpaceListForLoginUser(loginedUserId);
 
+                List<GardenUser> gardenUser_list = new List<GardenUser>();
 
-                return new JsonResult(true);
+                foreach (GardenSpace gardenSpace in gardenSpace_list)
+                {
+                    List<GardenUser> temp_gardenUser_list = await _context.GardenUser
+                                                                          .Include(gUser => gUser.GardenRole)
+                                                                               .ThenInclude(gRole => gRole.BaseSubType)
+                                                                          .Where(z => z.GardenSpaceId == gardenSpace.Id
+                                                                                 && z.IsActiveDate.Value.ToShortDateString() == DateTime.Now.ToShortDateString())
+                                                                          .ToListAsync();
+
+                    gardenUser_list.AddRange(temp_gardenUser_list);
+                }
+
+                List<object> jsonValue_list = new List<object>();
+                foreach (GardenUser gardenUser in gardenUser_list)
+                {
+                    jsonValue_list.Add(new
+                    {
+                        id = gardenUser.Id,
+                        name = gardenUser.Name,
+                        role = gardenUser.GardenRole != null ? gardenUser.GardenRole.BaseSubType.Name : "-",
+                    });
+                }
+
+                return new JsonResult(jsonValue_list);
             }
             catch
             {
@@ -205,6 +233,48 @@ namespace Garden.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetMonthActiveUserInfo()
+        {
+            try
+            {
+                string loginedUserId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                List<GardenSpace> gardenSpace_list = await GetGardenSpaceListForLoginUser(loginedUserId);
+
+                List<GardenUser> gardenUser_list = new List<GardenUser>();
+
+                foreach (GardenSpace gardenSpace in gardenSpace_list)
+                {
+                    List<GardenUser> temp_gardenUser_list = await _context.GardenUser
+                                                                          .Include(gUser => gUser.GardenRole)
+                                                                               .ThenInclude(gRole => gRole.BaseSubType)
+                                                                          .Where(gUser => gUser.GardenSpaceId == gardenSpace.Id
+                                                                                 && gUser.IsActiveDate.Value.Year == DateTime.Now.Year
+                                                                                 && gUser.IsActiveDate.Value.Month == DateTime.Now.Month)
+                                                                          .ToListAsync();
+
+                    gardenUser_list.AddRange(temp_gardenUser_list);
+                }
+
+                List<object> jsonValue_list = new List<object>();
+                foreach (GardenUser gardenUser in gardenUser_list)
+                {
+                    jsonValue_list.Add(new
+                    {
+                        id = gardenUser.Id,
+                        name = gardenUser.Name,
+                        active_day = gardenUser.IsActiveDate.Value.ToShortDateString(),
+                        role = gardenUser.GardenRole != null ? gardenUser.GardenRole.BaseSubType.Name : "-",
+                    });
+                }
+
+                return new JsonResult(jsonValue_list);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
 
         [HttpGet]
         public IActionResult Index()
