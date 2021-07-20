@@ -11,6 +11,7 @@ using Garden.Helper;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using Garden.Services;
 
 namespace Garden.Controllers
 {
@@ -18,14 +19,20 @@ namespace Garden.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IGardenHelper _gardenHelper;
+        private readonly IGardenSpacesService _gardenSpacesService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly GlobalValueService _globalValueService;
-        public GardenSpacesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper, GlobalValueService globalValueService)
+        public GardenSpacesController(ApplicationDbContext context, 
+                                        IHttpContextAccessor httpContextAccessor, 
+                                        IGardenHelper gardenHelper, 
+                                        GlobalValueService globalValueService,
+                                        IGardenSpacesService gardenSpacesService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _gardenHelper = gardenHelper;
             _globalValueService = globalValueService;
+            _gardenSpacesService = gardenSpacesService;
         }
 
         // GET: GardenSpaces
@@ -273,10 +280,8 @@ namespace Garden.Controllers
             {
                 gardenSpace.IsActivate = true;
                 gardenSpace.CreatedDate = DateTime.Now;
-                
-                _context.Add(gardenSpace);
-                await _context.SaveChangesAsync();
 
+                bool isSuccess = _gardenSpacesService.CreateResource(gardenSpace);
                 string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 //정원의 역할 생성
@@ -333,8 +338,7 @@ namespace Garden.Controllers
             {
                 try
                 {
-                    _context.Update(gardenSpace);
-                    await _context.SaveChangesAsync();
+                    _gardenSpacesService.UpdateResource(gardenSpace);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -378,8 +382,8 @@ namespace Garden.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var gardenSpace = await _context.GardenSpace.FindAsync(id);
-            _context.GardenSpace.Remove(gardenSpace);
-            await _context.SaveChangesAsync();
+            _gardenSpacesService.RemoveResource(gardenSpace);
+
             return RedirectToAction(nameof(Index));
         }
 

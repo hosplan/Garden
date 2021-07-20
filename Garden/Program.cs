@@ -31,7 +31,7 @@ namespace Garden
                     SeedData.SeedSystemAccount(userManager);
                 
                 }
-                catch
+                catch(Exception ex)
                 {
 
                     //var logger = services.GetRequiredService<ILogger<Program>>();

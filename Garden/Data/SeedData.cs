@@ -23,7 +23,9 @@ namespace Garden.Data
                         new BaseType { Id="GARDEN_MANAGER_ROLE_TYPE", Name = "정원 관리자 역할 타입", Description = "정원 관리자 역할 타입", IsSubTypeEditable = true },
                         new BaseType { Id="GARDEN_TASK_TYPE", Name = "정원 업무 타입", Description = "정원 업무 타입", IsSubTypeEditable = true },
                         new BaseType { Id="GARDEN_TASK_TIME_TYPE", Name = "정원 업무 시간 타입", Description = "정원 업무 시간 타입", IsSubTypeEditable = true },
-                        new BaseType { Id="LOG_TYPE", Name = "로그 타입", Description = "로그 타입", IsSubTypeEditable = false }
+                        new BaseType { Id="LOG_TYPE", Name = "로그 타입", Description = "로그 타입", IsSubTypeEditable = false },
+                        new BaseType { Id="GARDEN_FEE_TYPE", Name= "회비 타입", Description = "회비 타입", IsSubTypeEditable = true },
+                        new BaseType { Id="GARDEN_FEE_DISCOUNT_TYPE", Name= "회비 할인 타입", Description = "회비 할인 타입", IsSubTypeEditable = true }
                         );
                     context.SaveChanges();
                 }
@@ -49,6 +51,17 @@ namespace Garden.Data
                         new BaseSubType { Id = "GARDEN_TASK_TIME_TYPE_1", BaseTypeId = "GARDEN_TASK_TIME_TYPE", Name="수업", Description = "수업"},
                         new BaseSubType { Id = "GARDEN_TASK_TIME_TYPE_2", BaseTypeId = "GARDEN_TASK_TIME_TYPE", Name ="수강", Description = "수강"},
                         new BaseSubType { Id = "GARDEN_TASK_TIME_TYPE_3", BaseTypeId = "GARDEN_TASK_TIME_TYPE", Name = "기타", Description = "기타" },
+                        //회비 타입
+                        new BaseSubType { Id = "GARDEN_FEE_TYPE_1", BaseTypeId = "GARDEN_FEE_TYPE", Name = "1개월", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_TYPE_2", BaseTypeId = "GARDEN_FEE_TYPE", Name = "3개월", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_TYPE_3", BaseTypeId = "GARDEN_FEE_TYPE", Name = "6개월", Description = "" },
+                        //회비 할인 타입
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_1", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "첫달 홈페이지 수강후기 작성", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_2", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "수강한지 1년", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_3", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "친구 데려오기", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_4", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "리뷰 작성", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_5", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "원데이 클래스", Description = "" },
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_6", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "피아노 3인 그룹", Description = "" },
                         //로그 타입
                         new BaseSubType { Id = "LOG_TYPE_1", BaseTypeId = "LOG_TYPE", Name = "시스템 로그", Description = "시스템 로그" },
                         new BaseSubType { Id = "LOG_TYPE_2", BaseTypeId = "LOG_TYPE", Name = "작업 로그", Description = "작업 로그" }
@@ -123,5 +136,6 @@ namespace Garden.Data
             }
         }
         #endregion
+
     }
 }

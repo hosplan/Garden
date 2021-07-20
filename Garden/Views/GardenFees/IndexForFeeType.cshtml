@@ -11,10 +11,10 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                     <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
-                    <a class="dropdown-item font-weight-bold" asp-controller="GardenFees" asp-action="IndexForFeeType">
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit')" value="">
                         <i class="fas fa-cogs text-primary mr-3"></i>
                         @Html.Raw("회비 타입 관리")
-                    </a>
+                    </button>
                     <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit')" value="">
                         <i class="fas fa-brush text-success mr-3"></i>
                         @Html.Raw("수정")

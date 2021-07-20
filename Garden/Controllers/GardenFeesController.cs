@@ -46,6 +46,12 @@ namespace Garden.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> IndexForFeeType()
+        {
+
+            return View();
+        }
+
         // GET: GardenFees/Details/5
         public async Task<IActionResult> Details(int? id)
         {

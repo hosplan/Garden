@@ -1,6 +1,7 @@
 using Garden.Data;
 using Garden.Helper;
 using Garden.Models;
+using Garden.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +41,8 @@ namespace Garden
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IGardenHelper, GardenHelper>();
+            services.AddScoped<IGardenSpacesService, GardenSpacesService>();
+            services.AddScoped<IGardenFeesService, GardenFeesService>();
 
             services.AddTransient<GlobalValueService>();
 
