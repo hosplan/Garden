@@ -19,20 +19,20 @@ namespace Garden.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IGardenHelper _gardenHelper;
-        private readonly IGardenSpacesService _gardenSpacesService;
+        private readonly IGardenService _gardenService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly GlobalValueService _globalValueService;
         public GardenSpacesController(ApplicationDbContext context, 
                                         IHttpContextAccessor httpContextAccessor, 
                                         IGardenHelper gardenHelper, 
                                         GlobalValueService globalValueService,
-                                        IGardenSpacesService gardenSpacesService)
+                                        IGardenService gardenService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _gardenHelper = gardenHelper;
             _globalValueService = globalValueService;
-            _gardenSpacesService = gardenSpacesService;
+            _gardenService = gardenService;
         }
 
         // GET: GardenSpaces
@@ -57,8 +57,60 @@ namespace Garden.Controllers
                                                                    .Include(gardenSpace => gardenSpace.GardenTasks)
                                                                    .AsNoTracking()
                                                                    .ToListAsync();
-
             return View(applicationDbContext);
+        }
+        
+
+        [HttpGet]
+        public JsonResult Get(int id)
+        {
+            try
+            {
+                return new JsonResult(_gardenService.GetResource(id));
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult Get(int id, bool isActivate)
+        {
+            try
+            {
+                return new JsonResult(_gardenService.GetResource(id, isActivate));
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+       
+        [HttpGet]
+        public JsonResult GetAllGardenSpaces()
+        {
+            try
+            {
+                return new JsonResult(_gardenService.GetResouces());
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetAllGardenSpaces(bool isActivate)
+        {
+            try
+            {
+                return new JsonResult(_gardenService.GetResouces(isActivate));
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
         }
 
         // GET: GardenSpaces/Details/5

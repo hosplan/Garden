@@ -41,9 +41,8 @@ namespace Garden
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IGardenHelper, GardenHelper>();
-            services.AddScoped<IGardenSpacesService, GardenSpacesService>();
-            services.AddScoped<IGardenFeesService, GardenFeesService>();
-
+            services.AddScoped<IGardenService, GardenService>();
+ 
             services.AddTransient<GlobalValueService>();
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
