@@ -333,7 +333,7 @@ namespace Garden.Controllers
                 gardenSpace.IsActivate = true;
                 gardenSpace.CreatedDate = DateTime.Now;
 
-                bool isSuccess = _gardenSpacesService.CreateResource(gardenSpace);
+                bool isSuccess = await _gardenService.CreateResource(gardenSpace);                
                 string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 //정원의 역할 생성
@@ -390,7 +390,7 @@ namespace Garden.Controllers
             {
                 try
                 {
-                    _gardenSpacesService.UpdateResource(gardenSpace);
+                    await _gardenService.UpdateResource(gardenSpace);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -434,7 +434,7 @@ namespace Garden.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var gardenSpace = await _context.GardenSpace.FindAsync(id);
-            _gardenSpacesService.RemoveResource(gardenSpace);
+            await _gardenService.RemoveResource(gardenSpace);
 
             return RedirectToAction(nameof(Index));
         }
