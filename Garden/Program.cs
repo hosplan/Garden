@@ -29,7 +29,12 @@ namespace Garden
                     SeedData.SeedRoles(roleManager);
                     //관리자 추가
                     SeedData.SeedSystemAccount(userManager);
-                
+
+                    //회비 타입, 및 회비 할인 타입 추가
+                    SeedData.SeedFeeTypes(services);
+
+
+
                 }
                 catch(Exception ex)
                 {

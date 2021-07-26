@@ -10,6 +10,7 @@ using Garden.Models;
 using Microsoft.AspNetCore.Http;
 using Garden.Helper;
 using System.Security.Claims;
+using Garden.Services;
 
 namespace Garden.Controllers
 {
@@ -19,12 +20,14 @@ namespace Garden.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IGardenHelper _gardenHelper;
         private readonly GlobalValueService _globalValueService;
-        public GardenFeesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper, GlobalValueService globalValueService)
+        private readonly IGardenService _gardenService;
+        public GardenFeesController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IGardenHelper gardenHelper, GlobalValueService globalValueService, IGardenService gardenService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _gardenHelper = gardenHelper;
             _globalValueService = globalValueService;
+            _gardenService = gardenService;
         }
 
         // GET: GardenFees
@@ -46,6 +49,149 @@ namespace Garden.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        /// <summary>
+        /// GardenUser의 정보 가져오기
+        /// GardenFee(회비) 포함 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private async Task<List<GardenUser>> GetGardenUserFees(int id)
+        {
+            List<GardenUser> gardenUsers = new List<GardenUser>();
+
+            try
+            {
+                gardenUsers = await _context.GardenUser
+                                            .Include(gardenUser => gardenUser.GardenFees)
+                                            .AsNoTracking()
+                                            .Where(gardenUser => gardenUser.GardenSpaceId == id)
+                                            .ToListAsync();
+                return gardenUsers;
+            }
+            catch
+            {
+                return gardenUsers;
+            }
+        }
+
+        private List<GardenUser> GetGardenUserFeeForUser(List<GardenUser> gardenUsers, int gardenUserId)
+        {
+            try
+            {
+                gardenUsers = gardenUsers.Where(gardenUser => gardenUser.Id == gardenUserId).ToList();
+                return gardenUsers;
+            }
+            catch
+            {
+                return gardenUsers;
+            }
+        }
+
+        /// <summary>
+        /// 시작 날짜.
+        /// </summary>
+        /// <param name="gardenUsers"></param>
+        /// <param name="startMonth"></param>
+        /// <returns></returns>
+        private List<GardenUser> GetGardenUserFeeForStartMonth(List<GardenUser> gardenUsers, int startMonth)
+        {
+            try
+            {
+                int currentYear = DateTime.Now.Year;
+                gardenUsers = gardenUsers.Where(gardenUser => gardenUser.CreateDate.Year == currentYear &&
+                                                              gardenUser.CreateDate.Month > startMonth)
+                                         .ToList();
+
+                return gardenUsers;
+            }
+            catch
+            {
+                return gardenUsers;
+            }
+        }
+
+        private async Task CreateCurrentGardenFee(List<GardenFee> gardenFees, int gardenSpaceId)
+        {
+            List<GardenUser> gardenUsers = await _context.GardenUser
+                                                        .AsNoTracking()
+                                                        .Where(gardenUser => gardenUser.GardenSpaceId == gardenSpaceId && gardenUser.IsActivate == true)
+                                                        .ToListAsync();
+
+            foreach (GardenFee gardenFee in gardenFees)
+            {
+                GardenUser gardenUser = await _context.GardenUser.AsNoTracking().FirstOrDefaultAsync(gardenUser => gardenUser.Id == gardenFee.GardenUserId);
+                gardenUsers.Remove(gardenUser);
+            }
+
+            List<GardenFee> createGardenFees = new List<GardenFee>();
+            foreach(GardenUser gardenUser in gardenUsers)
+            {
+                GardenFee gardenFee = new GardenFee();
+
+                gardenFee.GardenUserId = gardenUser.Id;
+                gardenFee.GardenSpaceId = gardenSpaceId;
+                gardenFee.CreateDate = DateTime.Now;
+                gardenFee.Amount = 0;
+
+                createGardenFees.Add(gardenFee);
+            }
+
+            _context.AddRange(createGardenFees);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<List<GardenFee>> GetExistCurrentGardenFee(int gardenSpaceId)
+        {
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+
+            List<GardenFee> gardenFees = await _context.GardenFee
+                                                       .AsNoTracking()
+                                                       .Where(gardenFee => gardenFee.CreateDate.Year == currentYear &&
+                                                                           gardenFee.CreateDate.Month == currentMonth &&
+                                                                           gardenFee.GardenSpaceId == gardenSpaceId)
+                                                       .ToListAsync();
+
+            return gardenFees;
+        }
+
+        /// <summary>
+        /// GardenFee 정보 가져오기
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> GetGardenFeeJsonList(int id, int? gardenUserId, int? startMonth, int? endMonth)
+        {
+            List<object> object_list = new List<object>();
+            try
+            {
+                List<GardenFee> existGardenFees = await GetExistCurrentGardenFee(id);
+                //await CreateCurrentGardenFee(existGardenFees, id);
+               
+                //if(gardenUserId != null)
+                //{
+                //    gardenUsers = GetGardenUserFeeForUser(gardenUsers, gardenUserId.Value);
+                //}
+                //if(startMonth != null)
+                //{
+                //    gardenUsers = GetGardenUserFeeForStartMonth(gardenUsers, startMonth.Value);
+                //}
+                //if(endMonth != null)
+                //{
+                //    gardenUsers = GetGardenUserFeeForEndMonth(gardenUsers, endMonth.Value);
+                //}
+                
+                
+
+                var jsonValue = object_list;
+                return Json(jsonValue);
+            }
+            catch
+            {
+                var jsonValue = object_list;
+                return Json(jsonValue);
+            }
+        }
         public async Task<IActionResult> IndexForFeeType()
         {
 

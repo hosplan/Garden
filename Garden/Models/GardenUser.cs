@@ -51,9 +51,12 @@ namespace Garden.Models
 
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
+
         [InverseProperty("GardenUser")]
         public virtual ICollection<GardenUserTaskMap> GardenUserTasks { get; set; }
         [InverseProperty("GardenManager")]
         public virtual ICollection<GardenUserTaskMap> GardenManagerTasks { get; set; }
+        [Display(Name = "회비")]
+        public virtual ICollection<GardenFee> GardenFees { get; set; }
     }
 }

@@ -62,7 +62,7 @@ namespace Garden.Controllers
         
 
         [HttpGet]
-        public JsonResult Get(int id)
+        public JsonResult GetGardenSpace(int id)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace Garden.Controllers
         }
 
         [HttpGet]
-        public JsonResult Get(int id, bool isActivate)
+        public JsonResult GetIsActivateGardenSpace(int id, bool isActivate)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Garden.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetAllGardenSpaces(bool isActivate)
+        public JsonResult GetIsActivateGardenSpaces(bool isActivate)
         {
             try
             {

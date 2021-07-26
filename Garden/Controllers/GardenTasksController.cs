@@ -205,37 +205,44 @@ namespace Garden.Controllers
         public JsonResult GetGardenTaskList(int id)
         {
             List<object> returnValue_object_list = new List<object>();
-          
-
-            if (id == 0)
+            try
             {
-                return Json(returnValue_object_list);
-            }
-
-            List<GardenTask> gardenTask_list = _context.GardenTask
-                                                       .Include(gardenTask => gardenTask.BaseSubType)
-                                                       .Include(gardenTask => gardenTask.GardenUserTaskMaps)
-                                                       .AsNoTracking()
-                                                       .Where(gardenTask => gardenTask.GardenSpaceId == id)
-                                                       .OrderBy(gardenTask => gardenTask.CreateDate)
-                                                       .ToList();
-
-            foreach(GardenTask gardenTask in gardenTask_list)
-            {
-                returnValue_object_list.Add(new
+                if (id == 0)
                 {
-                    id = gardenTask.Id,
-                    typeName = gardenTask.BaseSubType.Name,
-                    name = gardenTask.Name,
-                    userCount = gardenTask.GardenUserTaskMaps.Count(),
-                    todayTask = 0,
-                    isActive = gardenTask.IsActivate,                    
-                    createDate = gardenTask.CreateDate.ToShortDateString(),
-                });
+                    return Json(returnValue_object_list);
+                }
+
+                List<GardenTask> gardenTask_list = _context.GardenTask
+                                                           .Include(gardenTask => gardenTask.BaseSubType)
+                                                           .Include(gardenTask => gardenTask.GardenUserTaskMaps)
+                                                           .AsNoTracking()
+                                                           .Where(gardenTask => gardenTask.GardenSpaceId == id)
+                                                           .OrderBy(gardenTask => gardenTask.CreateDate)
+                                                           .ToList();
+
+                foreach (GardenTask gardenTask in gardenTask_list)
+                {
+                    returnValue_object_list.Add(new
+                    {
+                        id = gardenTask.Id,
+                        typeName = gardenTask.BaseSubType.Name,
+                        name = gardenTask.Name,
+                        userCount = gardenTask.GardenUserTaskMaps.Count(),
+                        todayTask = 0,
+                        isActive = gardenTask.IsActivate,
+                        createDate = gardenTask.CreateDate.ToShortDateString(),
+                    });
+                }
+
+                var jsonResult = new { data = returnValue_object_list };
+                return Json(jsonResult);
+            }
+            catch(Exception ex)
+            {
+                var jsonResult = new { data = returnValue_object_list };
+                return Json(jsonResult);
             }
 
-            var jsonResult = new { data = returnValue_object_list };
-            return Json(jsonResult);
         }
 
         // GET: GardenTasks/Details/5
