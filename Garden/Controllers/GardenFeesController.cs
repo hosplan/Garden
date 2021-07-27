@@ -150,6 +150,7 @@ namespace Garden.Controllers
                                                        .Where(gardenFee => gardenFee.CreateDate.Year == currentYear &&
                                                                            gardenFee.CreateDate.Month == currentMonth &&
                                                                            gardenFee.GardenSpaceId == gardenSpaceId)
+
                                                        .ToListAsync();
 
             return gardenFees;
