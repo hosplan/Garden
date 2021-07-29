@@ -70,10 +70,10 @@ namespace Garden.Controllers
                                             .Include(gardenUser => gardenUser.GardenFees)
                                                 .ThenInclude(gardenFee => gardenFee.DiscountType)
                                             .AsNoTracking()
-                                            .Where(gardenUser => gardenUser.GardenFees.Count() > 0 && 
-                                                                 gardenUser.GardenSpaceId == gardenSpaceId &&
-                                                                 gardenUser.CreateDate.Year == currentYear &&
-                                                                 gardenUser.CreateDate.Month == currentMonth)
+                                            .Where(gardenUser => 
+                                                    gardenUser.GardenFees.Where(gardenFee => gardenFee.CreateDate.Year == currentYear &&
+                                                                                             gardenFee.CreateDate.Month == currentMonth).Count() > 0 
+                                                    && gardenUser.GardenSpaceId == gardenSpaceId)
                                             .ToListAsync();
 
                 return gardenUsers;
@@ -96,6 +96,8 @@ namespace Garden.Controllers
 
             try
             {
+                int currentYear = DateTime.Now.Year;
+                int currentMonth = DateTime.Now.Month;
 
                 gardenUsers = await _context.GardenUser
                                            .Include(gardenUser => gardenUser.GardenFees)
@@ -103,8 +105,10 @@ namespace Garden.Controllers
                                            .Include(gardenUser => gardenUser.GardenFees)
                                                 .ThenInclude(gardenFee => gardenFee.DiscountType)
                                            .AsNoTracking()
-                                           .Where(gardenUser => gardenUser.GardenFees.Count() == 0 &&
-                                                                gardenUser.GardenSpaceId == gardenSpaceId)
+                                           .Where(gardenUser => 
+                                                  gardenUser.GardenFees.Where(gardenFee => gardenFee.CreateDate.Year == currentYear &&
+                                                                                           gardenFee.CreateDate.Month == currentMonth).Count() == 0 
+                                                  && gardenUser.GardenSpaceId == gardenSpaceId)
                                            .ToListAsync();
 
                 return gardenUsers;
@@ -146,13 +150,13 @@ namespace Garden.Controllers
                 foreach (GardenUser gardenUser in gardenUsers_relate_fee)
                 {
                     object_list.Add(new
-                    {
-                        userId = gardenUser.UserId,
+                    {                        
                         userName = gardenUser.Name,
                         feeId = gardenUser.GardenFees.First().Id,
                         feeType = gardenUser.GardenFees.First().BaseSubType.Name,
                         discountType = gardenUser.GardenFees.First().DiscountType.Name,
                         createDate = gardenUser.CreateDate.ToShortDateString(),
+                        userId = gardenUser.UserId,
                     });
                 }
     
@@ -163,19 +167,19 @@ namespace Garden.Controllers
 
                         userId = gardenUser.Id,
                         userName = gardenUser.Name,
-                        feeId = 0,
+                        feeId = '0',
                         feeType = '-',
                         discountType = '-',
                         createDate = '-',
                     });
                 }
 
-                var jsonValue = object_list;
+                var jsonValue = new { data = object_list };
                 return Json(jsonValue);
             }
             catch
             {
-                var jsonValue = object_list;
+                var jsonValue = new { data = object_list };
                 return Json(jsonValue);
             }
         }
