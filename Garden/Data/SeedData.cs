@@ -153,9 +153,9 @@ namespace Garden.Data
 
                     context.BaseSubType.AddRange(
                        //회비 타입
-                       new BaseSubType { Id = "GARDEN_FEE_TYPE_1", BaseTypeId = "GARDEN_FEE_TYPE", Name = "1개월", Description = "" },
-                       new BaseSubType { Id = "GARDEN_FEE_TYPE_2", BaseTypeId = "GARDEN_FEE_TYPE", Name = "3개월", Description = "" },
-                       new BaseSubType { Id = "GARDEN_FEE_TYPE_3", BaseTypeId = "GARDEN_FEE_TYPE", Name = "6개월", Description = "" }
+                       new BaseSubType { Id = "GARDEN_FEE_TYPE_1", BaseTypeId = "GARDEN_FEE_TYPE", Name = "1개월", Description = "1" },
+                       new BaseSubType { Id = "GARDEN_FEE_TYPE_2", BaseTypeId = "GARDEN_FEE_TYPE", Name = "3개월", Description = "3" },
+                       new BaseSubType { Id = "GARDEN_FEE_TYPE_3", BaseTypeId = "GARDEN_FEE_TYPE", Name = "6개월", Description = "5" }
                    );
                     context.SaveChanges();
                 }

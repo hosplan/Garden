@@ -24,7 +24,10 @@ namespace Garden.Models
         [Display(Name="생성 날짜")]
         [DataType(DataType.Date)]
         public DateTime CreateDate { get; set; }
-        
+
+        [Display(Name ="만료 날짜")]
+        [DataType(DataType.Date)]
+        public DateTime ExpireDate { get; set; }
         public Nullable<int> GardenUserId { get; set; }
         
         [ForeignKey("GardenUserId")]

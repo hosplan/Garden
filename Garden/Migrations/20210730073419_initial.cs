@@ -449,11 +449,11 @@ namespace Garden.Migrations
                     DiscountTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Amount = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GardenUserId = table.Column<int>(type: "int", nullable: true),
                     GardenSpaceId = table.Column<int>(type: "int", nullable: true),
                     TempString = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TempInt = table.Column<int>(type: "int", nullable: false),
-                    GardenTaskId = table.Column<int>(type: "int", nullable: true)
+                    TempInt = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -474,12 +474,6 @@ namespace Garden.Migrations
                         name: "FK_GardenFee_GardenSpace_GardenSpaceId",
                         column: x => x.GardenSpaceId,
                         principalTable: "GardenSpace",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GardenFee_GardenTask_GardenTaskId",
-                        column: x => x.GardenTaskId,
-                        principalTable: "GardenTask",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -626,11 +620,6 @@ namespace Garden.Migrations
                 name: "IX_GardenFee_GardenSpaceId",
                 table: "GardenFee",
                 column: "GardenSpaceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GardenFee_GardenTaskId",
-                table: "GardenFee",
-                column: "GardenTaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GardenFee_GardenUserId",

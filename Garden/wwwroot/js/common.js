@@ -9,6 +9,7 @@ function openModal(controllerName, actionName, id) {
     click_common_btn(url);
 }
 
+
 //데이터 테이블에서 모달창 열기
 function datatable_openModal(obj) {
     click_common_btn(obj.value);

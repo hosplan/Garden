@@ -1,50 +1,114 @@
 ﻿@model Garden.Models.GardenFee
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "회비 납부하기";
+    int gardenId = (int)ViewData["GardenId"];
+    int gardenUserId = (int)ViewData["GardenUserId"];
 }
 
-<h1>Create</h1>
+<!-- Modal -->
+<div class="modal fade" id="modal-contact" tabindex="-1" role="dialog" aria-labelledby="addContactLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary font-weight-bold" id="addContactLabel">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    @ViewData["Title"]
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* 데이터 처리가 성공적으로 완료되었는지 여부를 표시 *@
+                <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" name="GardenSpaceId" value="@gardenId"/>
+                    <input type="hidden" name="GardenUserId" value="@gardenUserId"/>    
+                    
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1 text-danger">
+                            <i class="fas fa-genderless mr-2"></i>
+                            @Html.Raw("회비타입")
+                        </label>
+                        <div class="col-xl-8">
+                            @Html.DropDownList("SubTypeId", null,"선택하세요", htmlAttributes: new { @class = "form-control w-100", @onchange= "CaculateDate()" })                           
+                        </div>
+                    </div>
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("할인여부")
+                        </label>
+                        <div class="col-xl-8">
+                            @Html.DropDownList("DiscountTypeId", null, "없음",htmlAttributes: new { @class = "form-control w-100" })
+                        </div>
+                    </div>
 
-<h4>GardenFee</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SubTypeId" class="control-label"></label>
-                <select asp-for="SubTypeId" class ="form-control" asp-items="ViewBag.SubTypeId"></select>
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("시작 날짜")
+                        </label>
+                        <div class="col-xl-8">
+                            <input class="form-control" type="text" name="CreateDate" id="CreateDate" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row p-2">
+                        <label class="col-xl-4 mt-1">
+                            @Html.Raw("종료 날짜")
+                        </label>
+                        <div class="col-xl-8">
+                            <input class="form-control" type="text" name="ExpireDate" id="ExpireDate" readonly/>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row p-2" style="display:none" id="warning_div">
+                        <span class="text-danger font-weight-bold" id="warning_span"></span>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary btn-md" data-save="modal">확인</button>
             </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GardenUserId" class="control-label"></label>
-                <select asp-for="GardenUserId" class ="form-control" asp-items="ViewBag.GardenUserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="GardenSpaceId" class="control-label"></label>
-                <select asp-for="GardenSpaceId" class ="form-control" asp-items="ViewBag.GardenSpaceId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script type="text/javascript">
+    function CaculateDate() {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        let feeTypeOption = document.getElementById('SubTypeId');
+        let feeTypeOptionId = feeTypeOption.options[feeTypeOption.selectedIndex].value;
+
+        httpRequest.open('POST', '/GardenFees/CalculateDate', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200)
+            {
+                let dateValue = JSON.parse(this.response);
+                document.getElementById('CreateDate').value = dateValue.createDate;
+                document.getElementById('ExpireDate').value = dateValue.expireDate;
+            }
+            else
+            {
+                console.log("CalculateDate 문제 발생");
+            }
+        }
+        httpRequest.send('feeTypeId=' + feeTypeOptionId);
+    }
+</script>

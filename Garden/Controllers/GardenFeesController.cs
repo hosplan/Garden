@@ -150,12 +150,14 @@ namespace Garden.Controllers
                 foreach (GardenUser gardenUser in gardenUsers_relate_fee)
                 {
                     object_list.Add(new
-                    {                        
+                    {           
+                        gardenId = gardenUser.GardenSpaceId,
                         userName = gardenUser.Name,
                         feeId = gardenUser.GardenFees.First().Id,
                         feeType = gardenUser.GardenFees.First().BaseSubType.Name,
                         discountType = gardenUser.GardenFees.First().DiscountType.Name,
-                        createDate = gardenUser.CreateDate.ToShortDateString(),
+                        createDate = gardenUser.GardenFees.First().CreateDate.ToShortDateString(),
+                        expireDate = gardenUser.GardenFees.First().ExpireDate.ToShortDateString(),
                         userId = gardenUser.UserId,
                     });
                 }
@@ -164,13 +166,14 @@ namespace Garden.Controllers
                 {
                     object_list.Add(new
                     {
-
-                        userId = gardenUser.Id,
+                        gardenId = gardenUser.GardenSpaceId,                        
                         userName = gardenUser.Name,
                         feeId = '0',
                         feeType = '-',
                         discountType = '-',
                         createDate = '-',
+                        expireDate = '-',
+                        userId = gardenUser.Id,
                     });
                 }
 
@@ -223,7 +226,7 @@ namespace Garden.Controllers
         }
 
         // GET: GardenFees/Create
-        public IActionResult Create()
+        public IActionResult Create(int gardenId, int gardenUserId)
         {
             //check lisense
             bool isActiveSystem = _globalValueService.SystemStatus;
@@ -237,10 +240,44 @@ namespace Garden.Controllers
             if (!isRead)
                 return RedirectToAction("NotAccess", "Home");
 
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id");
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id");
-            ViewData["GardenUserId"] = new SelectList(_context.GardenUser, "Id", "Id");
-            return View();
+            ViewData["GardenId"] = gardenId;
+            ViewData["GardenUserId"] = gardenUserId;
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_TYPE"), "Id", "Name");
+            ViewData["DiscountTypeId"] = new SelectList(_context.BaseSubType.Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_DISCOUNT_TYPE"), "Id", "Name");
+
+            return PartialView();
+        }
+
+        private object CalculateCreateAndExpire(string description)
+        {
+            string createDate = DateTime.Now.ToShortDateString();
+            string expireDate = DateTime.Now.AddMonths(Convert.ToInt32(description)).ToShortDateString();
+
+            var dateValue = new
+            {
+                createDate = createDate,
+                expireDate = expireDate
+            };
+
+            return dateValue;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CalculateDate(string feeTypeId)
+        {            
+            try
+            {
+                BaseSubType feeType = await _context.BaseSubType.FindAsync(feeTypeId);
+
+                if (feeType == null)
+                    return new JsonResult("empty");
+
+                return new JsonResult(CalculateCreateAndExpire(feeType.Description));
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
         }
 
         // POST: GardenFees/Create
@@ -248,18 +285,22 @@ namespace Garden.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SubTypeId,Amount,CreateDate,GardenUserId,GardenSpaceId")] GardenFee gardenFee)
+        public async Task<IActionResult> Create([Bind("Id,SubTypeId,CreateDate,ExpireDate,DisCountTypeId,GardenUserId,GardenSpaceId")] GardenFee gardenFee)
         {
+            ViewData["GardenId"] = gardenFee.GardenSpaceId;
+            ViewData["GardenUserId"] = gardenFee.GardenUserId;
+            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType.Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_TYPE"), "Id", "Name");
+            ViewData["DiscountTypeId"] = new SelectList(_context.BaseSubType.Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_DISCOUNT_TYPE"), "Id", "Name");
+
             if (ModelState.IsValid)
             {
                 _context.Add(gardenFee);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return PartialView();
             }
-            ViewData["SubTypeId"] = new SelectList(_context.BaseSubType, "Id", "Id", gardenFee.SubTypeId);
-            ViewData["GardenSpaceId"] = new SelectList(_context.GardenSpace, "Id", "Id", gardenFee.GardenSpaceId);
-            ViewData["GardenUserId"] = new SelectList(_context.GardenUser, "Id", "Id", gardenFee.GardenUserId);
-            return View(gardenFee);
+
+            return PartialView();
         }
 
         // GET: GardenFees/Edit/5

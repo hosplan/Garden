@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garden.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210727131937_initial")]
+    [Migration("20210730073419_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,10 +242,10 @@ namespace Garden.Migrations
                     b.Property<string>("DiscountTypeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("GardenSpaceId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("GardenTaskId")
+                    b.Property<int?>("GardenSpaceId")
                         .HasColumnType("int");
 
                     b.Property<int?>("GardenUserId")
@@ -265,8 +265,6 @@ namespace Garden.Migrations
                     b.HasIndex("DiscountTypeId");
 
                     b.HasIndex("GardenSpaceId");
-
-                    b.HasIndex("GardenTaskId");
 
                     b.HasIndex("GardenUserId");
 
@@ -746,10 +744,6 @@ namespace Garden.Migrations
                         .WithMany()
                         .HasForeignKey("GardenSpaceId");
 
-                    b.HasOne("Garden.Models.GardenTask", null)
-                        .WithMany("GardenFees")
-                        .HasForeignKey("GardenTaskId");
-
                     b.HasOne("Garden.Models.GardenUser", "GardenUser")
                         .WithMany("GardenFees")
                         .HasForeignKey("GardenUserId");
@@ -977,8 +971,6 @@ namespace Garden.Migrations
 
             modelBuilder.Entity("Garden.Models.GardenTask", b =>
                 {
-                    b.Navigation("GardenFees");
-
                     b.Navigation("GardenUserTaskMaps");
 
                     b.Navigation("GardenWorkTimes");
