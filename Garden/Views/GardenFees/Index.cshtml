@@ -19,7 +19,7 @@
                     <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit')" value="">
                         <i class="fas fa-brush text-success mr-3"></i>
                         @Html.Raw("수정")
-                    </button>                  
+                    </button>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
                 'data': 'feeType', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
                     if (data != "-") {
-                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditFeeType()"><i class="fas fa-brush"></i></button>';
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditFeeTypeOpen(\'' + row.feeId+'\', this)"><i class="fas fa-brush"></i></button>';
                     } else {
                         return data;
                     }
@@ -100,14 +100,14 @@
                     } else {
                         return data;
                     }
-                   
+
                 }
             },
             {
                 'data': 'userId', 'className': 'text-center m-2', 'orderable': false,
                 'render': function (data, type, row, meta) {
                     if (row.feeId == '0') {
-                        return '<button type="button" class="btn btn-md btn-primary" onClick="customOpenModal('+row.gardenId+','+data+')" >납부하기</button>';
+                        return '<button type="button" class="btn btn-md btn-primary" onClick="customOpenModal(' + row.gardenId + ',' + data + ')" >납부하기</button>';
                     } else {
                         return '<button type="button" class="btn btn-md btn-info" disabled>납부됨</button>';
                     }
@@ -132,7 +132,112 @@
     }
 
     function customOpenModal(gardenId, gardenUserId) {
-        let url = '/GardenFees/Create?gardenId='+gardenId+'&gardenUserId='+gardenUserId+'';
+        let url = '/GardenFees/Create?gardenId=' + gardenId + '&gardenUserId=' + gardenUserId + '';
         click_common_btn(url);
+    }
+
+    //회비타입 수정창 열기
+    function EditFeeTypeOpen(feeId, obj) {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenFees/GetFeeTypeList', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200) {
+
+                
+                let values = JSON.parse(this.response);
+                let optionBox = '';
+                values.forEach(function (value, index) {
+                    console.log(value);
+                    optionBox += '<option value=' + value.id + '>' + value.name + '</option>';
+                });               
+                let editBox = '<div class="row">'+
+                              '<div class="col-xl-6">' +
+                              '<select class="form-control" id="SubTypeId_'+feeId+'">' + optionBox + '</select>' +
+                              '</div>' +
+                              '<div class="col-xl-6">' +
+                              '<button type="button" class="btn btn-link text-primary" title="저장" onclick="EditFeeTypeValue(\''+feeId+'\')"><i class="fas fa-check-circle"></i></button>' +
+                              '<button type="button" class="btn btn-link text-danger ml-1" title="취소" onclick="CancleEdit()"><i class="fas fa-pause-circle"></i></button>' +
+                              '</div>'+
+                              '</div>';
+                              
+                              
+
+                //기존 항목 지우기
+                let parentElement = obj.parentElement;
+                while (parentElement.firstChild) {
+                    parentElement.removeChild(parentElement.firstChild);
+                }
+
+                //수정창 추가
+                parentElement.innerHTML = editBox;
+            }
+            else {
+                console.log("회비 타입 수정 문제 발생");
+            }
+        }
+        httpRequest.send('feeId=' + feeId);
+    }
+    //회비타입 수정
+    function EditFeeTypeValue(feeId) {
+        let selectBox = document.getElementById('SubTypeId_' + feeId);
+
+        let selectValue = selectBox.options[selectBox.selectedIndex].value;
+
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenFees/EditFeeTypeValue', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200) {
+                location.reload();
+            }
+            else {
+                console.log("회비 타입 수정 문제 발생");
+            }
+        }
+        httpRequest.send('feeId=' + feeId + '&subTypeId=' + selectValue);
+
+    }
+
+
+    //할인타입 수정
+    function EditDiscountType(feeId, obj) {
+
+    }
+
+    //납부날짜 수정
+    function EditCreateDate(feeId, obj) {
+
+    }
+
+    //만료날짜 수정
+    function EditExpireDate(feeId, obj) {
+
+    }
+
+    //상세조회 - 모달창
+    function DetailGardenFee(feeId, obj) {
+
+    }
+
+    //수정 취소
+    function CancleEdit() {
+        location.reload();
     }
 </script>

@@ -441,6 +441,89 @@ namespace Garden.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// 회비타입 불러오기
+        /// </summary>
+        /// <param name="feeId"></param>
+        /// <returns>jsonArray[{id=baseSubTypeId, name=baseSubTypeName}]</returns>
+        public async Task<JsonResult> GetFeeTypeList(int feeId)
+        {
+            try
+            {
+                if (GardenFeeExists(feeId) == false)
+                    return new JsonResult(false);
+
+                List<BaseSubType> gardenFeeTypes = await _context.BaseSubType
+                                                                    .Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_TYPE")
+                                                                    .AsNoTracking()
+                                                                    .ToListAsync();
+
+                List<object> values = new List<object>();
+
+                foreach(BaseSubType gardenFeeType in gardenFeeTypes)
+                {
+                    values.Add(new
+                    {
+                        id = gardenFeeType.Id,
+                        name = gardenFeeType.Name
+                    });
+                }
+
+                return new JsonResult(values);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        /// <summary>
+        /// 만료일자 계산
+        /// baseSubType 의 Description의 값을 int32형태로 변환후 계산한다.
+        /// </summary>
+        /// <param name="createDate">생성일자(납부일자)</param>
+        /// <param name="subTypeId">회비타입 아이디(baseSubTypeId)</param>
+        /// <returns></returns>
+        private async Task<DateTime> CalculateExpireDate(DateTime createDate, string subTypeId)
+        {
+            BaseSubType feeType = await _context.BaseSubType
+                                                   .FirstOrDefaultAsync(baseSubType => baseSubType.Id == subTypeId);
+
+            return createDate.AddMonths(Convert.ToInt32(feeType.Description));
+        }
+
+        /// <summary>
+        /// 회비타입 수정
+        /// </summary>
+        /// <param name="feeId"></param>
+        /// <param name="subTypeId"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> EditFeeTypeValue(int feeId, string subTypeId)
+        {
+            try
+            {
+                GardenFee gardenFee = await _context.GardenFee
+                                            .FirstOrDefaultAsync(gardenFee => gardenFee.Id == feeId);
+
+                if (gardenFee == null)
+                {
+                    return new JsonResult(false);
+                }
+               
+                gardenFee.SubTypeId = subTypeId;
+                gardenFee.ExpireDate = await CalculateExpireDate(gardenFee.CreateDate, subTypeId);
+
+                _context.Update(gardenFee);
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
         private bool GardenFeeExists(int id)
         {
             return _context.GardenFee.Any(e => e.Id == id);
