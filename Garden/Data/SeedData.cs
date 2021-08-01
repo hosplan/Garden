@@ -172,6 +172,7 @@ namespace Garden.Data
                     context.BaseSubType.AddRange(
 
                         //회비 할인 타입
+                        new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_0", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "없음", Description = "" },
                         new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_1", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "첫달 홈페이지 수강후기 작성", Description = "" },
                         new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_2", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "수강한지 1년", Description = "" },
                         new BaseSubType { Id = "GARDEN_FEE_DISCOUNT_TYPE_3", BaseTypeId = "GARDEN_FEE_DISCOUNT_TYPE", Name = "친구 데려오기", Description = "" },

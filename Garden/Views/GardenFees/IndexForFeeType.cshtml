@@ -1,9 +1,12 @@
-﻿<div class="col-xl-12">
-    <div class="card">
+﻿@model IEnumerable<Garden.Models.BaseSubType>
+
+@*회비 타입*@
+<div class="col-xl-6">
+    <div class="card shadow">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">
                 <i class="fas fa-coins fa-fw"></i>
-                @Html.Raw("정원 회비 관리")
+                @Html.Raw("회비 타입 관리")
             </h6>
             <div class="dropdown no-arrow">
                 <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -12,13 +15,9 @@
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                     <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
                     <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit')" value="">
-                        <i class="fas fa-cogs text-primary mr-3"></i>
-                        @Html.Raw("회비 타입 관리")
-                    </button>
-                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit')" value="">
-                        <i class="fas fa-brush text-success mr-3"></i>
-                        @Html.Raw("수정")
-                    </button>                  
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("추가")
+                    </button>                
                 </div>
             </div>
         </div>
@@ -27,13 +26,77 @@
                 <div class="col-xl-12">
                     <table class="table table-hover" id="gardenFee_dt">
                         <thead>
-                            <tr>
+                            <tr class="text-center">
                                 <th>@Html.Raw("이름")</th>
-                                <th>@Html.Raw("타입")</th>
-                                <th>@Html.Raw("금액")</th>
-                                <th>@Html.Raw("납부날짜")</th>
+                                <th>@Html.Raw("설명")</th>
+                                <th class="text-primary"><i class="fas fa-cogs"></i></th>
                             </tr>
                         </thead>
+                        <tbody>
+                            @foreach(var feeType in Model.Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_TYPE").OrderBy(baseSubType => baseSubType.Id))
+                            {
+                                <tr class="text-center">
+                                    <td class="p-2 font-weight-bold text-info">@feeType.Name</td>
+                                    <td class="p-2">@feeType.Description</td>
+                                    <td class="p-2">
+                                        <button type="button" class="btn btn-link text-success" onclick="EditFeeType('@feeType.Id')"><i class="fas fa-brush"></i></button>
+                                        <button type="button" class="btn btn-link text-danger ml-2" onclick="RemoveFeeType('@feeType.Id')"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*할인 타입*@
+<div class="col-xl-6">
+    <div class="card shadow">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-tag fa-fw"></i>
+                @Html.Raw("할인 타입 관리")
+            </h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                    <div class="dropdown-header">@Html.Raw("그외 작업"):</div>
+                    <button type="button" class="dropdown-item font-weight-bold" id="baseSubType_create_btn" onclick="openModal('GardenSpaces', 'Edit')" value="">
+                        <i class="fas fa-plus-circle text-primary mr-3"></i>
+                        @Html.Raw("추가")
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-12">
+                    <table class="table table-hover" id="gardenFee_dt">
+                        <thead>
+                            <tr class="text-center">
+                                <th>@Html.Raw("이름")</th>
+                                <th>@Html.Raw("설명")</th>          
+                                <th class="text-primary"><i class="fas fa-cogs"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var discountType in Model.Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_DISCOUNT_TYPE").OrderBy(baseSubType => baseSubType.Id))
+                            {
+                                <tr class="text-center">
+                                    <td class="p-2 font-weight-bold text-info">@discountType.Name</td>
+                                    <td class="p-2">@discountType.Description</td>
+                                    <td class="p-2">
+                                        <button type="button" class="btn btn-link text-success" onclick="EditDiscountType(@discountType.id)"><i class="fas fa-brush"></i></button>
+                                        <button type="button" class="btn btn-link text-danger ml-2"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
                     </table>
                 </div>
             </div>

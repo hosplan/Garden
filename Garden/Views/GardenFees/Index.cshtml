@@ -59,31 +59,48 @@
             {
                 'data': 'userName', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    return data;
+                    return '<button type="button" class="btn btn-link text-info font-weight-bold">' + data + '</button>';
                 },
             },
             {
                 'data': 'feeType', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    return data;
+                    if (data != "-") {
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditFeeType()"><i class="fas fa-brush"></i></button>';
+                    } else {
+                        return data;
+                    }
                 },
             },
             {
                 'data': 'discountType', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    return data;
+                    if (data != "-") {
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditDiscountType()"><i class="fas fa-brush"></i></button>';
+                    } else {
+                        return data;
+                    }
                 }
             },
             {
                 'data': 'createDate', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    return data;
+                    if (data != "-") {
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditCreateDate()"><i class="fas fa-calendar"></i></button>';
+                    } else {
+                        return data;
+                    }
                 }
             },
             {
                 'data': 'expireDate', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    return data;
+                    if (data != "-") {
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditExpireDate()"><i class="fas fa-calendar"></i></button>';
+                    } else {
+                        return data;
+                    }
+                   
                 }
             },
             {
