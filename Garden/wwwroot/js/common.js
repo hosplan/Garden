@@ -1,5 +1,6 @@
 ﻿//일반적으로 모달창 열기
 function openModal(controllerName, actionName, id) {
+    console.log('test');
     let url = '';
     if (id == "" || id == 0) {
         url = '/' + controllerName + '/' + actionName;

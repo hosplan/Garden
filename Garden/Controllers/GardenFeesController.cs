@@ -248,15 +248,49 @@ namespace Garden.Controllers
                 .Include(g => g.BaseSubType)
                 .Include(g => g.GardenSpace)
                 .Include(g => g.GardenUser)
+                    .ThenInclude(gardenUser => gardenUser.GardenUserTasks)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (gardenFee == null)
             {
                 return NotFound();
             }
 
-            return View(gardenFee);
+            return PartialView(gardenFee);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Details(int Id, string TempString)
+        {
+            GardenFee gardenFee = await _context.GardenFee
+                                               .Include(g => g.BaseSubType)
+                                               .Include(g => g.GardenSpace)
+                                               .Include(g => g.GardenUser)
+                                                   .ThenInclude(gardenUser => gardenUser.GardenUserTasks)
+                                               .AsNoTracking()
+                                               .FirstOrDefaultAsync(m => m.Id == Id);
+
+            if (gardenFee == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                gardenFee.TempString = TempString;
+
+                _context.Update(gardenFee);
+                await _context.SaveChangesAsync();
+
+                return PartialView(gardenFee);
+            }
+            catch
+            {
+                return PartialView(gardenFee);
+            }
+
+            
+        }
         // GET: GardenFees/Create
         public IActionResult Create(int gardenId, int gardenUserId)
         {
@@ -441,6 +475,62 @@ namespace Garden.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<JsonResult> GetDiscountTypeList(int feeId)
+        {
+            try
+            {
+                if (GardenFeeExists(feeId) == false)
+                    return new JsonResult(false);
+
+                List<BaseSubType> gardenDiscountTypes = await _context.BaseSubType
+                                                                    .Where(baseSubType => baseSubType.BaseTypeId == "GARDEN_FEE_DISCOUNT_TYPE")
+                                                                    .AsNoTracking()
+                                                                    .ToListAsync();
+
+                List<object> values = new List<object>();
+
+                foreach (BaseSubType gardenDiscountType in gardenDiscountTypes)
+                {
+                    values.Add(new
+                    {
+                        id = gardenDiscountType.Id,
+                        name = gardenDiscountType.Name
+                    });
+                }
+
+                return new JsonResult(values);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        public async Task<JsonResult> EditDiscountTypeValue(int feeId, string discountTypeId)
+        {
+            try
+            {
+                GardenFee gardenFee = await _context.GardenFee
+                                           .FirstOrDefaultAsync(gardenFee => gardenFee.Id == feeId);
+
+                if (gardenFee == null)
+                {
+                    return new JsonResult(false);
+                }
+
+                gardenFee.DiscountTypeId = discountTypeId;
+
+                _context.Update(gardenFee);
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
         /// <summary>
         /// 회비타입 불러오기
         /// </summary>
@@ -512,6 +602,62 @@ namespace Garden.Controllers
                
                 gardenFee.SubTypeId = subTypeId;
                 gardenFee.ExpireDate = await CalculateExpireDate(gardenFee.CreateDate, subTypeId);
+
+                _context.Update(gardenFee);
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        /// <summary>
+        /// 납부일자 수정
+        /// </summary>
+        /// <param name="feeId"></param>
+        /// <param name="createDate"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> EditCreateDate(int feeId, string createDate)
+        {
+            try
+            {
+                GardenFee gardenFee = _context.GardenFee.FirstOrDefault(gardenFee => gardenFee.Id == feeId);
+
+                if (gardenFee == null)
+                    return new JsonResult(false);
+
+                gardenFee.CreateDate = Convert.ToDateTime(createDate);
+
+                _context.Update(gardenFee);
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
+        }
+
+        /// <summary>
+        /// 만료일자 수정
+        /// </summary>
+        /// <param name="feeId"></param>
+        /// <param name="createDate"></param>
+        /// <returns></returns>
+        public async Task<JsonResult> EditExpireDate(int feeId, string expireDate)
+        {
+            try
+            {
+                GardenFee gardenFee = _context.GardenFee.FirstOrDefault(gardenFee => gardenFee.Id == feeId);
+
+                if (gardenFee == null)
+                    return new JsonResult(false);
+
+                gardenFee.ExpireDate = Convert.ToDateTime(expireDate);
 
                 _context.Update(gardenFee);
                 await _context.SaveChangesAsync();

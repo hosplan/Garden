@@ -1,4 +1,5 @@
 ﻿
+<link href="~/lib/bootstrap-datepicker/bootstrap-datepicker.css" rel="stylesheet" />
 <div class="col-xl-12">
     <div class="card">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -48,6 +49,7 @@
         </div>
     </div>
 </div>
+<script src="~/lib/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
     var gardenUser_dataTable = $('#gardenFee_dt').DataTable({
         'ajax': {
@@ -59,7 +61,7 @@
             {
                 'data': 'userName', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
-                    return '<button type="button" class="btn btn-link text-info font-weight-bold">' + data + '</button>';
+                    return '<button type="button" class="btn btn-link text-info font-weight-bold" onclick="openModal(\'GardenFees\',\'Details\',\'' + row.feeId +'\')">' + data + '</button>';
                 },
             },
             {
@@ -76,7 +78,7 @@
                 'data': 'discountType', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
                     if (data != "-") {
-                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditDiscountType()"><i class="fas fa-brush"></i></button>';
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditDiscountTypeOpen(\'' + row.feeId +'\', this)"><i class="fas fa-brush"></i></button>';
                     } else {
                         return data;
                     }
@@ -86,7 +88,7 @@
                 'data': 'createDate', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
                     if (data != "-") {
-                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditCreateDate()"><i class="fas fa-calendar"></i></button>';
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditCreateDateOpen(\'' + row.feeId +'\', this, '+data+')"><i class="fas fa-calendar"></i></button>';
                     } else {
                         return data;
                     }
@@ -96,7 +98,7 @@
                 'data': 'expireDate', 'className': 'text-center m-2',
                 'render': function (data, type, row, meta) {
                     if (data != "-") {
-                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditExpireDate()"><i class="fas fa-calendar"></i></button>';
+                        return data + '<button type="button" class="btn btn-link text-success ml-2" onclick="EditExpireDateOpen(\'' + row.feeId + '\', this, ' + data +')"><i class="fas fa-calendar"></i></button>';
                     } else {
                         return data;
                     }
@@ -151,12 +153,9 @@
                 errorMessage();
             }
             else if (this.status === 200) {
-
-                
                 let values = JSON.parse(this.response);
                 let optionBox = '';
                 values.forEach(function (value, index) {
-                    console.log(value);
                     optionBox += '<option value=' + value.id + '>' + value.name + '</option>';
                 });               
                 let editBox = '<div class="row">'+
@@ -216,21 +215,196 @@
     }
 
 
-    //할인타입 수정
-    function EditDiscountType(feeId, obj) {
+    //할인타입 수정창 열기
+    function EditDiscountTypeOpen(feeId, obj) {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
 
+        httpRequest.open('POST', '/GardenFees/GetDiscountTypeList', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.reponse == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200) {
+                let values = JSON.parse(this.response);
+                let optionBox = '';
+                values.forEach(function (value, index) {
+                    optionBox += '<option value=' + value.id + '>' + value.name + '</option>';
+                });
+                let editBox = '<div class="row">' +
+                    '<div class="col-xl-6">' +
+                    '<select class="form-control" id="DiscountTypeId_' + feeId + '">' + optionBox + '</select>' +
+                    '</div>' +
+                    '<div class="col-xl-6">' +
+                    '<button type="button" class="btn btn-link text-primary" title="저장" onclick="EditDiscountTypeValue(\'' + feeId + '\')"><i class="fas fa-check-circle"></i></button>' +
+                    '<button type="button" class="btn btn-link text-danger ml-1" title="취소" onclick="CancleEdit()"><i class="fas fa-pause-circle"></i></button>' +
+                    '</div>' +
+                    '</div>';
+
+
+
+                //기존 항목 지우기
+                let parentElement = obj.parentElement;
+                while (parentElement.firstChild) {
+                    parentElement.removeChild(parentElement.firstChild);
+                }
+
+                //수정창 추가
+                parentElement.innerHTML = editBox;
+
+            }
+            else {
+                console.log("회비 할인 타입 수정 문제 발생");
+            }
+        }
+        httpRequest.send('feeId=' + feeId);
+    }
+
+    //할인타입 수정
+    function EditDiscountTypeValue(feeId) {
+        //DiscountTypeId_
+        let selectBox = document.getElementById('DiscountTypeId_' + feeId);
+        let selectValue = selectBox.options[selectBox.selectedIndex].value;
+
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenFees/EditDiscountTypeValue', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200) {
+                location.reload();
+            }
+            else {
+                console.log("회비 타입 수정 문제 발생");
+            }
+        }
+        httpRequest.send('feeId=' + feeId + '&discountTypeId=' + selectValue);
+    }
+
+    //납부날짜 수정창 열기
+    function EditCreateDateOpen(feeId, obj, createDate) {
+
+        let editBox = '<div class="row">' +
+                    '<div class="col-xl-6">' +
+                    '<input id="createDate_' + feeId + '" class="form-control create_datepicker_'+feeId+'" placeholder="클릭하세요" />'+
+                    '</div>' +
+                    '<div class="col-xl-6">' +
+                    '<button type="button" class="btn btn-link text-primary" title="저장" onclick="EditCreateDate(\'' + feeId + '\')"><i class="fas fa-check-circle"></i></button>' +
+                    '<button type="button" class="btn btn-link text-danger ml-1" title="취소" onclick="CancleEdit()"><i class="fas fa-pause-circle"></i></button>' +
+                    '</div>' +
+                    '</div>';
+
+        //기존 항목 지우기
+        let parentElement = obj.parentElement;
+        while (parentElement.firstChild) {
+            parentElement.removeChild(parentElement.firstChild);
+        }
+
+        //수정창 추가
+        parentElement.innerHTML = editBox;
+        $.fn.datepicker.defaults.format = "yyyy-mm-dd";
+        $('.create_datepicker_'+feeId+'').datepicker();
+        
+      
     }
 
     //납부날짜 수정
     function EditCreateDate(feeId, obj) {
+        let createdate = document.getElementById('createDate_' + feeId + '').value;
 
+        if (createdate == null || createdate == '') {
+            alert("납부날짜를 지정하세요!");
+            return false;
+        }
+
+
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenFees/EditCreateDate', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200) {
+                location.reload();
+            }
+            else {
+                console.log("회비 타입 수정 문제 발생");
+            }
+        }
+        httpRequest.send('feeId=' + feeId + '&createDate=' + createdate);
     }
 
-    //만료날짜 수정
-    function EditExpireDate(feeId, obj) {
+    //만료날짜 수정창 열기
+    function EditExpireDateOpen(feeId, obj, expireDate) {
+        let editBox = '<div class="row">' +
+            '<div class="col-xl-6">' +
+            '<input id="expireDate_' + feeId + '" class="form-control create_datepicker_' + feeId + '" placeholder="클릭하세요" />' +
+            '</div>' +
+            '<div class="col-xl-6">' +
+            '<button type="button" class="btn btn-link text-primary" title="저장" onclick="EditExpireDate(\'' + feeId + '\')"><i class="fas fa-check-circle"></i></button>' +
+            '<button type="button" class="btn btn-link text-danger ml-1" title="취소" onclick="CancleEdit()"><i class="fas fa-pause-circle"></i></button>' +
+            '</div>' +
+            '</div>';
 
+        //기존 항목 지우기
+        let parentElement = obj.parentElement;
+        while (parentElement.firstChild) {
+            parentElement.removeChild(parentElement.firstChild);
+        }
+
+        //수정창 추가
+        parentElement.innerHTML = editBox;
+        $.fn.datepicker.defaults.format = "yyyy-mm-dd";
+        $('.create_datepicker_' + feeId + '').datepicker();
     }
 
+    function EditExpireDate(feeId) {
+        let expireDate = document.getElementById('expireDate_' + feeId + '').value;
+
+        if (expireDate == null || expireDate == '') {
+            alert("만료날짜를 지정하세요!");
+            return false;
+        }
+
+
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenFees/EditExpireDate', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "false") {
+                errorMessage();
+            }
+            else if (this.status === 200) {
+                location.reload();
+            }
+            else {
+                console.log("회비 타입 수정 문제 발생");
+            }
+        }
+        httpRequest.send('feeId=' + feeId + '&expireDate=' + expireDate);
+    }
     //상세조회 - 모달창
     function DetailGardenFee(feeId, obj) {
 
