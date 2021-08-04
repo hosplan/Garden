@@ -61,43 +61,56 @@ namespace Garden.Controllers
 
             try
             {
-                int currentYear = DateTime.Now.Year;
-                int currentMonth = DateTime.Now.Month;
+
+                DateTime currentDate = DateTime.Now;
+                //gardenUsers = await _context.GardenUser
+                //                            .Include(gardenUser => gardenUser.GardenFees)
+                //                                .ThenInclude(gardenFee => gardenFee.BaseSubType)
+                //                            .Include(gardenUser => gardenUser.GardenFees)
+                //                                .ThenInclude(gardenFee => gardenFee.DiscountType)
+                //                            .AsNoTracking()
+                //                            .Where(gardenUser => 
+                //                                    gardenUser.GardenFees.Where(gardenFee => gardenFee.ExpireDate.Year >= currentYear && 
+                //                                                                             gardenFee.ExpireDate.Month >= currentMonth &&
+                //                                                                             gardenFee.ExpireDate.Day >= ).Count() > 0
+
+
+                //                                    && gardenUser.GardenSpaceId == gardenSpaceId
+                //                                    && gardenUser.GardenRoleId == 4)
+                //                            .ToListAsync();
                 gardenUsers = await _context.GardenUser
                                             .Include(gardenUser => gardenUser.GardenFees)
                                                 .ThenInclude(gardenFee => gardenFee.BaseSubType)
                                             .Include(gardenUser => gardenUser.GardenFees)
                                                 .ThenInclude(gardenFee => gardenFee.DiscountType)
                                             .AsNoTracking()
-                                            .Where(gardenUser => 
-                                                    gardenUser.GardenFees.Where(gardenFee => gardenFee.ExpireDate.Year >= currentYear && 
-                                                                                             gardenFee.ExpireDate.Month >= currentMonth).Count() > 0
-                                                    && gardenUser.GardenSpaceId == gardenSpaceId
-                                                    && gardenUser.GardenRoleId == 4)
+                                            .Where(gardenUser =>
+                                                   gardenUser.GardenFees.Where(gardenFee => gardenFee.ExpireDate > currentDate).Count() > 0
+                                                   && gardenUser.GardenSpaceId == gardenSpaceId
+                                                   && gardenUser.GardenRoleId == 4)
                                             .ToListAsync();
-
                 //내년까지 등록되어 있는경우인데 이번달보다 달이 작은 경우
                 //예) 납부일자 - 2021-08-01 , 만료는 - 2022-02-03 인경우
-                List<GardenUser> nextYear_gardenUsers = await _context.GardenUser
-                                                                    .Include(gardenUser => gardenUser.GardenFees)
-                                                                        .ThenInclude(gardenFee => gardenFee.BaseSubType)
-                                                                    .Include(gardenUser => gardenUser.GardenFees)
-                                                                        .ThenInclude(gardenFee => gardenFee.DiscountType)
-                                                                    .AsNoTracking()
-                                                                    .Where(gardenUser =>
-                                                                            gardenUser.GardenFees.Where(gardenFee => gardenFee.ExpireDate.Year > currentYear &&
-                                                                                                                     gardenFee.ExpireDate.Month <= currentMonth).Count() > 0
-                                                                            && gardenUser.GardenSpaceId == gardenSpaceId
-                                                                            && gardenUser.GardenRoleId == 4)
-                                                                    .ToListAsync();
+                //List<GardenUser> nextYear_gardenUsers = await _context.GardenUser
+                //                                                    .Include(gardenUser => gardenUser.GardenFees)
+                //                                                        .ThenInclude(gardenFee => gardenFee.BaseSubType)
+                //                                                    .Include(gardenUser => gardenUser.GardenFees)
+                //                                                        .ThenInclude(gardenFee => gardenFee.DiscountType)
+                //                                                    .AsNoTracking()
+                //                                                    .Where(gardenUser =>
+                //                                                            gardenUser.GardenFees.Where(gardenFee => gardenFee.ExpireDate.Year > currentYear &&
+                //                                                                                                     gardenFee.ExpireDate.Month <= currentMonth).Count() > 0
+                //                                                            && gardenUser.GardenSpaceId == gardenSpaceId
+                //                                                            && gardenUser.GardenRoleId == 4)
+                //                                                    .ToListAsync();
 
-                foreach (GardenUser nextYear_gardenUser in nextYear_gardenUsers)
-                {
-                    GardenUser existValue = gardenUsers.FirstOrDefault(gardenUser => gardenUser.Id == nextYear_gardenUser.Id);
+                //foreach (GardenUser nextYear_gardenUser in nextYear_gardenUsers)
+                //{
+                //    GardenUser existValue = gardenUsers.FirstOrDefault(gardenUser => gardenUser.Id == nextYear_gardenUser.Id);
 
-                    if (existValue == null)
-                        gardenUsers.Add(nextYear_gardenUser);
-                }
+                //    if (existValue == null)
+                //        gardenUsers.Add(nextYear_gardenUser);
+                //}
 
                 return gardenUsers;
             }
@@ -134,9 +147,6 @@ namespace Garden.Controllers
                                                   && gardenUser.GardenSpaceId == gardenSpaceId
                                                   && gardenUser.GardenRoleId == 4)
                                            .ToListAsync();
-
-                
-
                 return gardenUsers;
             }
             catch
