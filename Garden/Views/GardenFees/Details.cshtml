@@ -1,7 +1,7 @@
 ﻿@model Garden.Models.GardenFee
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "회비 상세보기";
 }
 
 <!-- Modal -->
@@ -44,7 +44,7 @@
                                 @if (Model.GardenUser.GardenUserTasks.Count() > 0)
                                 {
                                     foreach(var item in Model.GardenUser.GardenUserTasks)
-                                    {%
+                                    {
                                         taskName += item.GardenTask.Name+" ";                                      
                                     }
                                 }
@@ -70,7 +70,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-info btn-md" data-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-secondary btn-md" data-save="modal">확인</button>
+                <button type="button" class="btn btn-secondary btn-md" data-save="modal">저장</button>
             </div>
         </div>
     </div>

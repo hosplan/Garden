@@ -111,7 +111,8 @@
                     if (row.feeId == '0') {
                         return '<button type="button" class="btn btn-md btn-primary" onClick="customOpenModal(' + row.gardenId + ',' + data + ')" >납부하기</button>';
                     } else {
-                        return '<button type="button" class="btn btn-md btn-info" disabled>납부됨</button>';
+                        return '<button type="button" class="btn btn-md btn-info" disabled>납부됨</button>' +
+                               '<button type="button" class="btn btn-md btn-danger ml-2" onclick="RemoveGardenFeeOpen(\'' + row.feeId + '\')">취소</button>';
                     }
                 }
             }
@@ -127,6 +128,42 @@
         'searching': true,
         'processing': true,
     });
+
+    //납부 삭제 여부 묻기
+    function RemoveGardenFeeOpen(feeId) {
+        Swal.fire({
+            title: '해당 납부를 삭제하시겠어요?',
+            icon: 'warning',
+            confirmButtonText: '삭제',
+            showCancelButton: true,
+            cancelButtonText: '취소',
+        }).then(function (result) {
+            if (result.value) {
+                RemoveGardenFee(feeId);
+                
+            }
+        });
+    }
+
+    //납부 삭제
+    function RemoveGardenFee(feeId) {
+        let httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+            errorMessage();
+            return false;
+        }
+
+        httpRequest.open('POST', '/GardenFees/RemoveGardenFee', true);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.onload = function () {
+            if (this.status === 200 && this.response == "true") {
+                location.reload();
+            } else {
+                errorMessage();
+            }
+        };
+        httpRequest.send('id=' + feeId);
+    }
 
     //회비 납부 여부
     function CheckPayment(gardenId, userId, obj) {

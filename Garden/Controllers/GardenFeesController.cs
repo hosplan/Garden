@@ -259,6 +259,12 @@ namespace Garden.Controllers
             return PartialView(gardenFee);
         }
 
+        /// <summary>
+        /// 상세조회의 메모내용 업데이트하기
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="TempString"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Details(int Id, string TempString)
         {
@@ -287,9 +293,29 @@ namespace Garden.Controllers
             catch
             {
                 return PartialView(gardenFee);
-            }
+            }           
+        }
 
-            
+        /// <summary>
+        /// 납부내역 삭제
+        /// </summary>
+        /// <param name="id">feeId</param>
+        /// <returns></returns>
+        public async Task<JsonResult> RemoveGardenFee(int id)
+        {
+            try
+            {
+                GardenFee gardenFee = _context.GardenFee.FirstOrDefault(gardenFee => gardenFee.Id == id);
+
+                _context.Remove(gardenFee);
+                await _context.SaveChangesAsync();
+
+                return new JsonResult(true);
+            }
+            catch
+            {
+                return new JsonResult(false);
+            }
         }
         // GET: GardenFees/Create
         public IActionResult Create(int gardenId, int gardenUserId)
