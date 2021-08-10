@@ -44,7 +44,14 @@ var gardenAttendUser_dataTable = $('#gardenAttendUser_dt').DataTable({
                 }
                 
             }
-        },   
+        },
+        {
+            'data': 'description', 'className': 'text-center m-2',
+            'render': function (data, type, row, meta) {
+                return '<button type="button" class="btn btn-link p-0 ml-2" onclick="openModal()"><i class="fas fa-brush text-success"></i></button>';
+
+            }
+        },
         {
             'data': 'id', 'clssName': 'm-2', 'orderable': false,
             'render': function (data, type, row, meta) {

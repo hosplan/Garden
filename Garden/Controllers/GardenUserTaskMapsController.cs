@@ -117,6 +117,140 @@ namespace Garden.Controllers
             }          
         }
 
+        private async Task<List<GardenUserTaskMap>> GetAttenders(int taskId)
+        {
+            List<GardenUserTaskMap> attenderTaskMaps = new List<GardenUserTaskMap>();
+            try
+            {
+               attenderTaskMaps = await _context.GardenUserTaskMap
+                                                .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                    .ThenInclude(gUser => gUser.User)
+                                                .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                    .ThenInclude(gUser => gUser.User)
+                                                .Include(gUserTaskMap => gUserTaskMap.GardenTask)
+                                                .AsNoTracking()
+                                                .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == taskId &&
+                                                                        gUserTaskMap.GardenManagerId == null)
+                                                .ToListAsync();
+
+                return attenderTaskMaps;
+            }
+            catch
+            {
+                return attenderTaskMaps;
+            }                       
+        }
+
+        private async Task<List<GardenUserTaskMap>> GetManagers(int taskId)
+        {
+            List<GardenUserTaskMap> attenderTaskMaps = new List<GardenUserTaskMap>();
+            try
+            {
+                attenderTaskMaps = await _context.GardenUserTaskMap
+                                                 .Include(gUserTaskMap => gUserTaskMap.GardenUser)
+                                                     .ThenInclude(gUser => gUser.User)
+                                                 .Include(gUserTaskMap => gUserTaskMap.GardenManager)
+                                                     .ThenInclude(gUser => gUser.User)
+                                                 .Include(gUserTaskMap => gUserTaskMap.GardenTask)
+                                                 .AsNoTracking()
+                                                 .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == taskId &&
+                                                                         gUserTaskMap.GardenManagerId != null)
+                                                 .ToListAsync();
+
+                return attenderTaskMaps;
+            }
+            catch
+            {
+                return attenderTaskMaps;
+            }
+        }
+
+        private List<object> MemberShipAttenderJson(List<GardenUserTaskMap> taskMaps)
+        {
+            List<object> jsonArray = new List<object>();
+
+            foreach(GardenUserTaskMap taskMap in taskMaps)
+            {
+                jsonArray.Add(new
+                {
+                    roleType = "참여자",
+                    userName = taskMap.GardenUser.User.UserName,
+                    name = taskMap.GardenUser.User.Name,
+                    isRent = taskMap.IsRent,
+                    description = taskMap.GardenTask.Description,
+                    regDate = taskMap.RegDate.ToShortDateString(),
+                    id = taskMap.Id
+                });
+            }
+           
+            return jsonArray;
+        }
+
+        private List<object> MemberShipManagerJson(List<GardenUserTaskMap> taskMaps)
+        {
+            List<object> jsonArray = new List<object>();
+
+            foreach(GardenUserTaskMap taskMap in taskMaps)
+            {
+                jsonArray.Add(new
+                {
+                    roleType = "담당자",
+                    userName = taskMap.GardenUser.User.UserName,
+                    name = taskMap.GardenUser.User.Name,
+                    isRent = taskMap.IsRent,
+                    description = taskMap.GardenTask.Description,
+                    regDate = taskMap.RegDate.ToShortDateString(),
+                    id = taskMap.Id
+                });
+            }
+
+            return jsonArray;
+        }
+
+        private List<object> UnMemberShipAttenderJson(List<GardenUserTaskMap> taskMaps)
+        {
+            List<object> jsonArray = new List<object>();
+
+            foreach (GardenUserTaskMap taskMap in taskMaps)
+            {
+                jsonArray.Add(new
+                {
+                    roleType = "참여자",
+                    userName = taskMap.GardenUser.Name,
+                    name = taskMap.GardenUser.Name,
+                    isRent = taskMap.IsRent,
+                    description = taskMap.GardenTask.Description,
+                    regDate = taskMap.RegDate.ToShortDateString(),
+                    id = taskMap.Id
+                });
+            }
+
+            return jsonArray;
+        }
+
+        private List<object> UnMemberShipManagerJson(List<GardenUserTaskMap> taskMaps)
+        {
+            List<object> jsonArray = new List<object>();
+
+            foreach (GardenUserTaskMap taskMap in taskMaps)
+            {
+                jsonArray.Add(new
+                {
+                    roleType = "담당자",
+                    userName = taskMap.GardenUser.Name,
+                    name = taskMap.GardenUser.Name,
+                    isRent = taskMap.IsRent,
+                    description = taskMap.GardenTask.Description,
+                    regDate = taskMap.RegDate.ToShortDateString(),
+                    id = taskMap.Id
+                });
+            }
+
+            return jsonArray;
+        }
+
+
+
         /// <summary>
         /// 정원 업무 참여자 목록 불러오기
         /// </summary>
@@ -125,91 +259,29 @@ namespace Garden.Controllers
         public async Task<JsonResult> GetAttendUserList(int? id)
         {
             
-            List<object> object_list = new List<object>();
+            List<object> jsonArray = new List<object>();
             
             if(id == null)
             {
-                var empty_jsonValue = new { data = object_list };
+                var empty_jsonValue = new { data = jsonArray };
                 return Json(empty_jsonValue);
             }
 
-            List<GardenUserTaskMap> gardenUserTaskMap_list = await _context.GardenUserTaskMap
-                                                                           .Include(gUserTaskMap => gUserTaskMap.GardenUser)
-                                                                               .ThenInclude(gUser => gUser.User)
-                                                                           .Include(gUserTaskMap => gUserTaskMap.GardenManager)
-                                                                               .ThenInclude(gUser => gUser.User)
-                                                                           .AsNoTracking()
-                                                                           .Where(gUserTaskMap => gUserTaskMap.GardenTaskId == id)
-                                                                           .ToListAsync();
-            StringBuilder temp_roleTypeName = new StringBuilder();
-            if (_globalValueService.IsActiveMembership)
+            List<GardenUserTaskMap> attenders = await GetAttenders(id.Value);            
+            List<GardenUserTaskMap> managers = await GetManagers(id.Value);
+
+            if(_globalValueService.IsActiveMembership)
             {
-                foreach (GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
-                {
-                    GardenUser temp_gardenUserInfo = new GardenUser();
-
-                    if (gardenUserTaskMap.GardenManagerId == null)
-                    {
-                        temp_gardenUserInfo = gardenUserTaskMap.GardenUser;
-                        temp_roleTypeName.Append("참여자");
-                    }
-                    else
-                    {
-                        temp_gardenUserInfo = gardenUserTaskMap.GardenManager;
-                        temp_roleTypeName.Append("담당자");
-                    }
-
-
-                    //수정해야됨
-                    object_list.Add(new
-                    {
-                        roleType = temp_roleTypeName.ToString(),
-                        userName = temp_gardenUserInfo.User.UserName,
-                        name = temp_gardenUserInfo.User.Name,
-                        isRent = gardenUserTaskMap.IsRent,
-                        regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
-                        id = gardenUserTaskMap.Id
-                    });
-
-                    temp_roleTypeName.Clear();
-                }
+                jsonArray.AddRange(MemberShipAttenderJson(attenders));
+                jsonArray.AddRange(MemberShipManagerJson(attenders));
             }
             else
             {
-                foreach (GardenUserTaskMap gardenUserTaskMap in gardenUserTaskMap_list)
-                {
-                    GardenUser temp_gardenUserInfo = new GardenUser();
-
-                    if (gardenUserTaskMap.GardenManagerId == null)
-                    {
-                        temp_gardenUserInfo = gardenUserTaskMap.GardenUser;
-                        temp_roleTypeName.Append("참여자");
-                    }
-                    else
-                    {
-                        temp_gardenUserInfo = gardenUserTaskMap.GardenManager;
-                        temp_roleTypeName.Append("담당자");
-                    }
-
-
-                    //수정해야됨
-                    object_list.Add(new
-                    {
-                        roleType = temp_roleTypeName.ToString(),
-                        userName = temp_gardenUserInfo.Name,
-                        name = temp_gardenUserInfo.Name,
-                        isRent = gardenUserTaskMap.IsRent,
-                        regDate = gardenUserTaskMap.RegDate.ToShortDateString(),
-                        id = gardenUserTaskMap.Id
-                    });
-
-                    temp_roleTypeName.Clear();
-                }
+                jsonArray.AddRange(UnMemberShipAttenderJson(attenders));
+                jsonArray.AddRange(UnMemberShipManagerJson(attenders));               
             }
 
-            var jsonValue = new { data = object_list };
-
-            return Json(jsonValue);
+            return Json(new { data = jsonArray });
         }
 
         // GET: GardenUserTaskMaps

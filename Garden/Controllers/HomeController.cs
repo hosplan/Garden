@@ -118,6 +118,7 @@ namespace Garden.Controllers
                                                                           .Where(z => z.GardenSpaceId == gardenSpace.Id
                                                                                  && z.BirthDay.Value.Month == DateTime.Now.Month)
                                                                           .AsNoTracking()
+                                                                          .OrderBy(gUser => gUser.BirthDay.Value.Day)
                                                                           .ToListAsync();
                                                                           
                     gardenUser_list.AddRange(temp_gardenUser_list);
