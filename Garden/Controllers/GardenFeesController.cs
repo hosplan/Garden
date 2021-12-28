@@ -547,6 +547,7 @@ namespace Garden.Controllers
             try
             {
                 GardenFee gardenFee = await _context.GardenFee
+                                                    .Include(z => z.GardenUser)
                                            .FirstOrDefaultAsync(gardenFee => gardenFee.Id == feeId);
 
                 if (gardenFee == null)
@@ -594,7 +595,6 @@ namespace Garden.Controllers
                         name = gardenFeeType.Name
                     });
                 }
-
                 return new JsonResult(values);
             }
             catch

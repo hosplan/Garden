@@ -12,27 +12,19 @@
 <br />
 <br />
 <div class="container">
-
-    <!-- Outer Row -->
     <div class="row justify-content-center">
-
         <div class="col-xl-10 col-lg-12 col-md-9">
-
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
-                    <!-- Nested Row within Card Body -->
                     <div class="row">
                         <div class="col-lg-6 d-none d-lg-block bg-login-image" style="background-image: url('/img/garden.jpg')"></div>
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">@Html.Raw("Garden에 오신걸 환영합니다!")</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">Garden에 오신걸 환영합니다!</h1>
                                 </div>
                                 <form id="account" method="post">
                                     <div class="form-group">
-                                        @*<input type="email" class="form-control form-control-user"
-                                               id="exampleInputEmail" aria-describedby="emailHelp"
-                                               placeholder="아이디 입력">*@
                                         <input type="text" class="form-control form-control-user" name="UserName" placeholder="아이디 입력"/>
                                     </div>
                                     <div class="form-group">
@@ -61,11 +53,11 @@
                                 <hr>
                                 <div class="text-center">
                                     <a class="small" href="#">
-                                        <i class="fas fa-lock mr-1"></i>@Html.Raw("비밀번호 찾기")
+                                        <i class="fas fa-lock mr-1"></i>비밀번호 찾기
                                     </a>
                                     <a class="small ml-3" href="/Identity/Account/Register">
                                         <i class="fas fa-feather mr-1"></i>
-                                        @Html.Raw("계정 만들기")
+                                        계정 만들기
                                     </a>
                                 </div>
                                 <div class="text-center">
@@ -76,11 +68,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </div>
 <script src="~/vendor/jquery/jquery.js"></script>
 <script src="~/vendor/bootstrap/js/bootstrap.js"></script>
